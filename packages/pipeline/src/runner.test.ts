@@ -3,7 +3,7 @@ import { createTestDb } from "@jw/db/testing";
 import type { OutgoingMessage, SendDeps } from "@jw/email";
 import { beforeEach, describe, expect, it } from "vitest";
 import { archiveKey, memoryArchive } from "./archive";
-import { type Adapter, type JobContext, adapterJob, runJob } from "./runner";
+import { type Adapter, type JobContext, adapterJob, markInterrupted, runJob } from "./runner";
 
 let db: Db;
 let sent: OutgoingMessage[];
@@ -92,5 +92,18 @@ describe("archiveKey", () => {
     await archive.put("abc/2026-10-16/b.csv.gz", new Uint8Array());
     expect(await archive.prune("2026-08-17")).toBe(1);
     expect(archive.keys).toEqual(["abc/2026-10-16/b.csv.gz"]);
+  });
+});
+
+describe("markInterrupted", () => {
+  it("fails runs left running for over two hours and leaves recent ones alone", async () => {
+    await db.insert(jobRuns).values([
+      { job: "cslb", status: "running", startedAt: new Date("2026-10-16T09:00:00Z") },
+      { job: "abc", status: "running", startedAt: new Date("2026-10-16T12:00:00Z") },
+    ]);
+    expect(await markInterrupted(db, new Date("2026-10-16T12:30:00Z"))).toBe(1);
+    const rows = await db.select().from(jobRuns);
+    expect(rows.find((r) => r.job === "cslb")).toMatchObject({ status: "failed" });
+    expect(rows.find((r) => r.job === "abc")).toMatchObject({ status: "running" });
   });
 });

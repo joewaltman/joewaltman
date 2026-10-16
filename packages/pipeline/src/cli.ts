@@ -2,7 +2,7 @@ import { getDb, gt, jobRuns } from "@jw/db";
 import { loadEmailConfig } from "@jw/email";
 import { archiveFromEnv } from "./archive";
 import { JOBS, SCHEDULE } from "./jobs";
-import { type JobContext, runJob } from "./runner";
+import { type JobContext, markInterrupted, runJob } from "./runner";
 import { dueJobs } from "./schedule";
 
 // Usage:
@@ -74,6 +74,8 @@ const TICK_MS = 30 * 60 * 1000;
 
 async function tick(): Promise<number> {
   const ctx = context();
+  const interrupted = await markInterrupted(ctx.db, ctx.now);
+  if (interrupted > 0) ctx.log(`marked ${interrupted} interrupted run(s) as failed`);
   const recent = await ctx.db
     .select({ job: jobRuns.job, status: jobRuns.status, startedAt: jobRuns.startedAt })
     .from(jobRuns)

@@ -57,7 +57,7 @@ export interface RecentRun {
 }
 
 export const MAX_ATTEMPTS_PER_SLOT = 2;
-const STALE_RUNNING_MS = 2 * 60 * 60 * 1000;
+export const STALE_RUNNING_MS = 2 * 60 * 60 * 1000;
 
 // Jobs whose slot today has passed and that have not succeeded since, with a cap on retries.
 export function dueJobs(now: Date, schedule: ScheduleEntry[], recent: RecentRun[]): Array<{ job: string; attempt: number }> {

@@ -1,5 +1,5 @@
 import { taxonomy } from "@jw/content";
-import { and, entities, entityIdentifiers, eq, gt, inArray, isNull } from "@jw/db";
+import { and, entities, entityEvents, entityIdentifiers, eq, gt, inArray, isNull } from "@jw/db";
 import { type LlmClient, UsageLog, classifyBusinesses, clientFromEnv, summarizeBusinesses } from "@jw/llm";
 import type { Job, JobContext } from "./runner";
 
@@ -53,12 +53,18 @@ export function enrichJob(makeClient: () => LlmClient | null = clientFromEnv): J
       }
       const usage = new UsageLog();
       const since = new Date(ctx.now.getTime() - WINDOW_DAYS * 86_400_000);
+      // Only businesses with something recent to report. A source's first load creates thousands
+      // of existing businesses at once; those do not appear in any digest, so they are skipped.
+      const recent = ctx.db
+        .selectDistinct({ id: entityEvents.entityId })
+        .from(entityEvents)
+        .where(gt(entityEvents.createdAt, since));
       const labels = new Map(taxonomy.categories.map((c) => [c.id, c.label]));
 
       const toClassify = await ctx.db
         .select({ id: entities.id, name: entities.canonicalName, dba: entities.dba })
         .from(entities)
-        .where(and(isNull(entities.category), gt(entities.createdAt, since)))
+        .where(and(isNull(entities.category), inArray(entities.id, recent)))
         .limit(ENRICH_LIMIT);
       const classifyRaws = await rawsByEntity(ctx, toClassify.map((e) => e.id));
       const categories = await classifyBusinesses(
@@ -79,7 +85,7 @@ export function enrichJob(makeClient: () => LlmClient | null = clientFromEnv): J
       const toSummarize = await ctx.db
         .select()
         .from(entities)
-        .where(and(isNull(entities.summary), gt(entities.createdAt, since)))
+        .where(and(isNull(entities.summary), inArray(entities.id, recent)))
         .limit(ENRICH_LIMIT);
       const summaryRaws = await rawsByEntity(ctx, toSummarize.map((e) => e.id));
       const summaries = await summarizeBusinesses(

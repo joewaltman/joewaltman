@@ -4,7 +4,7 @@ import type { LlmClient } from "@jw/llm";
 import { beforeEach, describe, expect, it } from "vitest";
 import { memoryArchive } from "./archive";
 import { enrichJob } from "./enrich";
-import { upsertEntity } from "./resolve";
+import { addEvent, upsertEntity } from "./resolve";
 import type { JobContext } from "./runner";
 
 let db: Db;
@@ -48,8 +48,10 @@ describe("enrich", () => {
     expect(out.meta).toEqual({ skipped: "ANTHROPIC_API_KEY not set" });
   });
 
-  it("classifies and summarizes new entities and logs token use", async () => {
-    await upsertEntity(db, {
+  it("classifies and summarizes entities with recent events and logs token use", async () => {
+    // A business with no event, as after a source's first load, is left alone.
+    await upsertEntity(db, { source: "abc", sourceId: "9", name: "Old Liquor Store Inc", zip: "92101", raw: {} });
+    const { entityId } = await upsertEntity(db, {
       source: "sd_biztax",
       sourceId: "1",
       name: "Coastal Roof Pros LLC",
@@ -58,6 +60,15 @@ describe("enrich", () => {
       zip: "92054",
       raw: { naics_description: "ROOFING CONTRACTORS" },
     });
+    await addEvent(db, {
+      entityId,
+      source: "sd_biztax",
+      eventType: "new_business",
+      eventDate: "2026-10-15",
+      severity: "info",
+      title: "New",
+      dedupeKey: "t:1",
+    });
     const out = await enrichJob(() => client).run(ctx);
     expect(out.meta).toMatchObject({ classified: 1, summarized: 1 });
     expect(out.meta!.llm).toMatchObject({
@@ -65,8 +76,9 @@ describe("enrich", () => {
       "claude-sonnet-5-5": { requests: 1, input: 80, output: 12 },
     });
     expect(prompts[0]).toContain("roofing contractors");
-    const [e] = await db.select().from(entities);
-    expect(e).toMatchObject({ category: "construction", summary: "Roofing contractor in Oceanside." });
+    const rows = await db.select().from(entities);
+    expect(rows.find((e) => e.id === entityId)).toMatchObject({ category: "construction", summary: "Roofing contractor in Oceanside." });
+    expect(rows.find((e) => e.id !== entityId)).toMatchObject({ category: null, summary: null });
 
     // A second run has nothing left to do.
     prompts.length = 0;

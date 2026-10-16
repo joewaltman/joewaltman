@@ -12,6 +12,10 @@ Code: `packages/pipeline`. Runs as the Railway `pipeline` service, which Railway
 
 Every run writes a `job_runs` row (see `/admin/jobs`). A failed job is retried once at the next tick; each failure emails Joe. Re-runs are safe: entities match on source identifiers and events dedupe on a key.
 
+A deploy or variable change restarts the pipeline service and cuts off a run in progress. That run stays "running" until the first tick two hours later marks it failed ("Interrupted"), and the scheduler retries it. To avoid it, don't deploy between 5:30 and 6:30am Pacific.
+
+Enrichment only covers businesses with an event in the last 30 days. The first load of a source creates thousands of existing businesses with no event; they are not summarized.
+
 ## Running a job by hand
 
 ```bash

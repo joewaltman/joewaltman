@@ -1,7 +1,7 @@
-import { type Db, type Source, eq, jobRuns } from "@jw/db";
+import { type Db, type Source, and, eq, jobRuns, lt } from "@jw/db";
 import { type SendDeps, jobFailed, sendEmail } from "@jw/email";
 import { type Archive, archiveKey } from "./archive";
-import { pacificDay } from "./schedule";
+import { STALE_RUNNING_MS, pacificDay } from "./schedule";
 
 export interface FetchedFile {
   name: string;
@@ -129,4 +129,15 @@ export async function runJob(job: Job, ctx: JobContext, attempt = 1): Promise<Ru
     }).catch((mailErr) => ctx.log(`could not send failure email: ${String(mailErr)}`));
     return { status: "failed", runId, error };
   }
+}
+
+// A run still marked running long after it started was cut off (a redeploy or a crash killed the
+// container). Mark it failed so admin shows it and the scheduler counts it as an attempt.
+export async function markInterrupted(db: Db, now: Date): Promise<number> {
+  const rows = await db
+    .update(jobRuns)
+    .set({ status: "failed", finishedAt: now, error: "Interrupted: the run never recorded a finish (redeploy or crash)." })
+    .where(and(eq(jobRuns.status, "running"), lt(jobRuns.startedAt, new Date(now.getTime() - STALE_RUNNING_MS))))
+    .returning({ id: jobRuns.id });
+  return rows.length;
 }
