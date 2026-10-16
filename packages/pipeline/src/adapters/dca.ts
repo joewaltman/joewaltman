@@ -1,7 +1,9 @@
 import { dcaLicenseTypes } from "@jw/content";
 import { type Severity, and, desc, entityIdentifiers, eq, jobRuns, sql } from "@jw/db";
 import { archiveKey } from "../archive";
-import { entityTypeFromName, isOrganizationName, normalizeName, stableJson, titleCase } from "../normalize";
+import { entityTypeFromName, looksLikePerson, stableJson, titleCase } from "../normalize";
+
+export { looksLikePerson };
 import { type EntityRecord, addEvent, upsertEntity } from "../resolve";
 import { type Job, type JobContext, download } from "../runner";
 import { pacificDay } from "../schedule";
@@ -76,19 +78,6 @@ const date = (s: string | undefined) => {
   const m = (s ?? "").trim().match(/^(\d{2})-(\d{2})-(\d{4})$/);
   return m ? `${m[3]}-${m[1]}-${m[2]}` : null;
 };
-
-// Words that mark a business name. Organization rows can still carry a bare personal name (a
-// private investigator licensed as a firm under their own name); those are skipped.
-const BUSINESS_WORDS =
-  /\b(AUTO|AUTOMOTIVE|AUTOBODY|REPAIR|TIRES?|SMOG|BODY|MOTORS?|GARAGE|TRANSMISSION|BRAKES?|GLASS|COLLISION|SERVICES?|CENTER|CTR|SHOP|SALON|SPA|NAILS?|HAIR|BEAUTY|BARBER(SHOP)?|STUDIO|LASH|BROWS?|CLIPS|CUTS|WAX|MEDICAL|MEDICINE|HEALTH|CARE|CLINIC|CENTERS?|PHARMACY|DRUGS?|RX|VETERINARY|ANIMAL|PETS?|HOSPITAL|PEST|TERMITE|EXTERMINAT\w*|SECURITY|PATROL|ALARMS?|LOCKS?|LOCKSMITH|KEYS?|INVESTIGATIONS?|INVESTIGATIVE|PROTECTION|PROTECTIVE|CPAS?|ACCOUNTANCY|ACCOUNTING|ACCOUNTANTS?|TAX|BOOKKEEPING|APPLIANCES?|ELECTRONICS?|OPTOMETRY|OPTOMETRIC|VISION|EYE|EYECARE|OPTICAL|CHIROPRACTIC|CHIRO|FUNERAL|MORTUARY|CHAPEL|CREMATION|SOLUTIONS|ASSOCIATES|PARTNERS|AND|OF)\b/;
-
-export function looksLikePerson(name: string): boolean {
-  if (isOrganizationName(name)) return false;
-  const n = name.toUpperCase();
-  if (/[0-9#&@/]/.test(n) || BUSINESS_WORDS.test(n)) return false;
-  const words = n.split(/[\s,.]+/).filter(Boolean);
-  return words.length >= 2 && words.length <= 4;
-}
 
 // "COX ADVANCED SERVICES CALIFORNIA, LLC D/B/A COX HOME SECURITY" -> legal name and trade name.
 export function splitDba(name: string): { name: string; dba: string | null } {
@@ -190,7 +179,9 @@ export function dcaChanges(rec: DcaRecord, before: Record<string, unknown> | nul
   if (!before) {
     const cutoff = pacificDay(new Date(new Date(`${today}T12:00:00Z`).getTime() - NEW_LICENSE_DAYS * 86_400_000));
     if (rec.issued && rec.issued >= cutoff) {
-      return [{ eventType: "new_business", severity: "info", title: `New state license: ${rec.licenseType}`, summary: where, eventDate: rec.issued, key: "new" }];
+      // DCA posts its files about a month behind, so the event is dated the day the license first
+      // appears here, which puts it in that week's Radar. The issue date stays in the note.
+      return [{ eventType: "new_business", severity: "info", title: `New state license: ${rec.licenseType}`, summary: `Issued ${rec.issued}. ${where}`, eventDate: today, key: "new" }];
     }
     return [];
   }

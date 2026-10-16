@@ -3,6 +3,7 @@ import { courtListenerJob } from "./adapters/courtlistener";
 import { dcaJob } from "./adapters/dca";
 import { cslb } from "./adapters/cslb";
 import { sdBizTax } from "./adapters/sd-biztax";
+import { manualDropsJob } from "./drops/job";
 import { enrichJob } from "./enrich";
 import { radarDigestJob } from "./radar-digest";
 import { type Job, adapterJob } from "./runner";
@@ -28,6 +29,8 @@ export const JOBS: Record<string, Job> = {
   dca: dcaJob(),
   enrich: enrichJob(),
   courtlistener: courtListenerJob(),
+  // Not on the schedule: the tick runs it whenever an uploaded file is waiting.
+  "manual-drops": manualDropsJob(),
   "radar-digest": radarDigestJob(),
   "watchlist-digest": watchlistDigestJob(),
 };

@@ -1,6 +1,7 @@
 import { z } from "zod";
 import rawAbcTypes from "../../../content/abc-license-types.json";
 import rawDcaTypes from "../../../content/dca-license-types.json";
+import rawManualDrops from "../../../content/manual-drops.json";
 import rawTaxonomy from "../../../content/taxonomy.json";
 import rawZipClusters from "../../../content/zip-clusters.json";
 
@@ -94,3 +95,25 @@ const dcaSchema = z.object({
 });
 export const dcaLicenseTypes = dcaSchema.parse(rawDcaTypes);
 export type DcaLicenseTypes = z.infer<typeof dcaSchema>;
+
+const dropTypeSchema = z.object({
+  match: z.string(),
+  eventType: z.string().regex(/^[a-z_]+$/),
+  severity: z.enum(["info", "watch", "serious"]),
+  title: z.string().min(1),
+  subject: z.enum(["grantor", "grantee"]).optional(),
+});
+const dropSourceSchema = z.object({
+  label: z.string().min(1),
+  page: z.url(),
+  recordUrl: z.url(),
+  verify: z.boolean(),
+  statewide: z.boolean(),
+  columns: z.record(z.string(), z.object({ required: z.boolean().optional(), headers: z.array(z.string().min(1)).min(1) })),
+  statuses: z.object({ serious: z.array(z.string()), watch: z.array(z.string()) }).optional(),
+  types: z.array(dropTypeSchema).optional(),
+});
+const manualDropsSchema = z.object({ asOf: z.string(), sources: z.record(z.string(), dropSourceSchema) });
+export const manualDropSources = manualDropsSchema.parse(rawManualDrops);
+export type DropSourceConfig = z.infer<typeof dropSourceSchema>;
+export type DropTypeConfig = z.infer<typeof dropTypeSchema>;

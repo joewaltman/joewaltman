@@ -151,3 +151,17 @@ export function stableJson(value: unknown): string {
   }
   return JSON.stringify(value) ?? "null";
 }
+
+// Words that mark a business name. Rows a source marks as businesses can still carry a bare
+// personal name (a private investigator licensed as a firm under their own name); those are skipped.
+const BUSINESS_WORDS =
+  /\b(AUTO|AUTOMOTIVE|AUTOBODY|REPAIR|TIRES?|SMOG|BODY|MOTORS?|GARAGE|TRANSMISSION|BRAKES?|GLASS|COLLISION|SERVICES?|CENTER|CTR|SHOP|SALON|SPA|NAILS?|HAIR|BEAUTY|BARBER(SHOP)?|STUDIO|LASH|BROWS?|CLIPS|CUTS|WAX|MEDICAL|MEDICINE|HEALTH|CARE|CLINIC|CENTERS?|PHARMACY|DRUGS?|RX|VETERINARY|ANIMAL|PETS?|HOSPITAL|PEST|TERMITE|EXTERMINAT\w*|SECURITY|PATROL|ALARMS?|LOCKS?|LOCKSMITH|KEYS?|INVESTIGATIONS?|INVESTIGATIVE|PROTECTION|PROTECTIVE|CPAS?|ACCOUNTANCY|ACCOUNTING|ACCOUNTANTS?|TAX|BOOKKEEPING|APPLIANCES?|ELECTRONICS?|OPTOMETRY|OPTOMETRIC|VISION|EYE|EYECARE|OPTICAL|CHIROPRACTIC|CHIRO|FUNERAL|MORTUARY|CHAPEL|CREMATION|SOLUTIONS|ASSOCIATES|PARTNERS|AND|OF)\b/;
+
+export function looksLikePerson(name: string): boolean {
+  if (isOrganizationName(name)) return false;
+  const n = name.toUpperCase();
+  if (/[0-9#&@/]/.test(n) || BUSINESS_WORDS.test(n)) return false;
+  // A bare "FIRST LAST" or "FIRST M LAST"; longer names are taken as trade names.
+  const words = n.split(/[\s,.]+/).filter(Boolean);
+  return words.length === 2 || (words.length === 3 && words[1]!.length === 1);
+}

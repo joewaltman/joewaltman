@@ -6,6 +6,17 @@ export const WATCH_EVENTS: Record<string, { label: string; source: string }> = {
   bankruptcy_filing: { label: "Bankruptcy filings", source: "Federal courts (CourtListener)" },
   bankruptcy_adversary: { label: "Bankruptcy court lawsuits", source: "Federal courts (CourtListener)" },
   federal_civil_case: { label: "Federal civil cases", source: "Federal courts (CourtListener)" },
+  tax_lien: { label: "Tax liens", source: "Liens and filings (uploaded)" },
+  judgment_lien: { label: "Judgment liens", source: "Liens and filings (uploaded)" },
+  notice_of_default: { label: "Notices of default", source: "Liens and filings (uploaded)" },
+  mechanics_lien: { label: "Mechanic's liens", source: "Liens and filings (uploaded)" },
+  ucc_filing: { label: "UCC financing statements", source: "Liens and filings (uploaded)" },
+  lien_released: { label: "Lien releases", source: "Liens and filings (uploaded)" },
+  ucc_terminated: { label: "UCC terminations", source: "Liens and filings (uploaded)" },
+  dlse_judgment: { label: "Labor Commissioner judgments", source: "Labor Commissioner (uploaded)" },
+  dlse_debarment: { label: "Public works debarments", source: "Labor Commissioner (uploaded)" },
+  sos_status_change: { label: "Secretary of State status changes", source: "Secretary of State (uploaded)" },
+  sos_statement_of_information: { label: "Statements of information", source: "Secretary of State (uploaded)" },
   cslb_status_change: { label: "Contractor license status changes", source: "CSLB" },
   cslb_bond_cancellation: { label: "Contractor bond cancellations", source: "CSLB" },
   cslb_workers_comp_change: { label: "Contractor workers' comp changes", source: "CSLB" },
@@ -76,6 +87,11 @@ export function watchNote(e: WatchEventInput): string {
     case "dca_license_removed": {
       const m = e.title.match(/^(.+) license no longer in the DCA file$/);
       const line = `The state license${m ? ` (${m[1]})` : ""} no longer appears in the DCA license file.`;
+      return e.summary ? `${line} ${e.summary}.` : line;
+    }
+    case "sos_status_change": {
+      const m = e.title.match(/status: (.+) to (.+)$/);
+      const line = m ? `Secretary of State status changed from ${m[1]} to ${m[2]}.` : `${e.title}.`;
       return e.summary ? `${line} ${e.summary}.` : line;
     }
     case "account_cancelled":

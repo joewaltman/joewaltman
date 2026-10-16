@@ -32,6 +32,8 @@ export function digestWindow(now: Date): Window {
 
 export const SOURCE_LABELS: Record<string, string> = {
   sd_biztax: "City of San Diego business tax",
+  sos: "California Secretary of State",
+  fbn: "County fictitious business name",
   abc: "ABC liquor license",
   cslb: "CSLB contractor license",
   dca: "DCA state license",

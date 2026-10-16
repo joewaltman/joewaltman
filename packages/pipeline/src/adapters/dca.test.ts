@@ -55,6 +55,8 @@ describe("parseDca", () => {
     expect(looksLikePerson("Charles Auto Repair")).toBe(false);
     expect(looksLikePerson("Ngs, Llp")).toBe(false);
     expect(looksLikePerson("TWIN OAKS NAILS")).toBe(false);
+    expect(looksLikePerson("JOHN Q PUBLIC")).toBe(true);
+    expect(looksLikePerson("Sunrise Mobile Detailing")).toBe(false);
     expect(splitDba("ACME LLC DBA ACME LOCK")).toEqual({ name: "ACME LLC", dba: "ACME LOCK" });
   });
 
@@ -101,9 +103,9 @@ describe("dca job", () => {
     const first = await runJob(dcaJob(), ctx("2026-01-20T13:35:00Z"));
     expect(first.status).toBe("success");
     const news = await db.select().from(entityEvents);
-    expect(news.map((e) => [e.eventType, e.eventDate]).sort()).toEqual([
-      ["new_business", "2026-01-02"],
-      ["new_business", "2026-01-05"],
+    expect(news.map((e) => [e.eventType, e.eventDate, e.summary]).sort()).toEqual([
+      ["new_business", "2026-01-20", "Issued 2026-01-02. Bureau of Automotive Repair, license 314962"],
+      ["new_business", "2026-01-20", "Issued 2026-01-05. Bureau of Automotive Repair, license 314976"],
     ]);
     expect(await db.select().from(entities)).toHaveLength(3);
     const [run] = await db.select().from(jobRuns);

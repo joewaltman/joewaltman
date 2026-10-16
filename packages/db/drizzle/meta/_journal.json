@@ -29,6 +29,13 @@
       "when": 1792185968189,
       "tag": "0003_watchlist",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792191017564,
+      "tag": "0004_manual_drops",
+      "breakpoints": true
     }
   ]
 }

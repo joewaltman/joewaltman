@@ -1,6 +1,7 @@
 import { randomBytes } from "node:crypto";
 import {
   bigserial,
+  customType,
   boolean,
   date,
   doublePrecision,
@@ -369,3 +370,28 @@ export const recapSearches = pgTable("recap_searches", {
     .references(() => entities.id, { onDelete: "cascade" }),
   lastSearchedAt: timestamp("last_searched_at", { withTimezone: true }).notNull(),
 });
+
+const bytea = customType<{ data: Buffer; driverData: Buffer }>({ dataType: () => "bytea" });
+
+export const DROP_SOURCES = ["sos", "ucc", "dlse_judgments", "dlse_debarment", "recorder", "fbn"] as const;
+export type DropSource = (typeof DROP_SOURCES)[number];
+
+// Files Joe uploads by hand for sources with no download to automate yet. Stored gzipped, already
+// cut down to San Diego County where the source is statewide, until the pipeline reads them.
+export const manualDrops = pgTable(
+  "manual_drops",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    source: text("source").$type<DropSource>().notNull(),
+    fileName: text("file_name").notNull(),
+    rowsKept: integer("rows_kept").notNull(),
+    rowsSeen: integer("rows_seen").notNull(),
+    content: bytea("content").notNull(),
+    status: text("status").$type<"pending" | "processed" | "failed">().notNull().default("pending"),
+    result: jsonb("result").$type<Record<string, unknown>>().notNull().default({}),
+    error: text("error"),
+    uploadedAt: timestamp("uploaded_at", { withTimezone: true }).notNull().defaultNow(),
+    processedAt: timestamp("processed_at", { withTimezone: true }),
+  },
+  (t) => [index("manual_drops_status").on(t.status, t.uploadedAt)],
+);

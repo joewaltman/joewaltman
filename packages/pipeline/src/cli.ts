@@ -1,9 +1,10 @@
 import { getDb, gt, jobRuns } from "@jw/db";
 import { loadEmailConfig } from "@jw/email";
 import { archiveFromEnv } from "./archive";
+import { pendingDrops } from "./drops/job";
 import { JOBS, SCHEDULE } from "./jobs";
 import { type JobContext, markInterrupted, runJob } from "./runner";
-import { dueJobs } from "./schedule";
+import { STALE_RUNNING_MS, dueJobs } from "./schedule";
 
 // Usage:
 //   pnpm pipeline run <job>   run one job now
@@ -81,6 +82,9 @@ async function tick(): Promise<number> {
     .from(jobRuns)
     .where(gt(jobRuns.startedAt, new Date(ctx.now.getTime() - 2 * 86_400_000)));
   const due = dueJobs(ctx.now, SCHEDULE, recent);
+  // Uploaded files are read on the next tick after they arrive, not at a fixed time.
+  const dropsRunning = recent.some((r) => r.job === "manual-drops" && r.status === "running" && ctx.now.getTime() - r.startedAt.getTime() < STALE_RUNNING_MS);
+  if (!dropsRunning && (await pendingDrops(ctx.db)) > 0) due.push({ job: "manual-drops", attempt: 1 });
   if (due.length === 0) {
     ctx.log("nothing due");
     return 0;

@@ -1,0 +1,130 @@
+{
+  "asOf": "2026-10-16",
+  "note": "Files Joe uploads at /admin/drops for sources with no automated download yet. Each source lists the columns the pipeline reads and the header names it accepts for each (compared without case, spaces or punctuation). verify is true until a real file from that source has been uploaded and checked; the first upload's result in admin shows which headers matched. Statewide files are cut to San Diego County on upload.",
+  "sources": {
+    "sos": {
+      "label": "Secretary of State business entities",
+      "page": "https://www.sos.ca.gov/administration/public-records-act-requests/business-entity-records",
+      "recordUrl": "https://bizfileonline.sos.ca.gov/search/business",
+      "verify": true,
+      "statewide": true,
+      "columns": {
+        "entityNumber": { "required": true, "headers": ["Entity Number", "Entity No", "Entity Num", "Entity ID", "Corp Number", "Corporation Number", "LLC Number", "File Number"] },
+        "name": { "required": true, "headers": ["Entity Name", "Business Name", "Corporation Name", "LLC Name", "Name"] },
+        "entityType": { "headers": ["Entity Type", "Business Type", "Type"] },
+        "status": { "headers": ["Status", "Entity Status", "Standing"] },
+        "formedAt": { "headers": ["Registration Date", "Initial Filing Date", "Formation Date", "File Date", "Incorporation Date"] },
+        "jurisdiction": { "headers": ["Jurisdiction", "Formed In", "State of Formation"] },
+        "address1": { "headers": ["Principal Address", "Principal Address 1", "Principal Street", "Address", "Address 1", "Street"] },
+        "city": { "headers": ["Principal City", "City"] },
+        "state": { "headers": ["Principal State", "State"] },
+        "zip": { "headers": ["Principal Zip", "Principal Zip Code", "Zip", "Zip Code", "Postal Code"] },
+        "county": { "headers": ["Principal County", "County"] },
+        "siFiledAt": { "headers": ["Statement of Information Date", "Last SI File Date", "SI Filed Date", "Last Statement of Information"] }
+      },
+      "statuses": {
+        "serious": ["SUSPENDED", "FORFEITED"],
+        "watch": ["DISSOLVED", "CANCELED", "CANCELLED", "TERMINATED", "MERGED OUT", "CONVERTED OUT", "SURRENDER", "INACTIVE"]
+      }
+    },
+    "ucc": {
+      "label": "UCC filings, tax liens and judgment liens (Secretary of State)",
+      "page": "https://www.sos.ca.gov/business-programs/ucc",
+      "recordUrl": "https://bizfileonline.sos.ca.gov/search/ucc",
+      "verify": true,
+      "statewide": true,
+      "columns": {
+        "filingNumber": { "required": true, "headers": ["File Number", "Filing Number", "Initial Filing Number", "Document Number", "Record Number"] },
+        "filingType": { "headers": ["Filing Type", "Record Type", "Document Type", "Type"] },
+        "filingDate": { "required": true, "headers": ["Filing Date", "File Date", "Date Filed"] },
+        "lapseDate": { "headers": ["Lapse Date", "Expiration Date"] },
+        "debtorName": { "required": true, "headers": ["Debtor Name", "Debtor", "Debtor Organization Name", "Debtor Org Name"] },
+        "debtorAddress": { "headers": ["Debtor Address", "Debtor Street"] },
+        "debtorCity": { "headers": ["Debtor City", "City"] },
+        "debtorZip": { "headers": ["Debtor Zip", "Debtor Zip Code", "Debtor Postal Code", "Zip"] },
+        "securedParty": { "headers": ["Secured Party Name", "Secured Party", "Creditor", "Lien Holder"] }
+      },
+      "types": [
+        { "match": "TERMINATION", "eventType": "ucc_terminated", "severity": "info", "title": "UCC filing terminated" },
+        { "match": "RELEASE", "eventType": "lien_released", "severity": "info", "title": "Lien released" },
+        { "match": "FEDERAL TAX", "eventType": "tax_lien", "severity": "serious", "title": "Federal tax lien filed" },
+        { "match": "STATE TAX", "eventType": "tax_lien", "severity": "serious", "title": "State tax lien filed" },
+        { "match": "TAX LIEN", "eventType": "tax_lien", "severity": "serious", "title": "Tax lien filed" },
+        { "match": "JUDGMENT", "eventType": "judgment_lien", "severity": "serious", "title": "Judgment lien filed" },
+        { "match": "AMENDMENT", "eventType": "ucc_amendment", "severity": "info", "title": "UCC filing amended" },
+        { "match": "CONTINUATION", "eventType": "ucc_amendment", "severity": "info", "title": "UCC filing continued" },
+        { "match": "", "eventType": "ucc_filing", "severity": "watch", "title": "UCC financing statement filed" }
+      ]
+    },
+    "dlse_judgments": {
+      "label": "Labor Commissioner judgments",
+      "page": "https://www.dir.ca.gov/dlse/DLSE-Databases.htm",
+      "recordUrl": "https://www.dir.ca.gov/dlse/DLSE-Databases.htm",
+      "verify": true,
+      "statewide": true,
+      "columns": {
+        "caseNumber": { "required": true, "headers": ["Case Number", "Case No", "Case #", "Judgment Number"] },
+        "employerName": { "required": true, "headers": ["Employer Name", "Employer", "Defendant", "Defendant Name", "Business Name", "Account Name"] },
+        "date": { "required": true, "headers": ["Judgment Date", "Date Entered", "Entry Date", "Date"] },
+        "amount": { "headers": ["Judgment Amount", "Amount", "Total Amount"] },
+        "status": { "headers": ["Status", "Judgment Status"] },
+        "city": { "headers": ["Employer City", "City"] },
+        "zip": { "headers": ["Employer Zip", "Zip", "Zip Code"] }
+      }
+    },
+    "dlse_debarment": {
+      "label": "Public works debarments (Labor Commissioner)",
+      "page": "https://www.dir.ca.gov/dlse/debar.html",
+      "recordUrl": "https://www.dir.ca.gov/dlse/debar.html",
+      "verify": true,
+      "statewide": false,
+      "columns": {
+        "name": { "required": true, "headers": ["Contractor", "Contractor Name", "Name", "Business Name", "Company"] },
+        "license": { "headers": ["CSLB License", "License", "License Number", "Contractor License"] },
+        "startDate": { "required": true, "headers": ["Debarment Start", "Start Date", "Debarment Period Start", "Effective Date", "From"] },
+        "endDate": { "headers": ["Debarment End", "End Date", "Debarment Period End", "Through", "To"] },
+        "city": { "headers": ["City"] },
+        "zip": { "headers": ["Zip", "Zip Code"] }
+      }
+    },
+    "recorder": {
+      "label": "San Diego County Recorder grantor-grantee index",
+      "page": "https://www.sdarcc.gov/content/arcc/home/divisions/recorder-clerk/recording.html",
+      "recordUrl": "https://www.sdarcc.gov/content/arcc/home/divisions/recorder-clerk/recording.html",
+      "verify": true,
+      "statewide": false,
+      "columns": {
+        "documentNumber": { "required": true, "headers": ["Document Number", "Doc Number", "Document No", "Instrument Number", "Recording Number"] },
+        "documentType": { "required": true, "headers": ["Document Type", "Doc Type", "Instrument Type", "Type"] },
+        "recordedAt": { "required": true, "headers": ["Recording Date", "Recorded Date", "Record Date", "Date"] },
+        "grantor": { "headers": ["Grantor", "Grantor Name", "Grantors"] },
+        "grantee": { "headers": ["Grantee", "Grantee Name", "Grantees"] }
+      },
+      "types": [
+        { "match": "RELEASE", "eventType": "lien_released", "severity": "info", "title": "Lien release recorded", "subject": "grantee" },
+        { "match": "FEDERAL TAX LIEN", "eventType": "tax_lien", "severity": "serious", "title": "Federal tax lien recorded", "subject": "grantee" },
+        { "match": "STATE TAX LIEN", "eventType": "tax_lien", "severity": "serious", "title": "State tax lien recorded", "subject": "grantee" },
+        { "match": "TAX LIEN", "eventType": "tax_lien", "severity": "serious", "title": "Tax lien recorded", "subject": "grantee" },
+        { "match": "ABSTRACT OF JUDGMENT", "eventType": "judgment_lien", "severity": "serious", "title": "Abstract of judgment recorded", "subject": "grantee" },
+        { "match": "MECHANIC", "eventType": "mechanics_lien", "severity": "watch", "title": "Mechanic's lien recorded", "subject": "grantee" },
+        { "match": "NOTICE OF DEFAULT", "eventType": "notice_of_default", "severity": "serious", "title": "Notice of default recorded", "subject": "grantor" }
+      ]
+    },
+    "fbn": {
+      "label": "San Diego County fictitious business names",
+      "page": "https://www.sdarcc.gov/content/arcc/home/divisions/recorder-clerk/fictitious-business-name.html",
+      "recordUrl": "https://www.sdarcc.gov/content/arcc/home/divisions/recorder-clerk/fictitious-business-name.html",
+      "verify": true,
+      "statewide": false,
+      "columns": {
+        "fileNumber": { "required": true, "headers": ["File Number", "FBN Number", "Document Number", "Filing Number"] },
+        "businessName": { "required": true, "headers": ["Business Name", "Fictitious Business Name", "FBN Name", "Name"] },
+        "filedAt": { "required": true, "headers": ["Filing Date", "File Date", "Filed Date", "Date Filed", "Date"] },
+        "address": { "headers": ["Business Address", "Address", "Street"] },
+        "city": { "headers": ["Business City", "City"] },
+        "zip": { "headers": ["Business Zip", "Zip", "Zip Code"] },
+        "registrant": { "headers": ["Registrant", "Registrant Name", "Owner", "Owner Name", "Registrants"] }
+      }
+    }
+  }
+}

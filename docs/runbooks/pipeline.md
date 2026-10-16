@@ -8,7 +8,12 @@ Code: `packages/pipeline`. Runs as the Railway `pipeline` service, which Railway
 | `sd-biztax` | 5:30am | City of San Diego business tax certificates created in the last 10 days |
 | `abc` | 5:30am | ABC daily export (San Diego County licenses) plus the last 3 days of issued, new application and status change reports |
 | `cslb` | 5:30am | CSLB master license file, San Diego County; events from comparing with the previous run |
+| `dca` | 5:35am | DCA board license files from the public Box folder; reads only boards that posted a new file (monthly). See `dca.md` |
 | `enrich` | 5:45am | Category and one-line summary for new businesses (needs `ANTHROPIC_API_KEY`) |
+| `courtlistener` | 5:50am | Federal dockets naming Watchlist customers. See `watchlist.md` |
+| `radar-digest` | 6:00am Mondays | The New Business Radar email |
+| `watchlist-digest` | 6:15am Mondays | The Customer Watchlist email |
+| `manual-drops` | Next tick after an upload | Files uploaded at `/admin/drops`. See `manual-drops.md` |
 
 Every run writes a `job_runs` row (see `/admin/jobs`). A failed job is retried once at the next tick; each failure emails Joe. Re-runs are safe: entities match on source identifiers and events dedupe on a key.
 
