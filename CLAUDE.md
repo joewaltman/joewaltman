@@ -41,3 +41,4 @@ Personal site plus four free SMB tools. Full spec: `docs/SPEC.md`.
 - `pnpm typecheck`
 - `pnpm db:generate` (Drizzle migration from schema changes)
 - `pnpm db:migrate` (apply migrations to `DATABASE_URL`)
+- `pnpm --filter @jw/db dev-db` (in-memory Postgres on port 5433 for local runs; start the app with `DATABASE_POOL_MAX=1`, since it cannot interleave connections)

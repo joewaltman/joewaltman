@@ -10,7 +10,8 @@
   "scripts": {
     "generate": "drizzle-kit generate",
     "migrate": "tsx src/migrate.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "dev-db": "pglite-server --db=memory:// --port=5433 --max-connections=10"
   },
   "dependencies": {
     "drizzle-orm": "0.45.4",
@@ -19,6 +20,7 @@
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.5.10",
+    "@electric-sql/pglite-socket": "0.2.13",
     "drizzle-kit": "0.31.11"
   }
 }

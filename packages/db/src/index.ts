@@ -30,7 +30,8 @@ export function getDb(): Db {
   if (globalForDb.__jwDb) return globalForDb.__jwDb;
   const url = process.env.DATABASE_URL;
   if (!url) throw new Error("DATABASE_URL is not set");
-  const client = postgres(url, { max: 5 });
+  // The local PGlite dev server cannot interleave connections, so dev runs set DATABASE_POOL_MAX=1.
+  const client = postgres(url, { max: Number(process.env.DATABASE_POOL_MAX ?? 5) });
   const db = drizzle(client, { schema }) as unknown as Db;
   globalForDb.__jwDb = db;
   return db;
