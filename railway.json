@@ -5,8 +5,7 @@
     "buildCommand": "pnpm --filter web build"
   },
   "deploy": {
-    "startCommand": "pnpm --filter web start",
-    "preDeployCommand": ["pnpm --filter @jw/db migrate"],
+    "startCommand": "pnpm --filter @jw/db migrate && pnpm --filter web start",
     "healthcheckPath": "/"
   }
 }

@@ -6,7 +6,7 @@
 - `production` environment: service `joewaltman` deploys branch `main`, custom domain `joewaltman.com` (port 8080), Cloudflare DNS in front.
 - `staging` environment: same service, deploys the current feature branch, at `https://joewaltman-staging.up.railway.app`. Has its own Postgres.
 
-Each deploy runs `pnpm --filter @jw/db migrate` before the new version takes traffic (`railway.json`, `preDeployCommand`). A failed migration stops the deploy and the old version keeps serving.
+Each deploy runs `pnpm --filter @jw/db migrate` as the first step of the start command (`railway.json`). If a migration fails, the new container never passes its health check and the old version keeps serving. (Railway's `preDeployCommand` did not run from `railway.json` in testing, so it is not used.)
 
 ## Variables (web service)
 
