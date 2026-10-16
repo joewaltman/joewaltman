@@ -6,7 +6,17 @@
 - `production` environment: service `joewaltman` deploys branch `main`, custom domain `joewaltman.com` (port 8080), Cloudflare DNS in front.
 - `staging` environment: same service, deploys the current feature branch, at `https://joewaltman-staging.up.railway.app`. Has its own Postgres.
 
-Each deploy runs `pnpm --filter @jw/db migrate` as the first step of the start command (`railway.json`). If a migration fails, the new container never passes its health check and the old version keeps serving. (Railway's `preDeployCommand` did not run from `railway.json` in testing, so it is not used.)
+Service settings (build and start commands, the pipeline cron schedule, the bucket, and the list of variables) are defined in `.railway/railway.ts`. Railway does not read that file on deploy; apply it per environment:
+
+```bash
+railway environment staging
+npx @railway/cli@5.63.1 config plan
+npx @railway/cli@5.63.1 config apply
+```
+
+Read the plan before applying. A variable that is set in Railway but missing from the file is deleted on apply, so add every new variable to the file (secrets as `preserve()`) before or right after setting it in the dashboard. The installed CLI (4.35) predates the `config` command, hence `npx` with a pinned newer version.
+
+Each web deploy runs `pnpm --filter @jw/db migrate` as the first step of the start command. If a migration fails, the new container never passes its health check and the old version keeps serving.
 
 ## Variables (web service)
 
@@ -34,8 +44,9 @@ openssl rand -hex 32 | tr -d '\n' | railway variable set -s joewaltman -e produc
 1. Joe checks staging and says go.
 2. Add Postgres to production: `railway environment production`, then `railway add --database postgres`, then `railway service joewaltman`.
 3. Set the production variables above with `--skip-deploys`.
-4. Merge the feature branch into `main` and push. Railway builds and deploys it.
-5. Check `https://joewaltman.com` (homepage unchanged), `/tariffrefund`, `/admin/login`.
+4. Merge the feature branch into `main` and push.
+5. While linked to production, run `config plan`, check it creates only the bucket and the pipeline service and deletes nothing, then `config apply`. Set the pipeline's `ARCHIVE_S3_*` variables from `railway bucket credentials`.
+6. Check `https://joewaltman.com` (homepage unchanged), `/tariffrefund`, `/admin/login`, and `/admin/jobs` after the next pipeline tick.
 
 ## Rollback
 
