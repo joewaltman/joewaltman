@@ -1,0 +1,174 @@
+{
+  "version": "2026-10-16.1",
+  "note": "The Radar's 20 categories. Category comes from the longest matching NAICS prefix; businesses without a NAICS code are classified from their name and license type. Anything that fits nowhere is 'other'. Edit freely.",
+  "categories": [
+    {
+      "id": "restaurants-bars",
+      "label": "Restaurants, bars and food service",
+      "naicsPrefixes": [
+        "722"
+      ]
+    },
+    {
+      "id": "retail",
+      "label": "Retail stores",
+      "naicsPrefixes": [
+        "44",
+        "45"
+      ]
+    },
+    {
+      "id": "construction",
+      "label": "Construction and building trades",
+      "naicsPrefixes": [
+        "23"
+      ]
+    },
+    {
+      "id": "legal",
+      "label": "Law firms",
+      "naicsPrefixes": [
+        "5411"
+      ]
+    },
+    {
+      "id": "accounting",
+      "label": "Accounting, tax and bookkeeping",
+      "naicsPrefixes": [
+        "5412"
+      ]
+    },
+    {
+      "id": "engineering-architecture",
+      "label": "Engineering, architecture and design",
+      "naicsPrefixes": [
+        "5413",
+        "5414"
+      ]
+    },
+    {
+      "id": "consulting-marketing",
+      "label": "Consulting, marketing and other professional services",
+      "naicsPrefixes": [
+        "5416",
+        "5418",
+        "5419"
+      ]
+    },
+    {
+      "id": "technology",
+      "label": "Software and IT services",
+      "naicsPrefixes": [
+        "5112",
+        "5132",
+        "518",
+        "5415"
+      ]
+    },
+    {
+      "id": "real-estate",
+      "label": "Real estate",
+      "naicsPrefixes": [
+        "531"
+      ]
+    },
+    {
+      "id": "finance-insurance",
+      "label": "Finance and insurance",
+      "naicsPrefixes": [
+        "52"
+      ]
+    },
+    {
+      "id": "medical",
+      "label": "Medical practices and clinics",
+      "naicsPrefixes": [
+        "6211",
+        "6213",
+        "6214",
+        "6215",
+        "6219",
+        "622",
+        "623"
+      ]
+    },
+    {
+      "id": "dental",
+      "label": "Dental practices",
+      "naicsPrefixes": [
+        "6212"
+      ]
+    },
+    {
+      "id": "veterinary",
+      "label": "Veterinary",
+      "naicsPrefixes": [
+        "54194"
+      ]
+    },
+    {
+      "id": "personal-care",
+      "label": "Salons, spas and personal care",
+      "naicsPrefixes": [
+        "8121"
+      ]
+    },
+    {
+      "id": "fitness-recreation",
+      "label": "Fitness, recreation and entertainment",
+      "naicsPrefixes": [
+        "71"
+      ]
+    },
+    {
+      "id": "auto",
+      "label": "Auto sales, repair and services",
+      "naicsPrefixes": [
+        "4411",
+        "4412",
+        "4413",
+        "8111"
+      ]
+    },
+    {
+      "id": "manufacturing",
+      "label": "Manufacturing",
+      "naicsPrefixes": [
+        "31",
+        "32",
+        "33"
+      ]
+    },
+    {
+      "id": "wholesale-logistics",
+      "label": "Wholesale, distribution and logistics",
+      "naicsPrefixes": [
+        "42",
+        "48",
+        "49"
+      ]
+    },
+    {
+      "id": "lodging-education-care",
+      "label": "Lodging, education and child care",
+      "naicsPrefixes": [
+        "721",
+        "61",
+        "6244"
+      ]
+    },
+    {
+      "id": "home-services",
+      "label": "Home and building services",
+      "naicsPrefixes": [
+        "5617",
+        "8114",
+        "8113"
+      ]
+    }
+  ],
+  "fallback": {
+    "id": "other",
+    "label": "Other"
+  }
+}

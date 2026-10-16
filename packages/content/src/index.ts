@@ -1,6 +1,7 @@
 import rawTariffRules from "../../../content/tariff-rules.json";
 import { checkReferences, type TariffRules, tariffRulesSchema } from "./tariff/schema";
 
+export * from "./geo";
 export * from "./tariff/calculator";
 export * from "./tariff/engine";
 export * from "./tariff/hts";

@@ -11,6 +11,7 @@ import {
   or,
   sql,
 } from "@jw/db";
+import { categoryForNaics, clusterForZip, countyForZip } from "@jw/content";
 import { normalizeName, zip5 } from "./normalize";
 import { nameSimilarity } from "./similarity";
 
@@ -43,6 +44,8 @@ export interface UpsertResult {
 
 function cleanRecord(rec: EntityRecord) {
   const solo = rec.entityType === "sole_prop";
+  const zip = zip5(rec.zip);
+  const naics = rec.naics?.trim() || null;
   return {
     canonicalName: rec.name.trim(),
     normalizedName: normalizeName(rec.name),
@@ -56,9 +59,11 @@ function cleanRecord(rec: EntityRecord) {
     address2: solo ? null : rec.address2?.trim() || null,
     city: rec.city?.trim() || null,
     state: rec.state?.trim() || "CA",
-    zip: zip5(rec.zip),
-    county: rec.county?.trim() || null,
-    naics: rec.naics?.trim() || null,
+    zip,
+    zipCluster: clusterForZip(zip),
+    county: rec.county?.trim() || countyForZip(zip),
+    naics,
+    category: categoryForNaics(naics),
     phone: solo ? null : rec.phone?.trim() || null,
   };
 }
@@ -119,7 +124,7 @@ export async function upsertEntity(db: Db, rec: EntityRecord, now = new Date()):
 
 async function fillBlanks(db: Db, entityId: string, clean: ReturnType<typeof cleanRecord>, now: Date) {
   const set: Record<string, unknown> = { updatedAt: now };
-  for (const key of ["dba", "normalizedDba", "entityType", "status", "formedAt", "city", "zip", "county", "naics"] as const) {
+  for (const key of ["dba", "normalizedDba", "entityType", "status", "formedAt", "city", "zip", "zipCluster", "county", "naics", "category"] as const) {
     if (clean[key] !== null) set[key] = sql`coalesce(${entities[key]}, ${clean[key]})`;
   }
   if (clean.entityType !== "sole_prop") {
