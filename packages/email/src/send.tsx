@@ -121,6 +121,7 @@ export async function sendEmail(deps: SendDeps, input: SendInput): Promise<SendR
     const file = await writeDryRun(config.dryRunDir, message, template.name);
     await log("dryrun");
     console.log(`[email dryrun] ${template.name} to ${to}: ${file}`);
+    if (config.dryRunStdout) console.log(`[email dryrun body]\n${message.text}`);
     return { status: "dryrun", dryRunFile: file };
   }
 

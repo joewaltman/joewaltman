@@ -13,6 +13,8 @@ export interface EmailConfig {
   postalAddress: string | null;
   resendApiKey: string | null;
   dryRunDir: string;
+  // Staging only: print dry-run emails to the log so links can be tested before Resend is set up.
+  dryRunStdout?: boolean;
 }
 
 export function loadEmailConfig(env: NodeJS.ProcessEnv = process.env): EmailConfig {
@@ -30,5 +32,6 @@ export function loadEmailConfig(env: NodeJS.ProcessEnv = process.env): EmailConf
     postalAddress: env.MAIL_POSTAL_ADDRESS?.trim() || null,
     resendApiKey: env.RESEND_API_KEY?.trim() || null,
     dryRunDir: env.EMAIL_DRYRUN_DIR ?? path.join(process.cwd(), ".email-out"),
+    dryRunStdout: env.EMAIL_DRYRUN_STDOUT === "1",
   };
 }
