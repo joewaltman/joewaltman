@@ -15,7 +15,7 @@ Personal site plus four free SMB tools. Full spec: `docs/SPEC.md`.
 ## Where things run
 
 - Railway project `proactive-respect`, service `joewaltman`, serves `joewaltman.com` (custom domain, port 8080, Cloudflare DNS in front).
-- Production deploys from `main` on GitHub (`joewaltman/joewaltman`). Do not push to `main` without Joe's OK. Feature work deploys to the Railway `staging` environment first.
+- Production deploys from `main` on GitHub (`joewaltman/joewaltman`). Joe prefers shipping straight to `main` without a staging pass (decided October 16, 2026): run the tests and build locally, push, then check the live site. The `staging` environment still exists but is optional.
 - Postgres and the raw-file storage bucket live in the same Railway project.
 - Ingestion runs from the Railway `pipeline` cron service (`pnpm --filter @jw/pipeline tick` every 30 minutes), not GitHub Actions. The tick decides what is due in America/Los_Angeles time. See `docs/runbooks/pipeline.md`.
 - Railway service settings live in `.railway/railway.ts` (Infrastructure as Code; `railway.json` is deprecated). Apply per environment with `railway config plan` then `railway config apply` (CLI 5.63 or newer). Every variable a service uses must be listed there, with `preserve()` for secrets: a variable left out is deleted on apply. Always read the plan before applying.
