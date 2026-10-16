@@ -1,6 +1,6 @@
-import { Link, Text } from "@react-email/components";
+import { Button, Link, Text } from "@react-email/components";
 import type { ReactElement } from "react";
-import { linkStyle, textStyle } from "./layout";
+import { buttonStyle, linkStyle, textStyle } from "./layout";
 
 export interface Template {
   name: string;
@@ -21,9 +21,9 @@ export function confirmSubscription(input: { toolName: string; confirmUrl: strin
           address.
         </Text>
         <Text style={textStyle}>
-          <Link href={input.confirmUrl} style={linkStyle}>
+          <Button href={input.confirmUrl} style={buttonStyle}>
             Confirm your subscription
-          </Link>
+          </Button>
         </Text>
         <Text style={textStyle}>
           If you did not ask for this, ignore this email and you will not hear from me again.
@@ -41,9 +41,9 @@ export function magicLink(input: { url: string }): Template {
     body: (
       <>
         <Text style={textStyle}>
-          <Link href={input.url} style={linkStyle}>
+          <Button href={input.url} style={buttonStyle}>
             Sign in to joewaltman.com
-          </Link>
+          </Button>
         </Text>
         <Text style={textStyle}>
           This link works once and expires in 15 minutes. If you did not ask for it, ignore this

@@ -67,3 +67,14 @@ export function Layout({
 
 export const textStyle = { margin: "0 0 14px" };
 export const linkStyle = { color: "#1f4a6b" };
+// The same blue button as the site's pages, for the one action an email asks for.
+export const buttonStyle = {
+  backgroundColor: "#1f4a6b",
+  borderRadius: "4px",
+  color: "#ffffff",
+  display: "inline-block",
+  fontSize: "16px",
+  fontWeight: 600,
+  padding: "11px 18px",
+  textDecoration: "none",
+};
