@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { categoryForNaics, clusterForZip, countyForZip, taxonomy, zipClusters } from "./geo";
+import { categoryForNaics, clusterForZip, countyForZip, dcaLicenseTypes, taxonomy, zipClusters } from "./geo";
 
 describe("zip clusters", () => {
   it("has the five San Diego County clusters", () => {
@@ -46,5 +46,26 @@ describe("ABC license types", () => {
     expect(abcTypeName("30")).toBeNull();
     expect(isBarOrRestaurantType("47")).toBe(true);
     expect(isBarOrRestaurantType("21")).toBe(false);
+  });
+});
+
+describe("DCA license types", () => {
+  it("maps every license type to a known category or none on purpose", () => {
+    const uncategorized: string[] = [];
+    for (const [folder, f] of Object.entries(dcaLicenseTypes.folders)) {
+      for (const [type, t] of Object.entries(f.types)) if (!categoryForNaics(t.naics)) uncategorized.push(`${folder}: ${type}`);
+    }
+    // Security and electronics repair have no taxonomy category yet; the Radar lists them as "business".
+    expect(uncategorized.sort()).toEqual([
+      "ElectronicApplianceRepair_3900: Electronic Repair",
+      "Funeral_4800: Funeral Director Establishment",
+      "SecurityAndInvestigativeServices_0120: Alarm Company Operator",
+      "SecurityAndInvestigativeServices_0120: Locksmith Company",
+      "SecurityAndInvestigativeServices_0120: PPO Branch",
+      "SecurityAndInvestigativeServices_0120: Private Investigator",
+      "SecurityAndInvestigativeServices_0120: Private Patrol Operator",
+    ]);
+    expect(categoryForNaics(dcaLicenseTypes.folders.AutomotiveRepair_1310!.types["Automotive Repair Dealer"]!.naics)).toBe("auto");
+    expect(categoryForNaics(dcaLicenseTypes.folders.MedicalBoard_0800!.types["Fictitious Name Permit"]!.naics)).toBe("medical");
   });
 });

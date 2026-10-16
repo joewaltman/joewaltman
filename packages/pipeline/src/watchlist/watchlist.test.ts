@@ -137,6 +137,12 @@ describe("the feed", () => {
 });
 
 describe("plain-English notes", () => {
+  it("words DCA license changes plainly, with the license number", () => {
+    expect(
+      watchNote({ eventType: "dca_status_change", title: "Automotive Repair Dealer license status: Active to Delinquent", summary: "Bureau of Automotive Repair, license 314962", raw: {} }),
+    ).toBe("State license (Automotive Repair Dealer) status changed from active to delinquent. Bureau of Automotive Repair, license 314962.");
+  });
+
   it("spells out ABC codes it knows and shows the rest as ABC writes them", () => {
     expect(watchNote({ eventType: "abc_status_change", title: "", summary: null, raw: { statusFrom: "ACTIVE", status: "SUSPEN" } })).toBe(
       "Liquor license status changed from active to suspended.",

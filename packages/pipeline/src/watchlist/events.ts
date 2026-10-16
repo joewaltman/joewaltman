@@ -10,6 +10,8 @@ export const WATCH_EVENTS: Record<string, { label: string; source: string }> = {
   cslb_bond_cancellation: { label: "Contractor bond cancellations", source: "CSLB" },
   cslb_workers_comp_change: { label: "Contractor workers' comp changes", source: "CSLB" },
   cslb_license_removed: { label: "Contractor licenses dropped from the state file", source: "CSLB" },
+  dca_status_change: { label: "State license status changes", source: "California DCA" },
+  dca_license_removed: { label: "State licenses dropped from the DCA file", source: "California DCA" },
   abc_status_change: { label: "Liquor license status changes", source: "California ABC" },
   account_cancelled: { label: "Business tax account cancellations", source: "City of San Diego" },
 };
@@ -66,6 +68,16 @@ export function watchNote(e: WatchEventInput): string {
       return `A cancellation of the contractor's license bond is on file. ${e.summary ?? ""}`.trim();
     case "cslb_license_removed":
       return "The contractor license no longer appears in the state's license file.";
+    case "dca_status_change": {
+      const m = e.title.match(/^(.+) license status: (.+) to (.+)$/);
+      const line = m ? `State license (${m[1]}) status changed from ${lower(m[2])} to ${lower(m[3])}.` : `${e.title}.`;
+      return e.summary ? `${line} ${e.summary}.` : line;
+    }
+    case "dca_license_removed": {
+      const m = e.title.match(/^(.+) license no longer in the DCA file$/);
+      const line = `The state license${m ? ` (${m[1]})` : ""} no longer appears in the DCA license file.`;
+      return e.summary ? `${line} ${e.summary}.` : line;
+    }
     case "account_cancelled":
       return "The City of San Diego business tax account was cancelled.";
     default:

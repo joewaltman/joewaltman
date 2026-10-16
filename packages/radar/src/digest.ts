@@ -34,7 +34,7 @@ export const SOURCE_LABELS: Record<string, string> = {
   sd_biztax: "City of San Diego business tax",
   abc: "ABC liquor license",
   cslb: "CSLB contractor license",
-  dca: "DCA professional license",
+  dca: "DCA state license",
   nppes: "NPI registry",
   sba: "SBA loan",
 };

@@ -60,14 +60,14 @@ export function adapterJob<R>(adapter: Adapter<R>): Job {
   };
 }
 
-export async function download(ctx: JobContext, url: string, name: string, init?: RequestInit): Promise<FetchedFile> {
+export async function download(ctx: JobContext, url: string, name: string, init?: RequestInit, timeoutMs = 120_000): Promise<FetchedFile> {
   let lastError: unknown;
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
       const res = await ctx.fetch(url, {
         ...init,
         headers: { "User-Agent": "joewaltman.com public-records pipeline (joe@joewaltman.com)", ...init?.headers },
-        signal: AbortSignal.timeout(120_000),
+        signal: AbortSignal.timeout(timeoutMs),
       });
       if (!res.ok) throw new Error(`${url} returned HTTP ${res.status}`);
       return { name, url, body: new Uint8Array(await res.arrayBuffer()) };

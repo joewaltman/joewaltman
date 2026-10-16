@@ -1,5 +1,6 @@
 import { z } from "zod";
 import rawAbcTypes from "../../../content/abc-license-types.json";
+import rawDcaTypes from "../../../content/dca-license-types.json";
 import rawTaxonomy from "../../../content/taxonomy.json";
 import rawZipClusters from "../../../content/zip-clusters.json";
 
@@ -78,3 +79,18 @@ export function abcTypeName(code: string | null | undefined): string | null {
 export function isBarOrRestaurantType(code: string | null | undefined): boolean {
   return abcLicenseTypes.barsAndRestaurants.includes((code ?? "").trim().padStart(2, "0"));
 }
+
+const dcaSchema = z.object({
+  source: z.url(),
+  boxFolder: z.url(),
+  asOf: z.string(),
+  folders: z.record(
+    z.string().min(1),
+    z.object({
+      agency: z.string().min(1),
+      types: z.record(z.string().min(1), z.object({ naics: z.string().regex(/^\d{2,6}$/), premises: z.boolean() })),
+    }),
+  ),
+});
+export const dcaLicenseTypes = dcaSchema.parse(rawDcaTypes);
+export type DcaLicenseTypes = z.infer<typeof dcaSchema>;

@@ -1,5 +1,6 @@
 import { abc } from "./adapters/abc";
 import { courtListenerJob } from "./adapters/courtlistener";
+import { dcaJob } from "./adapters/dca";
 import { cslb } from "./adapters/cslb";
 import { sdBizTax } from "./adapters/sd-biztax";
 import { enrichJob } from "./enrich";
@@ -24,6 +25,7 @@ export const JOBS: Record<string, Job> = {
   "sd-biztax": adapterJob(sdBizTax),
   abc: adapterJob(abc),
   cslb: adapterJob(cslb),
+  dca: dcaJob(),
   enrich: enrichJob(),
   courtlistener: courtListenerJob(),
   "radar-digest": radarDigestJob(),
@@ -37,6 +39,8 @@ export const SCHEDULE: ScheduleEntry[] = [
   { job: "abc", time: "05:30" },
   // The CSLB file regenerates daily; running daily catches bond and status changes within a day.
   { job: "cslb", time: "05:30" },
+  // DCA posts new files once a month; the daily run only checks the Box folder and reads changed boards.
+  { job: "dca", time: "05:35" },
   // After the ingestion jobs, so new businesses are classified before the Monday 6:00am digest.
   { job: "enrich", time: "05:45" },
   // Federal court dockets for Watchlist customers, before the Monday 6:15am Watchlist email.
