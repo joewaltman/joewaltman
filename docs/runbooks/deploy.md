@@ -25,7 +25,8 @@ Each web deploy runs `pnpm --filter @jw/db migrate` as the first step of the sta
 | `DATABASE_URL` | `${{Postgres.DATABASE_URL}}` | `${{Postgres.DATABASE_URL}}` |
 | `PORT` | `8080` | `8080` |
 | `SITE_URL` | staging URL | `https://joewaltman.com` |
-| `ADMIN_EMAIL` | `joe@joewaltman.com` | `joe@joewaltman.com` |
+| `ADMIN_EMAIL` | `joe@joewaltman.com` | `joewaltman@gmail.com` (admin sign-in, hand-raise and job-failure notices) |
+| `EMAIL_REPLY_TO` | not set | `joe@joewaltman.com` (where visitor replies go) |
 | `SESSION_SECRET` | random, 64 hex chars | random, different from staging |
 | `EMAIL_MODE` | `dryrun` until Resend is set up, then `joe-only` | `joe-only` until Joe says `live` |
 | `EMAIL_DRYRUN_STDOUT` | `1` (prints dry-run emails to the log) | never set |

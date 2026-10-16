@@ -32,7 +32,7 @@ Personal site plus four free SMB tools. Full spec: `docs/SPEC.md`.
 
 `EMAIL_MODE` controls every send path:
 - `dryrun`: render to HTML files under `.email-out/`, send nothing.
-- `joe-only`: refuse any recipient other than `ADMIN_EMAIL`.
+- `joe-only`: refuse any recipient other than `ADMIN_EMAIL` (production: joewaltman@gmail.com, which is also the admin sign-in address; replies go to joe@joewaltman.com via `EMAIL_REPLY_TO`).
 - `live`: normal sending. Only Joe switches to this.
 
 ## Commands
