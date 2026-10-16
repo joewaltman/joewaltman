@@ -1,15 +1,14 @@
-# Deploy, staging and rollback
+# Deploy and rollback
 
 ## Where things run
 
 - Railway project `proactive-respect`.
 - `production` environment: service `joewaltman` deploys branch `main`, custom domain `joewaltman.com` (port 8080), Cloudflare DNS in front.
-- `staging` environment: same service, deploys the current feature branch, at `https://joewaltman-staging.up.railway.app`. Has its own Postgres.
+- There is no staging environment; Joe ships straight to `main` (October 16, 2026).
 
 Service settings (build and start commands, the pipeline cron schedule, the bucket, and the list of variables) are defined in `.railway/railway.ts`. Railway does not read that file on deploy; apply it per environment:
 
 ```bash
-railway environment staging
 npx @railway/cli@5.63.1 config plan
 npx @railway/cli@5.63.1 config apply
 ```
@@ -18,21 +17,24 @@ Read the plan before applying. A variable that is set in Railway but missing fro
 
 Each web deploy runs `pnpm --filter @jw/db migrate` as the first step of the start command. If a migration fails, the new container never passes its health check and the old version keeps serving.
 
-## Variables (web service)
+## Variables (web service, production)
 
-| Name | Staging | Production |
-|---|---|---|
-| `DATABASE_URL` | `${{Postgres.DATABASE_URL}}` | `${{Postgres.DATABASE_URL}}` |
-| `PORT` | `8080` | `8080` |
-| `SITE_URL` | staging URL | `https://joewaltman.com` |
-| `ADMIN_EMAIL` | `joe@joewaltman.com` | `joewaltman@gmail.com` (admin sign-in, hand-raise and job-failure notices) |
-| `EMAIL_REPLY_TO` | not set | `joe@joewaltman.com` (where visitor replies go) |
-| `SESSION_SECRET` | random, 64 hex chars | random, different from staging |
-| `EMAIL_MODE` | `joe-only` | `live` (switched by Joe on October 16, 2026) |
-| `EMAIL_DRYRUN_STDOUT` | `1` (prints dry-run emails to the log) | never set |
-| `RESEND_API_KEY` | Joe sets | Joe sets |
-| `MAIL_POSTAL_ADDRESS` | Joe sets | Joe sets (live mail refuses to send without it) |
-| `BOOKING_URL` | optional | Joe's booking page |
+| Name | Value |
+|---|---|
+| `DATABASE_URL` | `${{Postgres-XFjk.DATABASE_URL}}` (set by `.railway/railway.ts`) |
+| `PORT` | `8080` (the custom domain points at it) |
+| `SITE_URL` | `https://joewaltman.com` |
+| `ADMIN_EMAIL` | `joewaltman@gmail.com` (admin sign-in, hand-raise and job-failure notices) |
+| `EMAIL_REPLY_TO` | `joe@joewaltman.com` (where visitor replies go) |
+| `SESSION_SECRET` | random, 64 hex characters |
+| `EMAIL_MODE` | `live` (switched by Joe on October 16, 2026) |
+| `EMAIL_FROM` | `Joe Waltman <joe@joewaltman.com>` |
+| `RESEND_API_KEY` | Joe sets |
+| `MAIL_POSTAL_ADDRESS` | Joe sets (live mail refuses to send without it) |
+| `ANTHROPIC_API_KEY` | Joe sets; the pipeline reads it from here |
+| `BOOKING_URL` | optional, Joe's booking page |
+
+The `pipeline` service reads the email settings and the Anthropic key from the web service through `${{joewaltman.NAME}}` references, so each is set once.
 
 Generate a session secret without printing it:
 
@@ -40,18 +42,9 @@ Generate a session secret without printing it:
 openssl rand -hex 32 | tr -d '\n' | railway variable set -s joewaltman -e production --stdin SESSION_SECRET
 ```
 
-## Production cutover (one time)
-
-1. Joe checks staging and says go.
-2. Add Postgres to production: `railway environment production`, then `railway add --database postgres`, then `railway service joewaltman`.
-3. Set the production variables above with `--skip-deploys`.
-4. Merge the feature branch into `main` and push.
-5. While linked to production, run `config plan`, check it creates only the bucket and the pipeline service and deletes nothing, then `config apply`. Set the pipeline's `ARCHIVE_S3_*` variables from `railway bucket credentials`.
-6. Check `https://joewaltman.com` (homepage unchanged), `/tariffrefund`, `/admin/login`, and `/admin/jobs` after the next pipeline tick.
-
 ## Rollback
 
-In the Railway dashboard, open the `joewaltman` service in `production`, pick the last good deployment and choose Redeploy. For the cutover, the last good deployment is the static site from September 1, 2026. Database migrations only add tables, so the old version runs fine against a newer database.
+In the Railway dashboard, open the `joewaltman` service in `production`, pick the last good deployment and choose Redeploy. Database migrations only add tables, so the old version runs fine against a newer database.
 
 ## Email modes
 

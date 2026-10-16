@@ -5,13 +5,11 @@ import { bucket, defineRailway, github, preserve, project, service } from "railw
 // See https://docs.railway.com/infrastructure-as-code#multi-repo-projects
 export const partial = "joewaltman";
 
-// Apply per environment: link with `railway environment <name>`, then `railway config plan`
-// and `railway config apply`. Nothing here runs on push.
-export default defineRailway((ctx) => {
-  const production = ctx.environment === "production";
-  const source = github("joewaltman/joewaltman", { branch: production ? "main" : "tools-spine" });
-  // Each environment has its own Postgres service; names are unique across the project.
-  const databaseUrl = production ? "${{Postgres-XFjk.DATABASE_URL}}" : "${{Postgres.DATABASE_URL}}";
+// There is one environment, production. Apply with `railway config plan` then
+// `railway config apply`. Nothing here runs on push.
+export default defineRailway(() => {
+  const source = github("joewaltman/joewaltman", { branch: "main" });
+  const databaseUrl = "${{Postgres-XFjk.DATABASE_URL}}";
 
   // The website: homepage, tools and admin. Migrations run before the server starts, so a
   // failed migration never takes traffic.
@@ -37,7 +35,6 @@ export default defineRailway((ctx) => {
       // Read by the pipeline service; kept here so Joe sets it once.
       ANTHROPIC_API_KEY: preserve(),
       TARIFF_BROKER_SLUG: preserve(),
-      ...(production ? {} : { EMAIL_DRYRUN_STDOUT: preserve() }),
     },
   });
 
