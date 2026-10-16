@@ -1,6 +1,15 @@
 import type { Answers, TariffResult } from "./engine";
 import type { TariffRules } from "./schema";
 
+export function formatIsoDate(iso: string): string {
+  return new Date(`${iso}T12:00:00Z`).toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
+
 export function answerLabel(rules: TariffRules, questionId: string, value: string | string[] | undefined): string {
   const q = rules.questions.find((x) => x.id === questionId);
   if (value === undefined || value === "" || (Array.isArray(value) && value.length === 0)) return "No answer";
@@ -20,7 +29,7 @@ export function brokerSummary(input: {
   const lines: string[] = [
     "IEEPA tariff refund: summary for my customs broker",
     "",
-    `Prepared with the free Tariff Refund Tool at joewaltman.com/tariffrefund on ${input.preparedOn}. Rules as of ${result.asOf}.`,
+    `Prepared with the free Tariff Refund Tool at joewaltman.com/tariffrefund on ${input.preparedOn}. Rules as of ${formatIsoDate(result.asOf)}.`,
     "",
     "What I told the tool:",
   ];

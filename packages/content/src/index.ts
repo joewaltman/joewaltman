@@ -6,7 +6,7 @@ export * from "./tariff/engine";
 export * from "./tariff/hts";
 export * from "./tariff/schema";
 export * from "./tariff/validate";
-export { answerLabel, brokerSummary } from "./tariff/broker-summary";
+export { answerLabel, brokerSummary, formatIsoDate } from "./tariff/broker-summary";
 
 // Parsed and cross-checked once at import, so a bad edit to the JSON fails loudly at build time.
 function load(): TariffRules {

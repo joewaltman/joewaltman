@@ -9,6 +9,7 @@
     "typecheck": "next typegen && tsc --noEmit"
   },
   "dependencies": {
+    "@jw/content": "workspace:*",
     "@jw/db": "workspace:*",
     "@jw/email": "workspace:*",
     "next": "16.4.2",

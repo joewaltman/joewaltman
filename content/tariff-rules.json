@@ -1,5 +1,5 @@
 {
-  "version": "2026-10-16.2",
+  "version": "2026-10-16.3",
   "asOf": "2026-10-16",
   "facts": {
     "scotus": {
@@ -422,7 +422,7 @@
     {
       "id": "actionsTaken",
       "number": 6,
-      "label": "Have you done any of these? Check all that apply.",
+      "label": "Have you done any of these?",
       "type": "multi",
       "required": true,
       "options": [
@@ -446,7 +446,8 @@
           "value": "not_sure",
           "label": "Not sure"
         }
-      ]
+      ],
+      "help": "Check all that apply."
     },
     {
       "id": "achOnFile",
@@ -808,12 +809,6 @@
             "cape-filing"
           ]
         },
-        {
-          "text": "Make sure your ACH bank details are on file with CBP. Refunds are paid electronically.",
-          "facts": [
-            "ach-required"
-          ]
-        },
         "Match the refunds that land in your bank account against the amounts your broker reports."
       ],
       "documents": [
@@ -855,12 +850,6 @@
           "facts": [
             "protest-blocks-cape"
           ]
-        },
-        {
-          "text": "Make sure your ACH bank details are on file with CBP. Refunds are paid electronically.",
-          "facts": [
-            "ach-required"
-          ]
         }
       ],
       "documents": [
@@ -898,13 +887,7 @@
             "protest-blocks-cape"
           ]
         },
-        "Ask whether any entries without a protest can still go through CAPE.",
-        {
-          "text": "Make sure your ACH bank details are on file with CBP. Refunds are paid electronically.",
-          "facts": [
-            "ach-required"
-          ]
-        }
+        "Ask whether any entries without a protest can still go through CAPE."
       ],
       "documents": [
         "Your protest numbers and the entries each one covers",
@@ -932,13 +915,7 @@
       ],
       "steps": [
         "Confirm with your counsel that your importer number was provided by July 30, 2026.",
-        "Ask your broker to confirm your finally liquidated entries are in CAPE Phase 3, and where each refund stands.",
-        {
-          "text": "Make sure your ACH bank details are on file with CBP. Refunds are paid electronically.",
-          "facts": [
-            "ach-required"
-          ]
-        }
+        "Ask your broker to confirm your finally liquidated entries are in CAPE Phase 3, and where each refund stands."
       ],
       "documents": [
         "Your case number and your counsel's contact",
@@ -966,12 +943,6 @@
       ],
       "steps": [
         "Keep your entry records together so you can move quickly if the class wins refunds.",
-        {
-          "text": "Make sure your ACH bank details are on file with CBP. Refunds are paid electronically.",
-          "facts": [
-            "ach-required"
-          ]
-        },
         {
           "text": "Ask a trade attorney whether to rely on the class or file your own suit. The class covers importers who did not sue separately, so filing your own suit means relying on that suit instead.",
           "facts": [

@@ -20,6 +20,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@jw/content':
+        specifier: workspace:*
+        version: link:../../packages/content
       '@jw/db':
         specifier: workspace:*
         version: link:../../packages/db

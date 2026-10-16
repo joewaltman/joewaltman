@@ -23,7 +23,7 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["@jw/db", "@jw/email"],
+  transpilePackages: ["@jw/content", "@jw/db", "@jw/email"],
   serverExternalPackages: ["@electric-sql/pglite"],
   poweredByHeader: false,
   async headers() {

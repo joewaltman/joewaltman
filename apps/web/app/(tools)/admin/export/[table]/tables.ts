@@ -4,6 +4,7 @@ import {
   handRaises,
   jobRuns,
   partners,
+  prerunNotes,
   questionnaireResponses,
   subscribers,
   subscriptions,
@@ -20,6 +21,7 @@ export const EXPORTS = {
   email_sends: emailSends,
   suppressions,
   job_runs: jobRuns,
+  prerun_notes: prerunNotes,
 } as const;
 
 export type ExportTable = keyof typeof EXPORTS;

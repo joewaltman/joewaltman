@@ -1,6 +1,6 @@
 "use server";
 
-import { eq, handRaises, partners, TOOLS } from "@jw/db";
+import { eq, handRaises, partners, prerunNotes, TOOLS } from "@jw/db";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -75,4 +75,18 @@ export async function markHandledAction(form: FormData): Promise<void> {
     await emailDeps().db.update(handRaises).set({ handledAt: new Date() }).where(eq(handRaises.id, id));
   }
   redirect("/admin/hand-raises");
+}
+
+export async function prerunNoteAction(form: FormData): Promise<void> {
+  await requireAdmin();
+  const tool = z.enum(TOOLS).catch("tariff").parse(form.get("tool"));
+  const subject = String(form.get("subject") ?? "").trim().slice(0, 200);
+  const note = String(form.get("note") ?? "").trim().slice(0, 2000) || null;
+  const back = String(form.get("returnTo") ?? "/admin");
+  if (subject) {
+    const url =
+      tool === "tariff" ? `https://www.importyeti.com/search?q=${encodeURIComponent(subject)}` : null;
+    await emailDeps().db.insert(prerunNotes).values({ tool, subject, url, note });
+  }
+  redirect(back.startsWith("/admin") ? back : "/admin");
 }
