@@ -28,7 +28,7 @@ Each web deploy runs `pnpm --filter @jw/db migrate` as the first step of the sta
 | `ADMIN_EMAIL` | `joe@joewaltman.com` | `joewaltman@gmail.com` (admin sign-in, hand-raise and job-failure notices) |
 | `EMAIL_REPLY_TO` | not set | `joe@joewaltman.com` (where visitor replies go) |
 | `SESSION_SECRET` | random, 64 hex chars | random, different from staging |
-| `EMAIL_MODE` | `dryrun` until Resend is set up, then `joe-only` | `joe-only` until Joe says `live` |
+| `EMAIL_MODE` | `joe-only` | `live` (switched by Joe on October 16, 2026) |
 | `EMAIL_DRYRUN_STDOUT` | `1` (prints dry-run emails to the log) | never set |
 | `RESEND_API_KEY` | Joe sets | Joe sets |
 | `MAIL_POSTAL_ADDRESS` | Joe sets | Joe sets (live mail refuses to send without it) |
