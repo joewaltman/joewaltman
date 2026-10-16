@@ -1,4 +1,4 @@
-import { isBarOrRestaurantType, taxonomy, zipClusters } from "@jw/content";
+import { abcTypeName, isBarOrRestaurantType, taxonomy, zipClusters } from "@jw/content";
 import {
   type Db,
   and,
@@ -85,6 +85,24 @@ export interface DigestOptions extends Window {
 
 const LIQUOR_EVENTS = ["abc_application", "abc_issued", "abc_status_change"];
 
+interface AbcRaw {
+  typeCode?: string;
+  transfer?: string | null;
+  escrow?: string | null;
+}
+
+// What a liquor license event means, in plain words, or null when it is not news to someone selling
+// to a new bar or restaurant. The spec lists new applications, transfers and escrow; issued licenses
+// are kept too. Other status changes (pending to active, a surrender or cancellation) are left out.
+export function liquorAction(eventType: string, raw: AbcRaw): string | null {
+  if (eventType === "abc_application") return "Applied for a liquor license";
+  if (eventType === "abc_issued") return "Liquor license issued";
+  if (eventType !== "abc_status_change") return null;
+  if (raw.transfer) return "Liquor license transferred";
+  if (raw.escrow) return "Liquor license sale in escrow";
+  return null;
+}
+
 export async function buildDigest(db: Db, opts: DigestOptions): Promise<Digest> {
   const categories = opts.categories ?? [];
   const wants = (category: string) => categories.length === 0 || categories.includes(category);
@@ -168,18 +186,36 @@ export async function buildDigest(db: Db, opts: DigestOptions): Promise<Digest> 
     sourceUrl: e.sourceUrl,
   });
 
-  // Liquor license activity, for bars and restaurants only.
-  const liquor = wants("restaurants-bars")
-    ? (
-        await db
-          .select(eventFields)
-          .from(entityEvents)
-          .innerJoin(entities, eq(entityEvents.entityId, entities.id))
-          .where(and(inArray(entityEvents.eventType, LIQUOR_EVENTS), inWindow, inClusters))
-      )
-        .filter((e) => isBarOrRestaurantType(String((e.raw as { typeCode?: string }).typeCode ?? "")))
-        .map(toEventRow)
+  // Liquor license activity, for bars and restaurants only: one row per business, since a
+  // restaurant often gets two or three licenses the same week.
+  const liquorEvents = wants("restaurants-bars")
+    ? await db
+        .select(eventFields)
+        .from(entityEvents)
+        .innerJoin(entities, eq(entityEvents.entityId, entities.id))
+        .where(and(inArray(entityEvents.eventType, LIQUOR_EVENTS), inWindow, inClusters))
     : [];
+  const liquorByEntity = new Map<string, { row: EventRow; actions: Map<string, Set<string>>; escrow: Set<string> }>();
+  for (const e of liquorEvents) {
+    const raw = e.raw as AbcRaw;
+    if (!isBarOrRestaurantType(String(raw.typeCode ?? ""))) continue;
+    const action = liquorAction(e.eventType, raw);
+    if (!action) continue;
+    const entry = liquorByEntity.get(e.entityId) ?? { row: toEventRow(e), actions: new Map(), escrow: new Set() };
+    const types = entry.actions.get(action) ?? new Set<string>();
+    const type = abcTypeName(raw.typeCode);
+    if (type) types.add(type);
+    entry.actions.set(action, types);
+    if (raw.escrow) entry.escrow.add(raw.escrow);
+    if ((e.eventDate ?? "") > entry.row.date) entry.row.date = e.eventDate!;
+    liquorByEntity.set(e.entityId, entry);
+  }
+  // "Liquor license issued (On-Sale General - Eating Place, Caterer's Permit)"
+  const liquor = [...liquorByEntity.values()].map(({ row, actions, escrow }) => ({
+    ...row,
+    title: [...actions].map(([action, types]) => (types.size > 0 ? `${action} (${[...types].join(", ")})` : action)).join("; "),
+    details: escrow.size > 0 ? `Escrow: ${[...escrow].join(", ")}` : null,
+  }));
 
   // New contractor licenses.
   const licenses = wants("construction")

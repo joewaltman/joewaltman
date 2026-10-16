@@ -100,6 +100,23 @@ describe("buildDigest", () => {
     expect(food.licenses).toEqual([]);
   });
 
+  it("lists each bar or restaurant once, in plain words, and leaves out closings and routine status changes", async () => {
+    const brant = await business({ name: "The Brant Kitchen and Bar", category: "restaurants-bars" });
+    await event(brant, "abc_issued", "2026-10-14", { typeCode: "47" });
+    await event(brant, "abc_issued", "2026-10-14", { typeCode: "58" });
+    await event(brant, "abc_status_change", "2026-10-15", { typeCode: "47", transfer: null, escrow: null });
+    const closing = await business({ name: "Le Papagayo", category: "restaurants-bars" });
+    await event(closing, "abc_status_change", "2026-10-15", { typeCode: "47", transfer: null, escrow: null });
+    const sold = await business({ name: "Harbor Grill", category: "restaurants-bars" });
+    await event(sold, "abc_status_change", "2026-10-16", { typeCode: "41", transfer: "123456", escrow: "Pacific Escrow" });
+
+    const d = await buildDigest(db, { ...week, clusters: ["north-county-coastal"] });
+    expect(d.liquor.map((r) => [r.name, r.title, r.details])).toEqual([
+      ["Harbor Grill", "Liquor license transferred (On-Sale Beer & Wine - Eating Place)", "Escrow: Pacific Escrow"],
+      ["The Brant Kitchen and Bar", "Liquor license issued (On-Sale General - Eating Place, Caterer's Permit)", null],
+    ]);
+  });
+
   it("returns nothing without an area", async () => {
     const id = await business({ name: "X" });
     await event(id, "new_business", "2026-10-14");
