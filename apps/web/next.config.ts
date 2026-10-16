@@ -26,6 +26,11 @@ const nextConfig: NextConfig = {
   transpilePackages: ["@jw/content", "@jw/db", "@jw/email"],
   serverExternalPackages: ["@electric-sql/pglite"],
   poweredByHeader: false,
+  experimental: {
+    // Railway carries .next/cache between builds, and a stale Turbopack cache failed a build on
+    // October 16, 2026. The app is small enough that a cold build costs seconds.
+    turbopackFileSystemCacheForBuild: false,
+  },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
