@@ -1,4 +1,4 @@
-import { readAnswers, tariffRules } from "@jw/content";
+import { readAnswers, tariffRules, taxonomy, zipClusters } from "@jw/content";
 import { ROLES, TOOLS, eq, handRaises, partners, prerunNotes } from "@jw/db";
 import { cookies } from "next/headers";
 import { z } from "zod";
@@ -10,6 +10,8 @@ import {
   requestLoginLink,
 } from "./admin-auth";
 import { recordHandRaise } from "./hand-raise";
+import { pickAreas, sendTestDigest } from "./radar-admin";
+import { CLIENT_BANDS } from "./radar-view";
 import { currentAdmin, emailDeps, sessionSecret } from "./server";
 import { confirmByToken, subscribe, unsubscribeByToken } from "./subscriptions";
 import { requestBrokerReview, submitTariff } from "./tariff";
@@ -84,6 +86,42 @@ export const FORM_HANDLERS: Record<string, FormHandler> = {
       company: d.company ?? null,
       role: d.role ?? null,
       partnerSlug: d.partner ?? null,
+    });
+    return `${back}?signup=${outcome}#signup`;
+  },
+
+  async "radar-signup"(form) {
+    const partner = slug.safeParse(form.get("partner"));
+    const back = safeReturn(field(form, "returnTo"), "/newbizradar");
+    const clusters = form.getAll("clusters").filter((v): v is string => typeof v === "string" && Object.hasOwn(zipClusters.clusters, v));
+    const known = new Set(taxonomy.categories.map((c) => c.id));
+    const categories = form.getAll("categories").filter((v): v is string => typeof v === "string" && known.has(v));
+    if (clusters.length === 0) return `${back}?signup=no-area#signup`;
+    const parsed = signupSchema.safeParse({
+      tool: "radar",
+      email: field(form, "email")?.trim(),
+      name: field(form, "name"),
+      company: field(form, "company"),
+      role: field(form, "role") || null,
+      partner: partner.success ? partner.data : null,
+    });
+    if (!parsed.success) return `${back}?signup=invalid#signup`;
+    const d = parsed.data;
+    const clients = field(form, "clients");
+    const outcome = await subscribe(emailDeps(), {
+      email: d.email,
+      tool: "radar",
+      name: d.name ?? null,
+      company: d.company ?? null,
+      role: d.role ?? null,
+      partnerSlug: d.partner ?? null,
+      preferences: {
+        zipClusters: clusters,
+        categories,
+        frequency: "weekly",
+        sells: field(form, "sells")?.trim().slice(0, 200) || null,
+        clientsBand: clients && CLIENT_BANDS.some(([v]) => v === clients) ? clients : null,
+      },
     });
     return `${back}?signup=${outcome}#signup`;
   },
@@ -188,6 +226,13 @@ export const FORM_HANDLERS: Record<string, FormHandler> = {
       await emailDeps().db.update(handRaises).set({ handledAt: new Date() }).where(eq(handRaises.id, id));
     }
     return "/admin/hand-raises";
+  },
+
+  async "admin-radar-test"(form) {
+    if (!(await currentAdmin())) return "/admin/login";
+    const clusters = pickAreas(form.getAll("areas").filter((v): v is string => typeof v === "string"));
+    const result = await sendTestDigest(emailDeps(), clusters);
+    return `/admin/radar?${clusters.map((c) => `areas=${c}`).join("&")}&test=${result.status}`;
   },
 
   async "admin-prerun-note"(form) {

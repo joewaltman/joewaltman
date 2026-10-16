@@ -57,7 +57,13 @@ export async function subscribe(deps: SendDeps, input: SubscribeInput): Promise<
     .from(subscriptions)
     .where(and(eq(subscriptions.subscriberId, subscriber.id), eq(subscriptions.tool, input.tool)))
     .limit(1);
-  if (sub?.active && subscriber.confirmedAt) return "already-subscribed";
+  if (sub?.active && subscriber.confirmedAt) {
+    // Signing up again with new choices (other areas, say) updates them without another confirmation.
+    if (input.preferences) {
+      await db.update(subscriptions).set({ preferences: input.preferences }).where(eq(subscriptions.id, sub.id));
+    }
+    return "already-subscribed";
+  }
   const token = await createPendingSubscription(db, {
     subscriberId: subscriber.id,
     email,

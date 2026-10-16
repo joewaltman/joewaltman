@@ -1,9 +1,9 @@
 import type { Tool } from "@jw/db";
 
-const MESSAGES: Record<string, string> = {
+export const SIGNUP_MESSAGES: Record<string, string> = {
   "check-email":
     "Check your inbox for a confirmation link. Nothing else will arrive until you click it.",
-  "already-subscribed": "You are already subscribed.",
+  "already-subscribed": "You are already subscribed. Any new choices you made are saved.",
   suppressed:
     "This address unsubscribed earlier, so nothing was sent. To come back, email joe@joewaltman.com.",
   "not-open": "Signups are not open yet. Nothing was saved.",
@@ -12,7 +12,7 @@ const MESSAGES: Record<string, string> = {
   invalid: "That email address does not look right. Try again.",
 };
 
-const ROLE_OPTIONS: Array<[string, string]> = [
+export const ROLE_OPTIONS: Array<[string, string]> = [
   ["owner", "Business owner or manager"],
   ["broker", "Customs broker"],
   ["cpa", "CPA or bookkeeper"],
@@ -38,7 +38,7 @@ export function SignupForm({
   partner?: string;
   buttonLabel?: string;
 }) {
-  const message = status ? MESSAGES[status] : undefined;
+  const message = status ? SIGNUP_MESSAGES[status] : undefined;
   return (
     <form id="signup" method="post" action="/api/forms/signup" className="grid max-w-md gap-3">
       {message ? <p className="notice">{message}</p> : null}
