@@ -7,7 +7,8 @@ import { dueJobs } from "./schedule";
 
 // Usage:
 //   pnpm pipeline run <job>   run one job now
-//   pnpm pipeline tick        run whatever the schedule says is due (the Railway cron calls this)
+//   pnpm pipeline tick        run whatever the schedule says is due, once
+//   pnpm pipeline worker      check the schedule every 30 minutes (the Railway worker service runs this)
 //   pnpm pipeline list        show jobs and the schedule
 
 function context(): JobContext {
@@ -44,28 +45,51 @@ async function main(): Promise<number> {
     return (await runJob(job, ctx)).status === "success" ? 0 : 1;
   }
 
-  if (command === "tick") {
-    const ctx = context();
-    const recent = await ctx.db
-      .select({ job: jobRuns.job, status: jobRuns.status, startedAt: jobRuns.startedAt })
-      .from(jobRuns)
-      .where(gt(jobRuns.startedAt, new Date(ctx.now.getTime() - 2 * 86_400_000)));
-    const due = dueJobs(ctx.now, SCHEDULE, recent);
-    if (due.length === 0) {
-      ctx.log("nothing due");
-      return 0;
+  if (command === "worker") {
+    // Long-running form of tick for the Railway worker service: check the schedule now, then every 30 minutes.
+    let stopping = false;
+    const stop = () => {
+      stopping = true;
+    };
+    process.on("SIGTERM", stop);
+    process.on("SIGINT", stop);
+    while (!stopping) {
+      await tick().catch((err) => console.error("tick failed", err));
+      for (let waited = 0; waited < TICK_MS && !stopping; waited += 1000) {
+        await new Promise((r) => setTimeout(r, 1000));
+      }
     }
-    let failed = 0;
-    for (const { job, attempt } of due) {
-      ctx.log(`running ${job} (attempt ${attempt})`);
-      const outcome = await runJob(JOBS[job]!, { ...ctx, now: new Date() }, attempt);
-      if (outcome.status === "failed") failed++;
-    }
-    return failed > 0 ? 1 : 0;
+    return 0;
   }
 
-  console.error("Usage: pipeline run <job> | tick | list");
+  if (command === "tick") {
+    return tick();
+  }
+
+  console.error("Usage: pipeline run <job> | tick | worker | list");
   return 2;
+}
+
+const TICK_MS = 30 * 60 * 1000;
+
+async function tick(): Promise<number> {
+  const ctx = context();
+  const recent = await ctx.db
+    .select({ job: jobRuns.job, status: jobRuns.status, startedAt: jobRuns.startedAt })
+    .from(jobRuns)
+    .where(gt(jobRuns.startedAt, new Date(ctx.now.getTime() - 2 * 86_400_000)));
+  const due = dueJobs(ctx.now, SCHEDULE, recent);
+  if (due.length === 0) {
+    ctx.log("nothing due");
+    return 0;
+  }
+  let failed = 0;
+  for (const { job, attempt } of due) {
+    ctx.log(`running ${job} (attempt ${attempt})`);
+    const outcome = await runJob(JOBS[job]!, { ...ctx, now: new Date() }, attempt);
+    if (outcome.status === "failed") failed++;
+  }
+  return failed > 0 ? 1 : 0;
 }
 
 main().then(

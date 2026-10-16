@@ -11,7 +11,8 @@
   "scripts": {
     "pipeline": "tsx src/cli.ts",
     "tick": "tsx src/cli.ts tick",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "worker": "tsx src/cli.ts worker"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.1152.0",
