@@ -4,7 +4,7 @@ import { publicTexts } from "@/lib/tariff-view";
 
 function QuestionField({ q, rules, error }: { q: Question; rules: TariffRules; error?: boolean }) {
   const legend = (
-    <legend className="mb-2 font-semibold">
+    <legend id={`q-${q.id}-label`} className="mb-2 font-semibold">
       <span className="mr-1 text-muted tabular-nums">{q.number}.</span> {q.label}
       {!q.required ? <span className="font-normal text-muted"> (optional)</span> : null}
     </legend>
@@ -40,6 +40,7 @@ function QuestionField({ q, rules, error }: { q: Question; rules: TariffRules; e
           className="field max-w-md"
           type={q.type === "email" ? "email" : "text"}
           name={q.id}
+          aria-labelledby={`q-${q.id}-label`}
           required={q.required}
           autoComplete={q.type === "email" ? "email" : "off"}
           maxLength={q.type === "email" ? 254 : 500}
