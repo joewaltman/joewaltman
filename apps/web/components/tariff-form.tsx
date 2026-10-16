@@ -1,5 +1,4 @@
 import type { Question, TariffRules } from "@jw/content";
-import { tariffSubmitAction } from "@/app/(tools)/tariffrefund/actions";
 import { publicTexts } from "@/lib/tariff-view";
 
 function QuestionField({ q, rules, error }: { q: Question; rules: TariffRules; error?: boolean }) {
@@ -70,7 +69,7 @@ export function TariffForm({
   errorField?: string;
 }) {
   return (
-    <form action={tariffSubmitAction} className="mt-8">
+    <form method="post" action="/api/forms/tariff-submit" className="mt-8">
       {partner ? <input type="hidden" name="partner" value={partner} /> : null}
       {rules.questions.map((q) => (
         <QuestionField key={q.id} q={q} rules={rules} error={errorField === q.id} />

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { signInAction } from "../../actions";
 
 export const metadata: Metadata = { title: "Sign in", robots: { index: false } };
 
@@ -9,7 +8,7 @@ export default async function AdminAuthPage({ params }: { params: Promise<{ toke
   return (
     <div>
       <h1 className="mb-4 text-[1.75rem] font-semibold">Sign in to admin</h1>
-      <form action={signInAction}>
+      <form method="post" action="/api/forms/admin-sign-in">
         <input type="hidden" name="token" value={token} />
         <button type="submit" className="btn">
           Sign in

@@ -1,7 +1,6 @@
 import { getDb } from "@jw/db";
 import type { Metadata } from "next";
 import { findByUnsubscribeToken } from "@/lib/subscriptions";
-import { unsubscribeAction } from "../../actions";
 
 export const metadata: Metadata = { title: "Unsubscribe", robots: { index: false } };
 
@@ -34,7 +33,7 @@ export default async function UnsubscribePage({ params }: { params: Promise<{ to
     <div>
       <h1 className="mb-4 text-[1.75rem] font-semibold">Unsubscribe</h1>
       <p>Stop all emails from these tools to {subscriber.email}?</p>
-      <form action={unsubscribeAction}>
+      <form method="post" action="/api/forms/unsubscribe">
         <input type="hidden" name="token" value={token} />
         <button type="submit" className="btn">
           Unsubscribe

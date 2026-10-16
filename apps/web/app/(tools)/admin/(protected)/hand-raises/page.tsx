@@ -2,7 +2,6 @@ import { desc, getDb, handRaises } from "@jw/db";
 import { DataTable } from "@/components/data-table";
 import { requireAdmin } from "@/lib/server";
 import { TOOL_INFO } from "@/lib/tools";
-import { markHandledAction } from "../../actions";
 
 export default async function HandRaisesPage() {
   await requireAdmin();
@@ -29,7 +28,7 @@ export default async function HandRaisesPage() {
               r.handledAt ? (
                 "yes"
               ) : (
-                <form action={markHandledAction}>
+                <form method="post" action="/api/forms/admin-hand-raise-handled">
                   <input type="hidden" name="id" value={String(r.id)} />
                   <button type="submit" className="cursor-pointer text-accent underline">
                     Mark handled

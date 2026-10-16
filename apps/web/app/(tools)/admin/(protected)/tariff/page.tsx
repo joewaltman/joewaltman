@@ -12,7 +12,6 @@ import {
 import { DataTable, formatCell } from "@/components/data-table";
 import { requireAdmin } from "@/lib/server";
 import { formatDate } from "@/lib/tariff-view";
-import { prerunNoteAction } from "../../actions";
 
 // Which public copy each unverified fact is holding back, across every path and action.
 function hiddenUses(): Map<string, string[]> {
@@ -167,7 +166,7 @@ export default async function AdminTariffPage() {
         Paste an importer name to get an ImportYeti search link and keep a note. Links only; nothing
         is fetched automatically.
       </p>
-      <form action={prerunNoteAction} className="mb-6 grid max-w-md gap-3">
+      <form method="post" action="/api/forms/admin-prerun-note" className="mb-6 grid max-w-md gap-3">
         <input type="hidden" name="tool" value="tariff" />
         <input type="hidden" name="returnTo" value="/admin/tariff" />
         <label className="grid gap-1">

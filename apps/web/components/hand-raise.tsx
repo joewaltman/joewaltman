@@ -1,5 +1,4 @@
 import type { Tool } from "@jw/db";
-import { handRaiseAction } from "@/app/(tools)/actions";
 
 // One low-pressure ask at the bottom of each tool. A click logs a hand-raise and emails Joe.
 export function HandRaise({
@@ -20,7 +19,7 @@ export function HandRaise({
       {raised ? (
         <p className="notice">Thanks. Joe will be in touch by email, usually within a day.</p>
       ) : (
-        <form action={handRaiseAction} className="grid max-w-md gap-3">
+        <form method="post" action="/api/forms/hand-raise" className="grid max-w-md gap-3">
           <p className="m-0">{prompt}</p>
           <input type="hidden" name="tool" value={tool} />
           <input type="hidden" name="returnTo" value={returnTo} />

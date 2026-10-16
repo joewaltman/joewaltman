@@ -1,5 +1,4 @@
 import type { Tool } from "@jw/db";
-import { signupAction } from "@/app/(tools)/actions";
 
 const MESSAGES: Record<string, string> = {
   "check-email":
@@ -41,7 +40,7 @@ export function SignupForm({
 }) {
   const message = status ? MESSAGES[status] : undefined;
   return (
-    <form id="signup" action={signupAction} className="grid max-w-md gap-3">
+    <form id="signup" method="post" action="/api/forms/signup" className="grid max-w-md gap-3">
       {message ? <p className="notice">{message}</p> : null}
       <input type="hidden" name="tool" value={tool} />
       <input type="hidden" name="returnTo" value={returnTo} />

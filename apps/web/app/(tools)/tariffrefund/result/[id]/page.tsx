@@ -8,7 +8,6 @@ import { AssumptionList, Notes } from "@/components/assumptions";
 import { HandRaise } from "@/components/hand-raise";
 import { loadTariffResponse, resultSections, reviewBroker } from "@/lib/tariff";
 import { formatDate, todayLabel } from "@/lib/tariff-view";
-import { brokerReviewAction } from "../../actions";
 
 export const metadata: Metadata = { title: "Your tariff refund path", robots: { index: false } };
 
@@ -97,7 +96,7 @@ export default async function TariffResultPage({
           <h2>Ask a broker to review</h2>
           {review ? <p className="notice">{review}</p> : null}
           {query.review !== "sent" ? (
-            <form action={brokerReviewAction} className="grid gap-3">
+            <form method="post" action="/api/forms/broker-review" className="grid gap-3">
               <input type="hidden" name="responseId" value={stored.id} />
               <p className="m-0">
                 {broker.name} can look over your answers and reply to you directly. Nothing is sent

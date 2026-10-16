@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { confirmAction } from "../../actions";
 
 export const metadata: Metadata = { title: "Confirm your subscription", robots: { index: false } };
 
@@ -9,7 +8,7 @@ export default async function ConfirmPage({ params }: { params: Promise<{ token:
   return (
     <div>
       <h1 className="mb-4 text-[1.75rem] font-semibold">Confirm your subscription</h1>
-      <form action={confirmAction}>
+      <form method="post" action="/api/forms/confirm">
         <input type="hidden" name="token" value={token} />
         <button type="submit" className="btn">
           Confirm

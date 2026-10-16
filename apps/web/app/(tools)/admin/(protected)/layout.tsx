@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { requireAdmin } from "@/lib/server";
-import { signOutAction } from "../actions";
 
 export const metadata: Metadata = { title: "Admin", robots: { index: false } };
 
@@ -26,7 +25,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
             {label}
           </Link>
         ))}
-        <form action={signOutAction} className="ml-auto">
+        <form method="post" action="/api/forms/admin-sign-out" className="ml-auto">
           <span className="mr-3 text-muted">{email}</span>
           <button type="submit" className="cursor-pointer text-accent underline">
             Sign out

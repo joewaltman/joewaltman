@@ -2,7 +2,6 @@ import { TOOLS, asc, count, eq, getDb, partners, subscribers } from "@jw/db";
 import { DataTable } from "@/components/data-table";
 import { requireAdmin } from "@/lib/server";
 import { TOOL_INFO } from "@/lib/tools";
-import { addPartnerAction } from "../../actions";
 
 export default async function PartnersPage({
   searchParams,
@@ -43,7 +42,7 @@ export default async function PartnersPage({
 
       <h2 className="mt-10 mb-3 font-semibold">Add or update a partner</h2>
       {error ? <p className="notice">{error}</p> : null}
-      <form action={addPartnerAction} className="grid max-w-md gap-3">
+      <form method="post" action="/api/forms/admin-partner" className="grid max-w-md gap-3">
         <label className="grid gap-1">
           <span className="text-[0.95rem] font-semibold">Slug (used in /p/slug links)</span>
           <input className="field" name="slug" required pattern="[a-z0-9-]{2,60}" />
