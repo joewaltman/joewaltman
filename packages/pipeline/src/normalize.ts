@@ -120,6 +120,16 @@ export function entityTypeFrom(text: string | null | undefined): EntityType | nu
   return "other";
 }
 
+// True when a licensee name reads like an organization rather than a person. Sources such as
+// ABC list individual licensees as "LAST  FIRST"; those must never be stored or shown.
+export function isOrganizationName(name: string | null | undefined): boolean {
+  const n = ` ${(name ?? "").toUpperCase().replace(/[^A-Z0-9 ]+/g, " ")} `;
+  if (entityTypeFromName(name)) return true;
+  return /\s(CO|COMPANY|CORPORATION|INCORPORATED|LTD|LIMITED|ASSOCIATION|ASSN|GROUP|TRUST|ENTERPRISES?|HOLDINGS?|PARTNERS|PARTNERSHIP|VENTURES?|CLUB|FOUNDATION|CHURCH|SOCIETY|LODGE|POST|UNIVERSITY|COLLEGE|SCHOOL|DISTRICT|AUTHORITY|HOSPITAL|RESTAURANTS?|HOTELS?|MARKETS?|BREWING|BREWERY|WINERY|VINEYARDS?|CELLARS|FOODS?|GRILL|CAFE|BAR|TAVERN|PUB|LIQUORS?|STORES?|CITY OF|COUNTY OF|STATE OF)\s/.test(
+    n,
+  );
+}
+
 // A rough guess from the name alone, for sources that do not say.
 export function entityTypeFromName(name: string | null | undefined): EntityType | null {
   const n = (name ?? "").toUpperCase();
@@ -127,4 +137,17 @@ export function entityTypeFromName(name: string | null | undefined): EntityType 
   if (/\b(INC|INCORPORATED|CORP|CORPORATION)\b/.test(n)) return "corporation";
   if (/\b(LP|LLP|LLLP|PARTNERSHIP)\b/.test(n)) return "partnership";
   return null;
+}
+
+// JSON with object keys sorted at every level. Postgres jsonb reorders keys, so this is how
+// a stored record is compared with a fresh one.
+export function stableJson(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(stableJson).join(",")}]`;
+  if (value && typeof value === "object") {
+    const entries = Object.entries(value as Record<string, unknown>)
+      .filter(([, v]) => v !== undefined)
+      .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
+    return `{${entries.map(([k, v]) => `${JSON.stringify(k)}:${stableJson(v)}`).join(",")}}`;
+  }
+  return JSON.stringify(value) ?? "null";
 }

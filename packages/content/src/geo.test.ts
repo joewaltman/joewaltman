@@ -37,3 +37,14 @@ describe("taxonomy", () => {
     expect(categoryForNaics("")).toBeNull();
   });
 });
+
+describe("ABC license types", () => {
+  it("names types and flags bars and restaurants", async () => {
+    const { abcTypeName, isBarOrRestaurantType } = await import("./geo");
+    expect(abcTypeName("41")).toBe("On-Sale Beer & Wine - Eating Place");
+    expect(abcTypeName("2")).toBe("Winegrower");
+    expect(abcTypeName("30")).toBeNull();
+    expect(isBarOrRestaurantType("47")).toBe(true);
+    expect(isBarOrRestaurantType("21")).toBe(false);
+  });
+});

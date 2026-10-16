@@ -1,4 +1,5 @@
 import { z } from "zod";
+import rawAbcTypes from "../../../content/abc-license-types.json";
 import rawTaxonomy from "../../../content/taxonomy.json";
 import rawZipClusters from "../../../content/zip-clusters.json";
 
@@ -59,4 +60,21 @@ export function categoryForNaics(naics: string | null | undefined): string | nul
     }
   }
   return best?.id ?? null;
+}
+
+const abcSchema = z.object({
+  source: z.url(),
+  asOf: z.string(),
+  types: z.record(z.string().regex(/^\d{2}$/), z.string().min(1)),
+  barsAndRestaurants: z.array(z.string().regex(/^\d{2}$/)),
+});
+export const abcLicenseTypes = abcSchema.parse(rawAbcTypes);
+
+export function abcTypeName(code: string | null | undefined): string | null {
+  const c = (code ?? "").trim().padStart(2, "0");
+  return abcLicenseTypes.types[c] ?? null;
+}
+
+export function isBarOrRestaurantType(code: string | null | undefined): boolean {
+  return abcLicenseTypes.barsAndRestaurants.includes((code ?? "").trim().padStart(2, "0"));
 }

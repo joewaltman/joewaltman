@@ -1,3 +1,4 @@
+import { abc } from "./adapters/abc";
 import { sdBizTax } from "./adapters/sd-biztax";
 import { enrichJob } from "./enrich";
 import { type Job, adapterJob } from "./runner";
@@ -17,6 +18,7 @@ const archivePrune: Job = {
 export const JOBS: Record<string, Job> = {
   "archive-prune": archivePrune,
   "sd-biztax": adapterJob(sdBizTax),
+  abc: adapterJob(abc),
   enrich: enrichJob(),
 };
 
@@ -24,6 +26,7 @@ export const JOBS: Record<string, Job> = {
 export const SCHEDULE: ScheduleEntry[] = [
   { job: "archive-prune", time: "04:00" },
   { job: "sd-biztax", time: "05:30" },
+  { job: "abc", time: "05:30" },
   // After the ingestion jobs, so new businesses are classified before the Monday 6:00am digest.
   { job: "enrich", time: "05:45" },
 ];
