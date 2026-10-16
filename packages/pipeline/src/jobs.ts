@@ -2,6 +2,7 @@ import { abc } from "./adapters/abc";
 import { cslb } from "./adapters/cslb";
 import { sdBizTax } from "./adapters/sd-biztax";
 import { enrichJob } from "./enrich";
+import { radarDigestJob } from "./radar-digest";
 import { type Job, adapterJob } from "./runner";
 import { type ScheduleEntry, pacificDay } from "./schedule";
 
@@ -22,6 +23,7 @@ export const JOBS: Record<string, Job> = {
   abc: adapterJob(abc),
   cslb: adapterJob(cslb),
   enrich: enrichJob(),
+  "radar-digest": radarDigestJob(),
 };
 
 // Pacific time. The city rebuilds its files around 2:07am Pacific, so 5:30am is safely after.
@@ -33,4 +35,6 @@ export const SCHEDULE: ScheduleEntry[] = [
   { job: "cslb", time: "05:30" },
   // After the ingestion jobs, so new businesses are classified before the Monday 6:00am digest.
   { job: "enrich", time: "05:45" },
+  // Monday only, after the morning ingestion and enrichment.
+  { job: "radar-digest", time: "06:00", weekdays: [1] },
 ];

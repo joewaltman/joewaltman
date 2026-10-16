@@ -143,6 +143,9 @@ importers:
       '@jw/llm':
         specifier: workspace:*
         version: link:../llm
+      '@jw/radar':
+        specifier: workspace:*
+        version: link:../radar
       cheerio:
         specifier: 1.2.0
         version: 1.2.0
@@ -155,6 +158,19 @@ importers:
       tsx:
         specifier: 4.23.15
         version: 4.23.15
+    devDependencies:
+      '@electric-sql/pglite':
+        specifier: 0.5.10
+        version: 0.5.10
+
+  packages/radar:
+    dependencies:
+      '@jw/content':
+        specifier: workspace:*
+        version: link:../content
+      '@jw/db':
+        specifier: workspace:*
+        version: link:../db
     devDependencies:
       '@electric-sql/pglite':
         specifier: 0.5.10

@@ -20,6 +20,7 @@
     "@jw/db": "workspace:*",
     "@jw/email": "workspace:*",
     "@jw/llm": "workspace:*",
+    "@jw/radar": "workspace:*",
     "cheerio": "1.2.0",
     "csv-parse": "6.2.1",
     "fflate": "0.8.3",

@@ -59,6 +59,8 @@ export default defineRailway(() => {
       MAIL_POSTAL_ADDRESS: "${{joewaltman.MAIL_POSTAL_ADDRESS}}",
       RESEND_API_KEY: "${{joewaltman.RESEND_API_KEY}}",
       ANTHROPIC_API_KEY: "${{joewaltman.ANTHROPIC_API_KEY}}",
+      // Signs the CSV links in Radar digests; the website checks them with the same secret.
+      SESSION_SECRET: "${{joewaltman.SESSION_SECRET}}",
       // Secrets set by hand in Railway; never written here.
       ARCHIVE_S3_ENDPOINT: preserve(),
       ARCHIVE_S3_BUCKET: preserve(),

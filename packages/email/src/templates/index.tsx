@@ -137,6 +137,81 @@ export function brokerReviewRequest(input: {
   };
 }
 
+export interface RadarDigestInput {
+  areas: string;
+  weekLabel: string;
+  sections: Array<{ title: string; items: string[]; more: number }>;
+  csvUrl: string;
+  wantThisUrl: string;
+}
+
+export function radarDigest(input: RadarDigestInput): Template {
+  const counts = input.sections.map((s) => s.items.length + s.more);
+  const total = counts.reduce((a, b) => a + b, 0);
+  const newBusinesses = input.sections.find((s) => s.title.startsWith("New businesses"));
+  const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
+  const newCount = newBusinesses ? newBusinesses.items.length + newBusinesses.more : 0;
+  const headline =
+    newCount > 0 ? plural(newCount, "new business", "new businesses") : plural(total, "new listing", "new listings");
+  if (total === 0) {
+    return {
+      name: "radar-digest",
+      subject: `New Business Radar: a quiet week in ${input.areas}`,
+      preview: `Nothing new in ${input.areas} for ${input.weekLabel}.`,
+      body: (
+        <>
+          <Text style={textStyle}>
+            A quiet week: no new businesses or license activity in {input.areas} for {input.weekLabel}.
+          </Text>
+          <Text style={textStyle}>Reply if you want a wider area or more categories.</Text>
+        </>
+      ),
+    };
+  }
+  return {
+    name: "radar-digest",
+    subject: `New Business Radar: ${headline} in ${input.areas}, ${input.weekLabel}`,
+    preview: `${headline} in ${input.areas}.`,
+    body: (
+      <>
+        <Text style={textStyle}>
+          {input.weekLabel}, {input.areas}.
+        </Text>
+        {input.sections
+          .filter((s) => s.items.length > 0)
+          .map((section) => (
+            <div key={section.title}>
+              <Text style={{ ...textStyle, fontWeight: 600, margin: "20px 0 6px" }}>
+                {section.title} ({section.items.length + section.more})
+              </Text>
+              {section.items.map((item) => (
+                <Text key={item} style={{ ...textStyle, margin: "0 0 8px" }}>
+                  {"•"} {item}
+                </Text>
+              ))}
+              {section.more > 0 ? (
+                <Text style={{ ...textStyle, color: "#555555" }}>And {section.more} more in the CSV.</Text>
+              ) : null}
+            </div>
+          ))}
+        <Text style={{ ...textStyle, marginTop: "20px" }}>
+          <Link href={input.csvUrl} style={linkStyle}>
+            Download this week as a CSV
+          </Link>
+        </Text>
+        <Text style={textStyle}>Reply with a name you want more on.</Text>
+        <Text style={textStyle}>
+          Want this piped into your CRM with enrichment and follow-up sequences? Reply or{" "}
+          <Link href={input.wantThisUrl} style={linkStyle}>
+            click here
+          </Link>
+          .
+        </Text>
+      </>
+    ),
+  };
+}
+
 export function jobFailed(input: {
   job: string;
   error: string;

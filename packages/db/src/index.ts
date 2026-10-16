@@ -16,6 +16,7 @@ export {
   inArray,
   isNotNull,
   isNull,
+  lte,
   lt,
   or,
   sql,
