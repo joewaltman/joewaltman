@@ -11,7 +11,7 @@ export const WATCH_EVENTS: Record<string, { label: string; source: string }> = {
   cslb_workers_comp_change: { label: "Contractor workers' comp changes", source: "CSLB" },
   cslb_license_removed: { label: "Contractor licenses dropped from the state file", source: "CSLB" },
   abc_status_change: { label: "Liquor license status changes", source: "California ABC" },
-  account_cancelled: { label: "City of San Diego business tax cancellations", source: "City of San Diego" },
+  account_cancelled: { label: "Business tax account cancellations", source: "City of San Diego" },
 };
 
 export const WATCH_EVENT_TYPES = Object.keys(WATCH_EVENTS);

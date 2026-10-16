@@ -23,7 +23,7 @@ export function WatchlistLanding({
 }) {
   const base = partner ? `/watchlist/p/${partner.slug}` : "/watchlist";
   const bySource = new Map<string, string[]>();
-  for (const e of Object.values(WATCH_EVENTS)) bySource.set(e.source, [...(bySource.get(e.source) ?? []), e.label.toLowerCase()]);
+  for (const e of Object.values(WATCH_EVENTS)) bySource.set(e.source, [...(bySource.get(e.source) ?? []), e.label.charAt(0).toLowerCase() + e.label.slice(1)]);
   return (
     <div className="prose-plain">
       {partner ? (
