@@ -39,11 +39,13 @@ export function s3Archive(opts: {
   accessKeyId: string;
   secretAccessKey: string;
   region?: string;
+  // Railway buckets use virtual-host style URLs; set true for providers that need path style.
+  pathStyle?: boolean;
 }): Archive {
   const client = new S3Client({
     endpoint: opts.endpoint,
     region: opts.region ?? "auto",
-    forcePathStyle: true,
+    forcePathStyle: opts.pathStyle ?? false,
     credentials: { accessKeyId: opts.accessKeyId, secretAccessKey: opts.secretAccessKey },
   });
   return {
@@ -130,6 +132,7 @@ export function archiveFromEnv(env: NodeJS.ProcessEnv = process.env): Archive {
       accessKeyId: ARCHIVE_S3_ACCESS_KEY_ID,
       secretAccessKey: ARCHIVE_S3_SECRET_ACCESS_KEY,
       region: env.ARCHIVE_S3_REGION,
+      pathStyle: env.ARCHIVE_S3_PATH_STYLE === "1",
     });
   }
   return localArchive(env.ARCHIVE_DIR ?? path.join(process.cwd(), ".archive"));

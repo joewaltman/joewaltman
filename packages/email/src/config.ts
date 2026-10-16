@@ -18,20 +18,22 @@ export interface EmailConfig {
 }
 
 export function loadEmailConfig(env: NodeJS.ProcessEnv = process.env): EmailConfig {
-  const rawMode = env.EMAIL_MODE ?? "dryrun";
+  // Railway references to an unset variable arrive as empty strings, so empty means unset.
+  const get = (key: string) => env[key]?.trim() || undefined;
+  const rawMode = get("EMAIL_MODE") ?? "dryrun";
   if (!(EMAIL_MODES as readonly string[]).includes(rawMode)) {
     throw new Error(`EMAIL_MODE must be one of ${EMAIL_MODES.join(", ")}; got "${rawMode}"`);
   }
-  const adminEmail = (env.ADMIN_EMAIL ?? "joe@joewaltman.com").trim().toLowerCase();
+  const adminEmail = (get("ADMIN_EMAIL") ?? "joe@joewaltman.com").toLowerCase();
   return {
     mode: rawMode as EmailMode,
     adminEmail,
-    from: env.EMAIL_FROM ?? "Joe Waltman <joe@joewaltman.com>",
-    replyTo: env.EMAIL_REPLY_TO ?? adminEmail,
-    siteUrl: (env.SITE_URL ?? "http://localhost:3000").replace(/\/$/, ""),
-    postalAddress: env.MAIL_POSTAL_ADDRESS?.trim() || null,
-    resendApiKey: env.RESEND_API_KEY?.trim() || null,
-    dryRunDir: env.EMAIL_DRYRUN_DIR ?? path.join(process.cwd(), ".email-out"),
+    from: get("EMAIL_FROM") ?? "Joe Waltman <joe@joewaltman.com>",
+    replyTo: get("EMAIL_REPLY_TO") ?? adminEmail,
+    siteUrl: (get("SITE_URL") ?? "http://localhost:3000").replace(/\/$/, ""),
+    postalAddress: get("MAIL_POSTAL_ADDRESS") ?? null,
+    resendApiKey: get("RESEND_API_KEY") ?? null,
+    dryRunDir: get("EMAIL_DRYRUN_DIR") ?? path.join(process.cwd(), ".email-out"),
     dryRunStdout: env.EMAIL_DRYRUN_STDOUT === "1",
   };
 }
