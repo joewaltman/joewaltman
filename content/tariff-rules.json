@@ -1,5 +1,5 @@
 {
-  "version": "2026-10-16.3",
+  "version": "2026-10-16.4",
   "asOf": "2026-10-16",
   "facts": {
     "scotus": {
@@ -44,13 +44,6 @@
       ],
       "asOf": "2026-10-16",
       "verify": false
-    },
-    "ach-only": {
-      "text": "CBP has paid refunds by ACH only since February 6, 2026.",
-      "sources": [],
-      "asOf": "2026-10-16",
-      "verify": true,
-      "note": "In Appendix A, but the February 6 date appears only in a C.H. Robinson link URL, not in any page text. Baker Tilly cites an interim final rule (91 FR 21) requiring electronic refunds through ACE, with no date."
     },
     "limitations": {
       "text": "Suits at the Court of International Trade have a two-year limitations period from the date of deposit, so entries from early 2025 start expiring around February 2027.",
@@ -173,13 +166,14 @@
       "verify": false
     },
     "mpf-min": {
-      "text": "The minimum merchandise processing fee on an informal entry is $26.79.",
+      "text": "The minimum merchandise processing fee is $26.79 per entry.",
       "sources": [
         "https://beancount.io/blog/2026/08/13/end-800-de-minimis-exemption-small-importer-2026-guide"
       ],
       "asOf": "2026-10-16",
-      "verify": true,
-      "note": "Appendix A says $26.79 per entry. The source calls it the informal entry minimum, and the page shows no date. Confirm with the broker which entries it covers."
+      "verify": false,
+      "note": "Appendix A says $26.79 per entry. The source calls it the informal entry minimum, and the page shows no date. Confirm with the broker which entries it covers. Decided by Joe and Claude on October 16, 2026 without broker review; shown to users with an assumption footnote where it is one.",
+      "assumption": "We apply the $26.79 minimum merchandise processing fee to every shipment. Our source describes it as the minimum for informal entries, so formal entries can pay more."
     },
     "cape-interest": {
       "text": "CAPE refunds include applicable interest.",
@@ -203,29 +197,30 @@
         "https://www.troutman.com/insights/to-sue-or-not-to-sue-that-is-the-question-for-ieepa-tariff-refunds/"
       ],
       "asOf": "2026-10-16",
-      "verify": true,
-      "note": "Not in Appendix A. Troutman only; Baker Tilly said open-protest handling was under development (July 15)."
+      "verify": false,
+      "note": "Not in Appendix A. Troutman only; Baker Tilly said open-protest handling was under development (July 15). Decided by Joe and Claude on October 16, 2026 without broker review; shown to users with an assumption footnote where it is one.",
+      "assumption": "That an open protest makes an entry ineligible for CAPE comes from one law firm's analysis (Troutman). CBP was still building its handling of open protests in July 2026."
     },
     "protest-recommended": {
-      "text": "Bradley, BakerLaw and Troutman recommend protective protests while the 180-day window is open. Troutman notes the Court of International Trade held in AGS v. CBP that IEEPA collection is not protestable.",
+      "text": "Several law firms (Bradley, BakerLaw and Troutman) recommend protective protests while the 180-day window is open. Troutman also notes that the Court of International Trade held in AGS v. CBP that IEEPA duty collection is not protestable.",
       "sources": [
         "https://www.bradley.com/insights/publications/2026/02/supreme-court-strikes-down-ieepa-tariffs-key-takeaways-and-next-steps-for-businesses/",
         "https://www.bakerlaw.com/insights/court-of-international-trade-orders-refund-of-ieepa-duties-and-interest-following-supreme-court-decision/",
         "https://www.troutman.com/insights/to-sue-or-not-to-sue-that-is-the-question-for-ieepa-tariff-refunds/"
       ],
       "asOf": "2026-10-16",
-      "verify": true,
-      "note": "Not in Appendix A."
+      "verify": false,
+      "note": "Not in Appendix A. Decided by Joe and Claude on October 16, 2026 without broker review; shown to users with an assumption footnote where it is one."
     },
     "cape-filing": {
-      "text": "CAPE claims are filed in the ACE Secure Data Portal by the importer of record or the broker that filed the entries, so ACE access is required.",
+      "text": "CAPE claims are filed in the ACE Secure Data Portal by the importer of record or the broker that filed the entries, so ACE access is required. Setting up ACE access can take from a few business days to about six weeks.",
       "sources": [
         "https://www.bakertilly.com/insights/ieepa-refunds",
         "https://gingercontrol.com/blog/ddp-shipments-courier-ior-ieepa-refund"
       ],
       "asOf": "2026-10-16",
-      "verify": true,
-      "note": "Not in Appendix A. Sources disagree on ACE setup time: Baker Tilly says up to six weeks, GingerControl says 3 to 5 business days."
+      "verify": false,
+      "note": "Not in Appendix A. Sources disagree on ACE setup time: Baker Tilly says up to six weeks, GingerControl says 3 to 5 business days. Decided by Joe and Claude on October 16, 2026 without broker review; shown to users with an assumption footnote where it is one."
     },
     "s301-exemptions": {
       "text": "USMCA-compliant goods of Canada or Mexico, and articles and parts subject to Section 232, are exempt from the Section 301 forced-labor tariffs.",
@@ -233,24 +228,19 @@
         "https://clarkhill.com/news-events/news/ustr-section-301-forced-labor-tariffs-2026/"
       ],
       "asOf": "2026-10-16",
-      "verify": true,
-      "note": "In Appendix A, but only Clark Hill's description of the June 2026 proposal mentions these exemptions. Akerman, writing after the tariffs took effect, does not. Akerman also mentions 471 exempt products."
-    },
-    "s301-argued": {
-      "text": "The Section 301 forced-labor tariffs were argued at the Court of International Trade on September 30, 2026, with no ruling yet.",
-      "sources": [],
-      "asOf": "2026-10-16",
-      "verify": true,
-      "note": "In Appendix A, but not found in the cited sources."
+      "verify": false,
+      "note": "In Appendix A, but only Clark Hill's description of the June 2026 proposal mentions these exemptions. Akerman, writing after the tariffs took effect, does not. Akerman also mentions 471 exempt products. Decided by Joe and Claude on October 16, 2026 without broker review; shown to users with an assumption footnote where it is one.",
+      "assumption": "We assume the Section 301 forced-labor tariff does not apply to USMCA-qualifying goods from Canada or Mexico, or to goods already under Section 232, as the June 2026 proposal said. We could not confirm this in the final action. If it does not hold, add the country's Section 301 rate (10% or 12.5%)."
     },
     "s301-more-countries": {
-      "text": "Akerman's illustrative lists also include, at 10%: Argentina, Bangladesh, Cambodia, Ecuador, El Salvador, Guatemala, Honduras, Jordan, Pakistan, Sri Lanka, and Trinidad and Tobago; at 12.5%: Saudi Arabia, Australia and Switzerland.",
+      "text": "Akerman's lists of countries at each rate, published after the tariffs took effect, include at 10%: Argentina, Bangladesh, Cambodia, Ecuador, El Salvador, Guatemala, Honduras, India, Jordan, Pakistan, Sri Lanka, and Trinidad and Tobago; at 12.5%: Australia, Saudi Arabia and Switzerland.",
       "sources": [
         "https://www.akerman.com/en/perspectives/section-301-forced-labor-tariffs-set-to-cover-most-imports-into-the-u-s-starting.html"
       ],
       "asOf": "2026-10-16",
-      "verify": true,
-      "note": "Not in Appendix A. Once confirmed, add these countries to the calculator picklist."
+      "verify": false,
+      "note": "Not in Appendix A. Once confirmed, add these countries to the calculator picklist. Decided by Joe and Claude on October 16, 2026 without broker review; shown to users with an assumption footnote where it is one.",
+      "assumption": "Rates for these countries come from Akerman's list, which it calls illustrative. Clark Hill's description of the June 2026 proposal put Honduras, India, Jordan, Sri Lanka, and Trinidad and Tobago at 12.5% instead of 10%."
     },
     "s301-net-of-mfn": {
       "text": "For the EU and Taiwan (10%) and for Japan, Korea and Switzerland (12.5%), the Section 301 forced-labor rate is net of the MFN base duty.",
@@ -258,8 +248,9 @@
         "https://www.akerman.com/en/perspectives/section-301-forced-labor-tariffs-set-to-cover-most-imports-into-the-u-s-starting.html"
       ],
       "asOf": "2026-10-16",
-      "verify": true,
-      "note": "Not in Appendix A."
+      "verify": false,
+      "note": "Not in Appendix A. Decided by Joe and Claude on October 16, 2026 without broker review; shown to users with an assumption footnote where it is one.",
+      "assumption": "For goods from the EU, Taiwan, Japan, South Korea and Switzerland, we treat the Section 301 rate as including the base duty, so only the difference is added. This comes from one source (Akerman)."
     },
     "s232-country-deals": {
       "text": "Section 232 actions include country-specific provisions for the UK, EU, Japan and Korea, and Proclamation 11000 excepts countries that reach an agreement.",
@@ -268,8 +259,9 @@
         "https://www.federalregister.gov/citation/91-FR-1039"
       ],
       "asOf": "2026-10-16",
-      "verify": true,
-      "note": "Not in Appendix A. No rates given."
+      "verify": false,
+      "note": "Not in Appendix A. No rates given. Decided by Joe and Claude on October 16, 2026 without broker review; shown to users with an assumption footnote where it is one.",
+      "assumption": "Section 232 terms for goods from the UK, EU, Japan and South Korea can differ under trade agreements. We use the standard rate because the sources give no country rates."
     },
     "s232-semis": {
       "text": "A 25% Section 232 tariff on specified advanced computing chips and their derivatives took effect January 15, 2026. Other semiconductors are left to negotiations.",
@@ -277,8 +269,8 @@
         "https://www.cov.com/en/news-and-insights/insights/2026/04/current-and-forthcoming-section-232-actions-by-the-trump-administration"
       ],
       "asOf": "2026-10-16",
-      "verify": true,
-      "note": "Not in Appendix A."
+      "verify": false,
+      "note": "Not in Appendix A. Decided by Joe and Claude on October 16, 2026 without broker review; shown to users with an assumption footnote where it is one."
     },
     "broker-fee-range": {
       "text": "A cost example puts customs broker fees at $25 to $75 per entry.",
@@ -286,8 +278,18 @@
         "https://beancount.io/blog/2026/08/13/end-800-de-minimis-exemption-small-importer-2026-guide"
       ],
       "asOf": "2026-10-16",
-      "verify": true,
-      "note": "Not in Appendix A."
+      "verify": false,
+      "note": "Not in Appendix A. Decided by Joe and Claude on October 16, 2026 without broker review; shown to users with an assumption footnote where it is one.",
+      "assumption": "When you do not enter your broker's fee, we use $25 to $75 per entry, from one published cost example. Your broker's actual fee may differ."
+    },
+    "semis-other": {
+      "text": "Section 232 tariffs do not yet cover semiconductors other than specified advanced computing chips; those are left to negotiations.",
+      "sources": [
+        "https://www.cov.com/en/news-and-insights/insights/2026/04/current-and-forthcoming-section-232-actions-by-the-trump-administration"
+      ],
+      "asOf": "2026-10-16",
+      "verify": false,
+      "assumption": "We assume no Section 232 tariff on semiconductors other than specified advanced computing chips, since the source says the rest are left to negotiations."
     }
   },
   "questions": [
@@ -840,6 +842,12 @@
           "facts": [
             "atmus"
           ]
+        },
+        {
+          "text": "Law firms differ on protests. Several recommend protective protests while the 180-day window is open; one Court of International Trade decision (AGS v. CBP) held that IEEPA duty collection is not protestable.",
+          "facts": [
+            "protest-recommended"
+          ]
         }
       ],
       "steps": [
@@ -1108,7 +1116,7 @@
       "body": [
         "Ask your broker for a list of your entries since February 1, 2025, with the liquidation date of each. Brokers can pull this from ACE.",
         {
-          "text": "CAPE claims are filed in ACE, so you or your broker will need ACE access.",
+          "text": "CAPE claims are filed in ACE, so you or your broker need ACE access. Setting it up can take from a few business days to about six weeks, so start now.",
           "facts": [
             "cape-filing"
           ]
@@ -1256,20 +1264,28 @@
         "notes": []
       },
       {
+        "id": "advanced_chips",
+        "label": "Advanced computing chips",
+        "s232Today": {
+          "pct": 25
+        },
+        "s232Future": {
+          "pct": 25
+        },
+        "facts": [
+          "s232-semis"
+        ],
+        "notes": []
+      },
+      {
         "id": "semiconductors",
-        "label": "Semiconductors",
+        "label": "Semiconductors (other than advanced computing chips)",
         "s232Today": null,
         "s232Future": null,
-        "facts": [],
-        "notes": [
-          {
-            "text": "A 25% Section 232 tariff applies to specified advanced computing chips and their derivatives. Other semiconductors are left to negotiations.",
-            "facts": [
-              "s232-semis"
-            ]
-          },
-          "No Section 232 rate for semiconductors is confirmed here. Ask your broker whether one applies."
-        ]
+        "facts": [
+          "semis-other"
+        ],
+        "notes": []
       },
       {
         "id": "general",
@@ -1282,10 +1298,189 @@
     ],
     "countries": [
       {
+        "id": "argentina",
+        "label": "Argentina",
+        "s301Pct": 10,
+        "usmca": false,
+        "netOfMfn": false,
+        "facts": [
+          "s301-more-countries"
+        ],
+        "notes": []
+      },
+      {
+        "id": "australia",
+        "label": "Australia",
+        "s301Pct": 12.5,
+        "usmca": false,
+        "netOfMfn": false,
+        "facts": [
+          "s301-more-countries"
+        ],
+        "notes": []
+      },
+      {
+        "id": "bangladesh",
+        "label": "Bangladesh",
+        "s301Pct": 10,
+        "usmca": false,
+        "netOfMfn": false,
+        "facts": [
+          "s301-more-countries"
+        ],
+        "notes": []
+      },
+      {
+        "id": "brazil",
+        "label": "Brazil",
+        "s301Pct": 12.5,
+        "usmca": false,
+        "facts": [
+          "s301-125"
+        ],
+        "netOfMfn": false,
+        "notes": []
+      },
+      {
+        "id": "cambodia",
+        "label": "Cambodia",
+        "s301Pct": 10,
+        "usmca": false,
+        "netOfMfn": false,
+        "facts": [
+          "s301-more-countries"
+        ],
+        "notes": []
+      },
+      {
         "id": "canada",
         "label": "Canada",
         "s301Pct": 10,
         "usmca": true,
+        "facts": [
+          "s301-10"
+        ],
+        "netOfMfn": false,
+        "notes": []
+      },
+      {
+        "id": "china",
+        "label": "China",
+        "s301Pct": 12.5,
+        "usmca": false,
+        "facts": [
+          "s301-125"
+        ],
+        "netOfMfn": false,
+        "notes": []
+      },
+      {
+        "id": "ecuador",
+        "label": "Ecuador",
+        "s301Pct": 10,
+        "usmca": false,
+        "netOfMfn": false,
+        "facts": [
+          "s301-more-countries"
+        ],
+        "notes": []
+      },
+      {
+        "id": "el_salvador",
+        "label": "El Salvador",
+        "s301Pct": 10,
+        "usmca": false,
+        "netOfMfn": false,
+        "facts": [
+          "s301-more-countries"
+        ],
+        "notes": []
+      },
+      {
+        "id": "eu",
+        "label": "A European Union country",
+        "s301Pct": 10,
+        "usmca": false,
+        "facts": [
+          "s301-10",
+          "s232-country-deals"
+        ],
+        "netOfMfn": true,
+        "notes": []
+      },
+      {
+        "id": "guatemala",
+        "label": "Guatemala",
+        "s301Pct": 10,
+        "usmca": false,
+        "netOfMfn": false,
+        "facts": [
+          "s301-more-countries"
+        ],
+        "notes": []
+      },
+      {
+        "id": "honduras",
+        "label": "Honduras",
+        "s301Pct": 10,
+        "usmca": false,
+        "netOfMfn": false,
+        "facts": [
+          "s301-more-countries"
+        ],
+        "notes": []
+      },
+      {
+        "id": "india",
+        "label": "India",
+        "s301Pct": 10,
+        "usmca": false,
+        "facts": [
+          "s301-10",
+          "s301-more-countries"
+        ],
+        "netOfMfn": false,
+        "notes": []
+      },
+      {
+        "id": "indonesia",
+        "label": "Indonesia",
+        "s301Pct": 10,
+        "usmca": false,
+        "facts": [
+          "s301-10"
+        ],
+        "netOfMfn": false,
+        "notes": []
+      },
+      {
+        "id": "japan",
+        "label": "Japan",
+        "s301Pct": 12.5,
+        "usmca": false,
+        "facts": [
+          "s301-125",
+          "s232-country-deals"
+        ],
+        "netOfMfn": true,
+        "notes": []
+      },
+      {
+        "id": "jordan",
+        "label": "Jordan",
+        "s301Pct": 10,
+        "usmca": false,
+        "netOfMfn": false,
+        "facts": [
+          "s301-more-countries"
+        ],
+        "notes": []
+      },
+      {
+        "id": "malaysia",
+        "label": "Malaysia",
+        "s301Pct": 10,
+        "usmca": false,
         "facts": [
           "s301-10"
         ],
@@ -1304,72 +1499,59 @@
         "notes": []
       },
       {
-        "id": "eu",
-        "label": "A European Union country",
+        "id": "pakistan",
+        "label": "Pakistan",
         "s301Pct": 10,
         "usmca": false,
+        "netOfMfn": false,
         "facts": [
-          "s301-10"
+          "s301-more-countries"
+        ],
+        "notes": []
+      },
+      {
+        "id": "saudi_arabia",
+        "label": "Saudi Arabia",
+        "s301Pct": 12.5,
+        "usmca": false,
+        "netOfMfn": false,
+        "facts": [
+          "s301-more-countries"
+        ],
+        "notes": []
+      },
+      {
+        "id": "korea",
+        "label": "South Korea",
+        "s301Pct": 12.5,
+        "usmca": false,
+        "facts": [
+          "s301-125",
+          "s232-country-deals"
         ],
         "netOfMfn": true,
-        "notes": [
-          {
-            "text": "Section 232 terms for goods from this country can differ under trade agreements. Ask your broker.",
-            "facts": [
-              "s232-country-deals"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "uk",
-        "label": "United Kingdom",
-        "s301Pct": 10,
-        "usmca": false,
-        "facts": [
-          "s301-10"
-        ],
-        "netOfMfn": false,
-        "notes": [
-          {
-            "text": "Section 232 terms for goods from this country can differ under trade agreements. Ask your broker.",
-            "facts": [
-              "s232-country-deals"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "india",
-        "label": "India",
-        "s301Pct": 10,
-        "usmca": false,
-        "facts": [
-          "s301-10"
-        ],
-        "netOfMfn": false,
         "notes": []
       },
       {
-        "id": "indonesia",
-        "label": "Indonesia",
+        "id": "sri_lanka",
+        "label": "Sri Lanka",
         "s301Pct": 10,
         "usmca": false,
-        "facts": [
-          "s301-10"
-        ],
         "netOfMfn": false,
+        "facts": [
+          "s301-more-countries"
+        ],
         "notes": []
       },
       {
-        "id": "malaysia",
-        "label": "Malaysia",
-        "s301Pct": 10,
+        "id": "switzerland",
+        "label": "Switzerland",
+        "s301Pct": 12.5,
         "usmca": false,
+        "netOfMfn": true,
         "facts": [
-          "s301-10"
+          "s301-more-countries"
         ],
-        "netOfMfn": false,
         "notes": []
       },
       {
@@ -1384,12 +1566,35 @@
         "notes": []
       },
       {
-        "id": "china",
-        "label": "China",
+        "id": "thailand",
+        "label": "Thailand",
         "s301Pct": 12.5,
         "usmca": false,
         "facts": [
           "s301-125"
+        ],
+        "netOfMfn": false,
+        "notes": []
+      },
+      {
+        "id": "trinidad",
+        "label": "Trinidad and Tobago",
+        "s301Pct": 10,
+        "usmca": false,
+        "netOfMfn": false,
+        "facts": [
+          "s301-more-countries"
+        ],
+        "notes": []
+      },
+      {
+        "id": "uk",
+        "label": "United Kingdom",
+        "s301Pct": 10,
+        "usmca": false,
+        "facts": [
+          "s301-10",
+          "s232-country-deals"
         ],
         "netOfMfn": false,
         "notes": []
@@ -1406,64 +1611,6 @@
         "notes": []
       },
       {
-        "id": "thailand",
-        "label": "Thailand",
-        "s301Pct": 12.5,
-        "usmca": false,
-        "facts": [
-          "s301-125"
-        ],
-        "netOfMfn": false,
-        "notes": []
-      },
-      {
-        "id": "japan",
-        "label": "Japan",
-        "s301Pct": 12.5,
-        "usmca": false,
-        "facts": [
-          "s301-125"
-        ],
-        "netOfMfn": true,
-        "notes": [
-          {
-            "text": "Section 232 terms for goods from this country can differ under trade agreements. Ask your broker.",
-            "facts": [
-              "s232-country-deals"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "korea",
-        "label": "South Korea",
-        "s301Pct": 12.5,
-        "usmca": false,
-        "facts": [
-          "s301-125"
-        ],
-        "netOfMfn": true,
-        "notes": [
-          {
-            "text": "Section 232 terms for goods from this country can differ under trade agreements. Ask your broker.",
-            "facts": [
-              "s232-country-deals"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "brazil",
-        "label": "Brazil",
-        "s301Pct": 12.5,
-        "usmca": false,
-        "facts": [
-          "s301-125"
-        ],
-        "netOfMfn": false,
-        "notes": []
-      },
-      {
         "id": "other",
         "label": "Another country",
         "s301Pct": null,
@@ -1471,7 +1618,7 @@
         "facts": [],
         "netOfMfn": false,
         "notes": [
-          "The Section 301 forced-labor rate for this country is not confirmed here, so the calculator shows both possible rates."
+          "The Section 301 forced-labor rate for this country is not on our lists, so the calculator shows both possible rates."
         ]
       }
     ],
@@ -1483,15 +1630,9 @@
       ],
       "note": [
         {
-          "text": "Lawsuits challenging the Section 301 forced-labor tariffs were filed on July 24, 2026.",
+          "text": "Lawsuits challenging the Section 301 forced-labor tariffs were filed on July 24, 2026, the day they took effect.",
           "facts": [
             "s301"
-          ]
-        },
-        {
-          "text": "The tariffs were argued at the Court of International Trade on September 30, 2026. There is no ruling yet.",
-          "facts": [
-            "s301-argued"
           ]
         }
       ],

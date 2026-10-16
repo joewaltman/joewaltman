@@ -22,7 +22,11 @@ The code never hardcodes a rate or date. The engine is `packages/content/src/tar
 3. If a refund path changed, add or update a scenario in `packages/content/src/tariff/scenarios.test.ts`.
 4. Commit and deploy. Stored results keep the rules version they were made with.
 
-## After the broker reviews
+## Assumptions
+
+On October 16, 2026 Joe chose to launch without a broker review. Facts the sources could not settle carry an `assumption` text in `content/tariff-rules.json`. Visitors see that text as a numbered footnote wherever the result or calculator relies on it, and it appears in the emailed result and the broker summary. `/admin/tariff` lists every assumption in use. To retire one, either confirm it (delete `assumption`) or change the fact and copy.
+
+## If a broker reviews later
 
 For each fact the broker confirms: set `verify` to `false`, add the source the broker relied on if it is new, and update `asOf`. The hidden copy appears on the next deploy. For a fact the broker corrects, change the text first. `s301-more-countries` needs code-free follow-up: add the confirmed countries to `calculator.countries`.
 

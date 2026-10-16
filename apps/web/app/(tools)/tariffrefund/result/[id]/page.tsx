@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { z } from "zod";
+import { AssumptionList, Notes } from "@/components/assumptions";
 import { HandRaise } from "@/components/hand-raise";
 import { loadTariffResponse, resultSections, reviewBroker } from "@/lib/tariff";
 import { formatDate, todayLabel } from "@/lib/tariff-view";
@@ -61,7 +62,10 @@ export default async function TariffResultPage({
       </p>
       <h1 className="mt-0 mb-4 text-[2rem] leading-tight font-semibold">{result.path.title}</h1>
       {result.path.summary.map((s) => (
-        <p key={s.text}>{s.text}</p>
+        <p key={s.text}>
+          {s.text}
+          <Notes notes={s.notes} />
+        </p>
       ))}
 
       {resultSections(result).map((section) => (
@@ -69,7 +73,10 @@ export default async function TariffResultPage({
           <h2>{section.title}</h2>
           <ul>
             {section.items.map((item) => (
-              <li key={item}>{item}</li>
+              <li key={item.text}>
+                {item.text}
+                <Notes notes={item.notes} />
+              </li>
             ))}
           </ul>
         </section>
@@ -109,6 +116,8 @@ export default async function TariffResultPage({
           ) : null}
         </section>
       ) : null}
+
+      <AssumptionList assumptions={result.assumptions} />
 
       <section>
         <h2>Sources</h2>

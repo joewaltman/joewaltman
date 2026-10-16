@@ -37,14 +37,25 @@ export interface StoredTariffResponse {
   email: string | null;
 }
 
-export function resultSections(result: TariffResult) {
+export interface ResultItem {
+  text: string;
+  // Footnote numbers for the assumptions behind this item. Results saved before footnotes existed have none.
+  notes: number[];
+}
+
+const item = (t: { text: string; notes?: number[] }): ResultItem => ({ text: t.text, notes: t.notes ?? [] });
+
+export function resultSections(result: TariffResult): Array<{ title: string; items: ResultItem[] }> {
   return [
-    { title: "Next steps", items: result.path.steps.map((s) => s.text) },
-    ...result.actions.map((a) => ({ title: a.title, items: a.body.map((b) => b.text) })),
-    { title: "Documents to gather", items: result.path.documents.map((d) => d.text) },
-    { title: "Deadlines", items: result.path.deadlines.map((d) => d.text) },
+    { title: "Next steps", items: result.path.steps.map(item) },
+    ...result.actions.map((a) => ({ title: a.title, items: a.body.map(item) })),
+    { title: "Documents to gather", items: result.path.documents.map(item) },
+    { title: "Deadlines", items: result.path.deadlines.map(item) },
   ].filter((s) => s.items.length > 0);
 }
+
+// Plain-text form for email: "text [1]".
+export const withMarkers = (i: ResultItem) => `${i.text}${i.notes.map((n) => ` [${n}]`).join("")}`;
 
 // Saves the answers, emails the result, and when asked, starts a double opt-in for rule-change updates.
 export async function submitTariff(
@@ -97,11 +108,15 @@ export async function submitTariff(
   }
 
   const summaryText = brokerSummary({ answers, result, rules, preparedOn: input.today });
+  const assumptions = result.assumptions ?? [];
   const template = tariffResult({
     pathTitle: result.path.title,
-    summary: result.path.summary.map((s) => s.text),
+    summary: result.path.summary.map((s) => withMarkers(item(s))),
     sections: [
-      ...resultSections(result),
+      ...resultSections(result).map((sec) => ({ title: sec.title, items: sec.items.map(withMarkers) })),
+      ...(assumptions.length > 0
+        ? [{ title: "Assumptions", items: assumptions.map((a, i) => `[${i + 1}] ${a.text}`) }]
+        : []),
       ...(confirmUrl
         ? [{ title: "Updates", items: [`Confirm you want an email when refund rules or deadlines change: ${confirmUrl}`] }]
         : []),

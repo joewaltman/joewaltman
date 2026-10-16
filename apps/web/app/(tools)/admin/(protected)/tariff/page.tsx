@@ -70,6 +70,9 @@ export default async function AdminTariffPage() {
       .limit(200),
   ]);
   const verify = unverifiedFacts(tariffRules);
+  const assumed = Object.entries(tariffRules.facts)
+    .filter(([, f]) => f.assumption && !f.verify)
+    .map(([id, f]) => ({ id, ...f }));
   const uses = hiddenUses();
 
   return (
@@ -80,30 +83,42 @@ export default async function AdminTariffPage() {
         <code>content/tariff-rules.json</code> and redeploy to change them.
       </p>
 
-      <h2 className="mb-2 text-[1.2rem] font-semibold">Needs broker review ({verify.length})</h2>
+      <h2 className="mb-2 text-[1.2rem] font-semibold">Assumptions in use ({assumed.length})</h2>
       <p className="mb-4 text-[0.95rem] text-muted">
-        These facts are marked verify. Copy that cites them is hidden from the public until the
-        broker confirms and the flag is set to false.
+        Judgment calls made without broker review. Visitors see each one as a numbered footnote on
+        the result and calculator pages. Change or remove one in <code>content/tariff-rules.json</code>.
       </p>
       <ol className="mb-10 grid list-decimal gap-4 pl-5 text-[0.95rem]">
-        {verify.map((f) => (
+        {assumed.map((f) => (
           <li key={f.id}>
-            <strong>{f.id}</strong>: {f.text}
-            {f.note ? <div className="text-muted">{f.note}</div> : null}
+            <strong>{f.id}</strong>: {f.assumption}
             <div className="text-muted">
               Sources:{" "}
-              {f.sources.length > 0
-                ? f.sources.map((u) => (
-                    <a key={u} href={u} className="mr-2" rel="noopener noreferrer" target="_blank">
-                      {new URL(u).hostname}
-                    </a>
-                  ))
-                : "none"}
+              {f.sources.map((u) => (
+                <a key={u} href={u} className="mr-2" rel="noopener noreferrer" target="_blank">
+                  {new URL(u).hostname}
+                </a>
+              ))}
             </div>
-            <div className="text-muted">Holding back: {uses.get(f.id)?.join(", ") ?? "not used in copy yet"}</div>
+            {f.note ? <div className="text-muted">{f.note}</div> : null}
           </li>
         ))}
       </ol>
+
+      {verify.length > 0 ? (
+        <>
+          <h2 className="mb-2 text-[1.2rem] font-semibold">Unconfirmed, hidden from visitors ({verify.length})</h2>
+          <ol className="mb-10 grid list-decimal gap-4 pl-5 text-[0.95rem]">
+            {verify.map((f) => (
+              <li key={f.id}>
+                <strong>{f.id}</strong>: {f.text}
+                {f.note ? <div className="text-muted">{f.note}</div> : null}
+                <div className="text-muted">Holding back: {uses.get(f.id)?.join(", ") ?? "not used in copy yet"}</div>
+              </li>
+            ))}
+          </ol>
+        </>
+      ) : null}
 
       <h2 className="mb-3 text-[1.2rem] font-semibold">Recent results</h2>
       <DataTable

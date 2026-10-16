@@ -1,4 +1,5 @@
 import {
+  AssumptionNotes,
   type CalcResult,
   type Range,
   type Scenario,
@@ -8,10 +9,11 @@ import {
 import { getDb } from "@jw/db";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { AssumptionList, Notes } from "@/components/assumptions";
 import { HandRaise } from "@/components/hand-raise";
 import { SignupForm } from "@/components/signup-form";
 import { type HtsLookup, lookupHts } from "@/lib/hts";
-import { formatDate, isVerified, publicSources, publicTexts } from "@/lib/tariff-view";
+import { formatDate, publicSources, publicTexts } from "@/lib/tariff-view";
 
 export const metadata: Metadata = {
   title: "Landed-cost calculator",
@@ -41,7 +43,7 @@ const num = (v: string | undefined) => {
   return Number.isFinite(n) && n >= 0 ? n : null;
 };
 
-function ScenarioTable({ today, future }: { today: Scenario; future: Scenario }) {
+function ScenarioTable({ today, future, layerNotes }: { today: Scenario; future: Scenario; layerNotes: number[][] }) {
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-collapse text-[0.95rem]">
@@ -59,6 +61,7 @@ function ScenarioTable({ today, future }: { today: Scenario; future: Scenario })
               <tr key={layer.id} className="border-b border-rule align-top">
                 <td className="py-2 pr-4">
                   {layer.label}
+                  <Notes notes={layerNotes[i]} />
                   <div className="text-[0.85rem] text-muted">{layer.reason}</div>
                   {next.reason !== layer.reason ? (
                     <div className="text-[0.85rem] text-muted">From {future.label}: {next.reason}</div>
@@ -116,11 +119,9 @@ function BaseRateNote({ lookup }: { lookup: HtsLookup | null }) {
   );
 }
 
-function Fees({ result, shipments }: { result: CalcResult; shipments: number }) {
+function Fees({ result, notes }: { result: CalcResult; notes: number[] }) {
   const c = tariffRules.calculator;
-  const mpfConfirmed = isVerified(tariffRules, c.mpfMinimum.facts);
-  const broker = result.fees.brokerFeePerEntry;
-  const perShipment = (mpfConfirmed ? result.fees.mpfMinimumPerEntry : 0) + (broker ?? 0);
+  const f = result.fees;
   return (
     <section>
       <h2>Entry fees</h2>
@@ -128,25 +129,18 @@ function Fees({ result, shipments }: { result: CalcResult; shipments: number }) 
         <p key={t}>{t}</p>
       ))}
       <ul>
-        {mpfConfirmed ? (
-          <li>Merchandise processing fee: at least {money(result.fees.mpfMinimumPerEntry)} per entry.</li>
-        ) : (
-          <li>Merchandise processing fee: the amount is not confirmed here. Ask your broker.</li>
-        )}
         <li>
-          Your broker&apos;s fee:{" "}
-          {broker !== null ? `${money(broker)} per entry` : "enter it above to include it"}
-          {isVerified(tariffRules, c.brokerFee.facts)
-            ? ` (typical: ${money(c.brokerFee.low)} to ${money(c.brokerFee.high)})`
-            : ""}
-          .
+          Merchandise processing fee: at least {money(f.mpfMinimumPerEntry)} per entry.
+        </li>
+        <li>
+          Broker&apos;s fee: {range(f.brokerFeePerEntry, money)} per entry
+          {f.brokerFeeIsEstimate ? " (an estimate; enter your broker's fee above for an exact figure)" : ""}.
         </li>
       </ul>
-      {perShipment > 0 ? (
-        <p>
-          Known entry fees: {money(perShipment)} per shipment, {money(perShipment * shipments)} per month.
-        </p>
-      ) : null}
+      <p>
+        Entry fees: {range(f.perShipment, money)} per shipment, {range(f.perMonth, money)} per month.
+        <Notes notes={notes} />
+      </p>
     </section>
   );
 }
@@ -177,6 +171,13 @@ export default async function CalculatorPage({ searchParams }: { searchParams: P
         tariffRules,
       )
     : null;
+
+  // Footnotes are numbered in reading order: the duty table, then the fees.
+  const footnotes = new AssumptionNotes(tariffRules);
+  const layerNotes = result
+    ? result.today.layers.map((l, i) => footnotes.cite([...l.facts, ...result.future.layers[i]!.facts]))
+    : [];
+  const feeNotes = result ? footnotes.cite(result.fees.facts) : [];
 
   const notes = result
     ? [
@@ -267,7 +268,7 @@ export default async function CalculatorPage({ searchParams }: { searchParams: P
         <section className="mt-10">
           <h2>Duty on {category!.label.toLowerCase()} from {country!.label}</h2>
           <BaseRateNote lookup={lookup} />
-          <ScenarioTable today={result.today} future={result.future} />
+          <ScenarioTable today={result.today} future={result.future} layerNotes={layerNotes} />
           {notes.length > 0 ? (
             <ul className="mt-4">
               {notes.map((n) => (
@@ -275,7 +276,8 @@ export default async function CalculatorPage({ searchParams }: { searchParams: P
               ))}
             </ul>
           ) : null}
-          <Fees result={result} shipments={shipments!} />
+          <Fees result={result} notes={feeNotes} />
+          <AssumptionList assumptions={footnotes.list} />
           <h2>Sources</h2>
           <ul>
             {sources.map((s) => (

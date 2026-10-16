@@ -41,9 +41,11 @@ export interface CalcResult {
   future: Scenario;
   fees: {
     mpfMinimumPerEntry: number;
-    brokerFeePerEntry: number | null;
-    perShipment: number;
-    perMonth: number;
+    brokerFeePerEntry: Range;
+    // True when no fee was entered and the published example range is used instead.
+    brokerFeeIsEstimate: boolean;
+    perShipment: Range;
+    perMonth: Range;
     facts: string[];
   };
 }
@@ -84,7 +86,9 @@ export function computeLandedCost(input: CalcInput, rules: TariffRules): CalcRes
       country.s301Pct === null
         ? `The rate for goods from this country is not confirmed here. It is either ${c.s301.unlistedLowPct}% or ${c.s301.unlistedHighPct}%; ask your broker which.`
         : `${country.s301Pct}% for goods from ${country.label}.`;
-    const countryFacts = [...c.s301.facts, ...country.facts];
+    // A country's facts are about either Section 301 or Section 232; each goes on its own line.
+    const countryFacts = [...c.s301.facts, ...country.facts.filter((f) => !f.startsWith("s232"))];
+    const country232Facts = country.facts.filter((f) => f.startsWith("s232"));
 
     let s301: Layer;
     if (s232) {
@@ -128,7 +132,7 @@ export function computeLandedCost(input: CalcInput, rules: TariffRules): CalcRes
       label: "Section 232 tariff",
       rate: s232 ? toRange(s232) : null,
       reason: s232 ? `Applies to ${category.label.toLowerCase()}.` : "No Section 232 rate on file for this category.",
-      facts: category.facts,
+      facts: [...category.facts, ...(s232 ? country232Facts : [])],
     });
 
     const counted = layers.filter((l) => l.rate !== null);
@@ -153,16 +157,25 @@ export function computeLandedCost(input: CalcInput, rules: TariffRules): CalcRes
     };
   };
 
-  const perShipment = round2(c.mpfMinimum.amount + (input.brokerFeePerEntry ?? 0));
+  const estimate = input.brokerFeePerEntry === null;
+  const broker = estimate ? { low: c.brokerFee.low, high: c.brokerFee.high } : point(input.brokerFeePerEntry!);
+  const perShipment = {
+    low: round2(c.mpfMinimum.amount + broker.low),
+    high: round2(c.mpfMinimum.amount + broker.high),
+  };
   return {
     today: scenario("Today", category.s232Today),
     future: scenario(c.futureLabel, category.s232Future),
     fees: {
       mpfMinimumPerEntry: c.mpfMinimum.amount,
-      brokerFeePerEntry: input.brokerFeePerEntry,
+      brokerFeePerEntry: broker,
+      brokerFeeIsEstimate: estimate,
       perShipment,
-      perMonth: round2(perShipment * input.shipmentsPerMonth),
-      facts: [...c.mpfMinimum.facts, ...c.deMinimis.facts],
+      perMonth: {
+        low: round2(perShipment.low * input.shipmentsPerMonth),
+        high: round2(perShipment.high * input.shipmentsPerMonth),
+      },
+      facts: [...c.mpfMinimum.facts, ...c.deMinimis.facts, ...(estimate ? c.brokerFee.facts : [])],
     },
   };
 }

@@ -26,6 +26,7 @@ export function brokerSummary(input: {
   preparedOn: string;
 }): string {
   const { answers, result, rules } = input;
+  const marked = (i: { text: string; notes?: number[] }) => `${i.text}${(i.notes ?? []).map((n) => ` [${n}]`).join("")}`;
   const lines: string[] = [
     "IEEPA tariff refund: summary for my customs broker",
     "",
@@ -38,16 +39,21 @@ export function brokerSummary(input: {
     lines.push(`- ${q.label} ${answerLabel(rules, q.id, answers[q.id])}`);
   }
   lines.push("", `Where it points: ${result.path.title}`);
-  for (const s of result.path.summary) lines.push(s.text);
-  const section = (title: string, items: Array<{ text: string }>) => {
+  for (const s of result.path.summary) lines.push(marked(s));
+  const section = (title: string, items: Array<{ text: string; notes?: number[] }>) => {
     if (items.length === 0) return;
     lines.push("", title);
-    for (const i of items) lines.push(`- ${i.text}`);
+    for (const i of items) lines.push(`- ${marked(i)}`);
   };
   section("Next steps:", result.path.steps);
   for (const a of result.actions) section(`${a.title}:`, a.body);
   section("Documents to gather:", result.path.documents);
   section("Deadlines:", result.path.deadlines);
+  const assumptions = result.assumptions ?? [];
+  if (assumptions.length > 0) {
+    lines.push("", "Assumptions the tool made (please check these):");
+    assumptions.forEach((a, i) => lines.push(`[${i + 1}] ${a.text}`));
+  }
   lines.push("", "Can you confirm this applies to my entries and tell me what you need from me?");
   return lines.join("\n");
 }

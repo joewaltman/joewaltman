@@ -8,9 +8,35 @@ export type Audience = "public" | "admin";
 export interface ResolvedText {
   text: string;
   facts: string[];
+  // Footnote numbers (1-based) for the assumptions this text relies on.
+  notes: number[];
 }
 
-export interface HiddenText extends ResolvedText {
+export interface Assumption {
+  id: string;
+  text: string;
+}
+
+// Numbers assumptions in the order they are first cited, so footnote 1 is the first one a reader meets.
+export class AssumptionNotes {
+  readonly list: Assumption[] = [];
+  constructor(private readonly rules: TariffRules) {}
+  cite(factIds: string[]): number[] {
+    const out: number[] = [];
+    for (const id of factIds) {
+      const text = this.rules.facts[id]?.assumption;
+      if (!text) continue;
+      let i = this.list.findIndex((a) => a.id === id);
+      if (i < 0) i = this.list.push({ id, text }) - 1;
+      if (!out.includes(i + 1)) out.push(i + 1);
+    }
+    return out;
+  }
+}
+
+export interface HiddenText {
+  text: string;
+  facts: string[];
   where: string;
   verifyFacts: string[];
 }
@@ -30,6 +56,7 @@ export interface TariffResult {
   };
   actions: Array<{ id: string; title: string; body: ResolvedText[] }>;
   sources: Array<{ id: string } & Fact>;
+  assumptions: Assumption[];
   hidden: HiddenText[];
 }
 
@@ -54,6 +81,7 @@ export function evaluateTariff(
 
   const hidden: HiddenText[] = [];
   const cited = new Set<string>();
+  const notes = new AssumptionNotes(rules);
 
   const resolve = (where: string, items: TextItem[]): ResolvedText[] => {
     const out: ResolvedText[] = [];
@@ -66,7 +94,7 @@ export function evaluateTariff(
         if (audience === "public") continue;
       }
       for (const f of facts) cited.add(f);
-      out.push({ text, facts });
+      out.push({ text, facts, notes: notes.cite(facts) });
     }
     return out;
   };
@@ -98,6 +126,7 @@ export function evaluateTariff(
     path: resolvedPath,
     actions,
     sources,
+    assumptions: notes.list,
     hidden,
   };
 }

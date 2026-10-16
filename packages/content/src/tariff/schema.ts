@@ -10,6 +10,9 @@ export const factSchema = z
     sources: z.array(z.url()),
     asOf: isoDate,
     verify: z.boolean(),
+    // Set when the tool relies on a judgment call rather than a confirmed fact. Pages show this
+    // text as a numbered footnote wherever copy cites the fact.
+    assumption: z.string().optional(),
     note: z.string().optional(),
   })
   .refine((f) => f.verify || f.sources.length > 0, {

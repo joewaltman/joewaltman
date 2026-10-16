@@ -96,22 +96,30 @@ describe("tariff refund paths", () => {
   });
 });
 
+describe("assumption footnotes", () => {
+  it("numbers the assumptions a path relies on and marks the copy that cites them", () => {
+    const r = run({ entryStatus: "liquidated_recent" });
+    expect(r.assumptions.map((a) => a.id)).toEqual(["protest-blocks-cape"]);
+    const step = r.path.steps.find((s) => s.text.startsWith("An entry with an open protest"))!;
+    expect(step.notes).toEqual([1]);
+    expect(r.path.steps[0]!.notes).toEqual([]);
+  });
+
+  it("has no assumptions on a path that relies on none", () => {
+    expect(run({}).assumptions).toEqual([]);
+  });
+});
+
 describe("unverified facts", () => {
   it("are hidden from the public and listed for admin", () => {
-    const pub = evaluateTariff(base, tariffRules, "public");
-    const admin = evaluateTariff(base, tariffRules, "admin");
+    const rules = structuredClone(tariffRules);
+    rules.facts["cape-filing"]!.verify = true;
+    const pub = evaluateTariff(base, rules, "public");
+    const admin = evaluateTariff(base, rules, "admin");
     const filing = "CAPE claims are filed in ACE";
     expect(pub.path.steps.map((s) => s.text).join(" ")).not.toContain(filing);
     expect(admin.path.steps.map((s) => s.text).join(" ")).toContain(filing);
     expect(pub.hidden.map((h) => h.verifyFacts).flat()).toContain("cape-filing");
-    expect(admin.sources.some((s) => s.id === "cape-filing")).toBe(true);
     expect(pub.sources.some((s) => s.id === "cape-filing")).toBe(false);
-  });
-
-  it("show up for the public once marked verified", () => {
-    const rules = structuredClone(tariffRules);
-    rules.facts["cape-filing"]!.verify = false;
-    const pub = evaluateTariff(base, rules, "public");
-    expect(pub.path.steps.map((s) => s.text).join(" ")).toContain("CAPE claims are filed in ACE");
   });
 });
