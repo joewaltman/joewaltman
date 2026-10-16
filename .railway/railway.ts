@@ -10,6 +10,8 @@ export const partial = "joewaltman";
 export default defineRailway((ctx) => {
   const production = ctx.environment === "production";
   const source = github("joewaltman/joewaltman", { branch: production ? "main" : "tools-spine" });
+  // Each environment has its own Postgres service; names are unique across the project.
+  const databaseUrl = production ? "${{Postgres-XFjk.DATABASE_URL}}" : "${{Postgres.DATABASE_URL}}";
 
   // The website: homepage, tools and admin. Migrations run before the server starts, so a
   // failed migration never takes traffic.
@@ -21,7 +23,7 @@ export default defineRailway((ctx) => {
     start: "pnpm --filter @jw/db migrate && pnpm --filter web start",
     healthcheck: "/",
     env: {
-      DATABASE_URL: "${{Postgres.DATABASE_URL}}",
+      DATABASE_URL: databaseUrl,
       PORT: "8080",
       SITE_URL: preserve(),
       ADMIN_EMAIL: preserve(),
@@ -47,7 +49,7 @@ export default defineRailway((ctx) => {
     start: "pnpm --filter @jw/pipeline tick",
     deploy: { cronSchedule: "*/30 * * * *", restartPolicyType: "NEVER" },
     env: {
-      DATABASE_URL: "${{Postgres.DATABASE_URL}}",
+      DATABASE_URL: databaseUrl,
       // Email settings follow the website, so Joe sets them once.
       EMAIL_MODE: "${{joewaltman.EMAIL_MODE}}",
       ADMIN_EMAIL: "${{joewaltman.ADMIN_EMAIL}}",
