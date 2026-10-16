@@ -12,7 +12,7 @@ describe("content/tariff-rules.json", () => {
   });
 
   it("has no em dashes", () => {
-    expect(raw).not.toMatch(/—/);
+    expect(raw).not.toMatch(/\u2014/);
   });
 
   it("gives every fact an as-of date, and a source unless it is marked verify", () => {
