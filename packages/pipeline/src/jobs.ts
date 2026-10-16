@@ -1,4 +1,5 @@
 import { abc } from "./adapters/abc";
+import { cslb } from "./adapters/cslb";
 import { sdBizTax } from "./adapters/sd-biztax";
 import { enrichJob } from "./enrich";
 import { type Job, adapterJob } from "./runner";
@@ -19,6 +20,7 @@ export const JOBS: Record<string, Job> = {
   "archive-prune": archivePrune,
   "sd-biztax": adapterJob(sdBizTax),
   abc: adapterJob(abc),
+  cslb: adapterJob(cslb),
   enrich: enrichJob(),
 };
 
@@ -27,6 +29,8 @@ export const SCHEDULE: ScheduleEntry[] = [
   { job: "archive-prune", time: "04:00" },
   { job: "sd-biztax", time: "05:30" },
   { job: "abc", time: "05:30" },
+  // The CSLB file regenerates daily; running daily catches bond and status changes within a day.
+  { job: "cslb", time: "05:30" },
   // After the ingestion jobs, so new businesses are classified before the Monday 6:00am digest.
   { job: "enrich", time: "05:45" },
 ];
