@@ -41,6 +41,12 @@ export function unsubscribeUrls(siteUrl: string, token: string) {
   };
 }
 
+// "joe@joewaltman.com" -> "j***@joewaltman.com"
+export function maskEmail(email: string): string {
+  const [user = "", domain = ""] = email.split("@");
+  return `${user.slice(0, 1)}***@${domain}`;
+}
+
 export async function isSuppressed(db: Db, email: string): Promise<boolean> {
   const rows = await db
     .select({ email: suppressions.email })
@@ -56,6 +62,10 @@ export async function sendEmail(deps: SendDeps, input: SendInput): Promise<SendR
   const { template } = input;
 
   const log = async (status: EmailStatus, extra: { providerId?: string; error?: string } = {}) => {
+    // One line per send in the service log, so a missing email can be traced without the database.
+    const line = `[email] ${template.name} to ${maskEmail(to)}: ${status}${extra.error ? ` (${extra.error})` : ""}`;
+    if (status === "failed" || status === "blocked") console.error(line);
+    else console.log(line);
     await db.insert(emailSends).values({
       subscriberId: input.subscriber?.id ?? null,
       toEmail: to,
@@ -74,7 +84,7 @@ export async function sendEmail(deps: SendDeps, input: SendInput): Promise<SendR
   }
 
   if (config.mode === "joe-only" && to !== config.adminEmail) {
-    const error = `EMAIL_MODE is joe-only; refused to send to ${to}`;
+    const error = `EMAIL_MODE is joe-only; refused to send to ${maskEmail(to)}`;
     await log("blocked", { error });
     return { status: "blocked", error };
   }

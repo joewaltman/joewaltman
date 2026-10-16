@@ -1,6 +1,6 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { type Db, and, authTokens, eq, gt, isNull, normalizeEmail } from "@jw/db";
-import { type SendDeps, magicLink, sendEmail } from "@jw/email";
+import { type SendDeps, magicLink, maskEmail, sendEmail } from "@jw/email";
 import { hashToken, newToken } from "./tokens";
 
 const LOGIN_TTL_MS = 15 * 60 * 1000;
@@ -10,7 +10,10 @@ export const SESSION_COOKIE = "jw_admin";
 // Always returns quietly so the form does not reveal which address is the admin.
 export async function requestLoginLink(deps: SendDeps, rawEmail: string): Promise<void> {
   const email = normalizeEmail(rawEmail);
-  if (email !== deps.config.adminEmail) return;
+  if (email !== deps.config.adminEmail) {
+    console.log(`[admin login] link requested for ${maskEmail(email)}, which is not the admin address; nothing sent`);
+    return;
+  }
   const token = newToken();
   await deps.db.insert(authTokens).values({
     email,
