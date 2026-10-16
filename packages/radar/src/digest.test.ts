@@ -108,11 +108,14 @@ describe("buildDigest", () => {
     const closing = await business({ name: "Le Papagayo", category: "restaurants-bars" });
     await event(closing, "abc_status_change", "2026-10-15", { typeCode: "47", transfer: null, escrow: null });
     const sold = await business({ name: "Harbor Grill", category: "restaurants-bars" });
-    await event(sold, "abc_status_change", "2026-10-16", { typeCode: "41", transfer: "123456", escrow: "Pacific Escrow" });
+    await event(sold, "abc_status_change", "2026-10-16", { typeCode: "41", status: "PEND", transfer: "123456", escrow: "Pacific Escrow" });
+    const seller = await business({ name: "Old Harbor Grill", category: "restaurants-bars" });
+    await event(seller, "abc_status_change", "2026-10-16", { typeCode: "41", status: "SUREND", transfer: "654321", escrow: null });
 
     const d = await buildDigest(db, { ...week, clusters: ["north-county-coastal"] });
     expect(d.liquor.map((r) => [r.name, r.title, r.details])).toEqual([
-      ["Harbor Grill", "Liquor license transferred (On-Sale Beer & Wine - Eating Place)", "Escrow: Pacific Escrow"],
+      ["Harbor Grill", "Liquor license transferred from a previous owner (On-Sale Beer & Wine - Eating Place)", "Escrow: Pacific Escrow"],
+      ["Old Harbor Grill", "Liquor license transferred to a new owner (On-Sale Beer & Wine - Eating Place)", null],
       ["The Brant Kitchen and Bar", "Liquor license issued (On-Sale General - Eating Place, Caterer's Permit)", null],
     ]);
   });

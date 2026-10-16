@@ -87,6 +87,7 @@ const LIQUOR_EVENTS = ["abc_application", "abc_issued", "abc_status_change"];
 
 interface AbcRaw {
   typeCode?: string;
+  status?: string;
   transfer?: string | null;
   escrow?: string | null;
 }
@@ -98,7 +99,10 @@ export function liquorAction(eventType: string, raw: AbcRaw): string | null {
   if (eventType === "abc_application") return "Applied for a liquor license";
   if (eventType === "abc_issued") return "Liquor license issued";
   if (eventType !== "abc_status_change") return null;
-  if (raw.transfer) return "Liquor license transferred";
+  // The seller's license is surrendered or cancelled; the buyer's goes pending, then active.
+  if (raw.transfer) {
+    return /^(SUREND|CANCEL)/i.test(raw.status ?? "") ? "Liquor license transferred to a new owner" : "Liquor license transferred from a previous owner";
+  }
   if (raw.escrow) return "Liquor license sale in escrow";
   return null;
 }
