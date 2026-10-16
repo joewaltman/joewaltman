@@ -1,0 +1,108 @@
+{
+  "count": 6,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "docket_id": 67883424,
+      "court_id": "njb",
+      "court": "United States Bankruptcy Court, D. New Jersey",
+      "caseName": "Rite Aid Corporation",
+      "dateFiled": "2023-10-15",
+      "docketNumber": "23-18993",
+      "chapter": "11",
+      "suitNature": "12 Recovery of money/property - 547 preference; 13 Recovery of money/property - 548 fraudulent transfer; 14 Recovery of money/property - other",
+      "cause": "",
+      "party": [
+        "Official Committee of Unsecured Creditors",
+        "Rite Aid Corporation",
+        "Armstrong Pharmaceuticals, Inc.",
+        "Official Committee Of Unsecured Creditors",
+        "Official Committee of Tort Claimants",
+        "U.S. Trustee"
+      ],
+      "docket_absolute_url": "/docket/67883424/rite-aid-corporation/"
+    },
+    {
+      "docket_id": 67883584,
+      "court_id": "njb",
+      "court": "United States Bankruptcy Court, D. New Jersey",
+      "caseName": "Rite Aid Corporation v. McKesson Corporation",
+      "dateFiled": "2023-10-16",
+      "docketNumber": "23-01294",
+      "chapter": null,
+      "suitNature": "91 Declaratory judgment; 72 Injunctive relief - other",
+      "cause": "",
+      "party": [
+        "Rite Aid Corporation",
+        "McKesson Corporation"
+      ],
+      "docket_absolute_url": "/docket/67883584/rite-aid-corporation-v-mckesson-corporation/"
+    },
+    {
+      "docket_id": 73249480,
+      "court_id": "cacd",
+      "court": "District Court, C.D. California",
+      "caseName": "REDACTED v. Rite Aid Corporation",
+      "dateFiled": "2026-04-27",
+      "docketNumber": "2:26-cv-04436",
+      "chapter": null,
+      "suitNature": "485 Telephone Consumer Protection Act (TCPA)",
+      "cause": "47:227 Restrictions of Use of Telephone Equipment",
+      "party": [
+        "REDACTED",
+        "Rite Aid Corporation"
+      ],
+      "docket_absolute_url": "/docket/73249480/redacted-v-rite-aid-corporation/"
+    },
+    {
+      "docket_id": 72193313,
+      "court_id": "nysb",
+      "court": "United States Bankruptcy Court, S.D. New York",
+      "caseName": "Rite Aid Realty LLC",
+      "dateFiled": "2026-01-27",
+      "docketNumber": "26-35080",
+      "chapter": "7",
+      "suitNature": "",
+      "cause": "",
+      "party": [
+        "REDACTED",
+        "United States Trustee",
+        "Rite Aid Realty LLC"
+      ],
+      "docket_absolute_url": "/docket/72193313/rite-aid-realty-llc/"
+    },
+    {
+      "docket_id": 72153828,
+      "court_id": "njd",
+      "court": "District Court, D. New Jersey",
+      "caseName": "RITE AID CORPORATION v. MARS, INCORPORATED",
+      "dateFiled": "2026-01-16",
+      "docketNumber": "3:26-cv-00536",
+      "chapter": null,
+      "suitNature": "Bankruptcy Withdrawal",
+      "cause": "28:0157 Motion for Withdrawal of Reference",
+      "party": [
+        "RITE AID CORPORATION",
+        "MARS, INCORPORATED"
+      ],
+      "docket_absolute_url": "/docket/72153828/rite-aid-corporation-v-mars-incorporated/"
+    },
+    {
+      "docket_id": 71143844,
+      "court_id": "njb",
+      "court": "United States Bankruptcy Court, D. New Jersey",
+      "caseName": "REDACTED v. New Rite Aid, LLC",
+      "dateFiled": "2025-08-18",
+      "docketNumber": "25-01338",
+      "chapter": null,
+      "suitNature": "",
+      "cause": "",
+      "party": [
+        "REDACTED",
+        "New Rite Aid, LLC"
+      ],
+      "docket_absolute_url": "/docket/71143844/redacted-v-new-rite-aid-llc/"
+    }
+  ]
+}

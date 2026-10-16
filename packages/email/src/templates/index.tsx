@@ -212,6 +212,92 @@ export function radarDigest(input: RadarDigestInput): Template {
   };
 }
 
+export interface WatchlistDigestInput {
+  weekLabel: string;
+  totalCustomers: number;
+  customers: Array<{ name: string; events: Array<{ severity: string; date: string; note: string; sourceUrl: string | null }> }>;
+  needsReview: number;
+  dashboardUrl: string;
+  wantThisUrl: string;
+}
+
+export function watchlistDigest(input: WatchlistDigestInput): Template {
+  const withNews = input.customers.filter((c) => c.events.length > 0);
+  const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
+  const review =
+    input.needsReview > 0 ? (
+      <Text style={textStyle}>
+        {plural(input.needsReview, "customer needs", "customers need")} you to pick the right match before they
+        can be watched.{" "}
+        <Link href={input.dashboardUrl} style={linkStyle}>
+          Pick matches
+        </Link>
+      </Text>
+    ) : null;
+  if (withNews.length === 0) {
+    return {
+      name: "watchlist-digest",
+      subject: "Customer Watchlist: nothing new this week",
+      preview: `No new public records on your ${plural(input.totalCustomers, "customer", "customers")}.`,
+      body: (
+        <>
+          <Text style={textStyle}>
+            Nothing new in the public records on your {plural(input.totalCustomers, "customer", "customers")} for{" "}
+            {input.weekLabel}.
+          </Text>
+          <Text style={textStyle}>
+            <Link href={input.dashboardUrl} style={linkStyle}>
+              See your list
+            </Link>
+          </Text>
+          {review}
+        </>
+      ),
+    };
+  }
+  return {
+    name: "watchlist-digest",
+    subject: `Customer Watchlist: new public records on ${plural(withNews.length, "customer", "customers")}, ${input.weekLabel}`,
+    preview: withNews.map((c) => c.name).join(", "),
+    body: (
+      <>
+        <Text style={textStyle}>
+          New public records on {withNews.length} of your {plural(input.totalCustomers, "customer", "customers")},{" "}
+          {input.weekLabel}. Each line links to the record it came from.
+        </Text>
+        {withNews.map((c) => (
+          <div key={c.name}>
+            <Text style={{ ...textStyle, fontWeight: 600, margin: "20px 0 6px" }}>{c.name}</Text>
+            {c.events.map((e) => (
+              <Text key={`${e.date}${e.note}`} style={{ ...textStyle, margin: "0 0 8px" }}>
+                {"•"} {e.severity}, {e.date}: {e.note}{" "}
+                {e.sourceUrl ? (
+                  <Link href={e.sourceUrl} style={linkStyle}>
+                    Source
+                  </Link>
+                ) : null}
+              </Text>
+            ))}
+          </div>
+        ))}
+        <Text style={{ ...textStyle, marginTop: "20px" }}>
+          <Link href={input.dashboardUrl} style={linkStyle}>
+            See your list, or mute a kind of event
+          </Link>
+        </Text>
+        {review}
+        <Text style={textStyle}>
+          Want credit holds and collections sequences wired into your ERP or QuickBooks? Reply or{" "}
+          <Link href={input.wantThisUrl} style={linkStyle}>
+            click here
+          </Link>
+          .
+        </Text>
+      </>
+    ),
+  };
+}
+
 export function jobFailed(input: {
   job: string;
   error: string;

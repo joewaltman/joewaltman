@@ -161,7 +161,8 @@ export const authTokens = pgTable("auth_tokens", {
   email: text("email").notNull(),
   tokenHash: text("token_hash").notNull().unique(),
   purpose: text("purpose").$type<"login" | "confirm">().notNull(),
-  // For "confirm" tokens: which tool subscription the click activates.
+  // For "confirm" tokens: which tool subscription the click activates. For "login" tokens: null for
+  // the admin, "watchlist" for a Watchlist user signing back in.
   tool: text("tool").$type<Tool>(),
   expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
   usedAt: timestamp("used_at", { withTimezone: true }),
@@ -207,6 +208,8 @@ export const SOURCES = [
   "dlse",
   "recorder",
   "osha",
+  // A name a Watchlist user entered that matched nothing yet, kept so court searches have an entity.
+  "watchlist",
 ] as const;
 export type Source = (typeof SOURCES)[number];
 
@@ -294,3 +297,75 @@ export const entityEvents = pgTable(
     index("entity_events_type_created").on(t.eventType, t.createdAt),
   ],
 );
+
+// One Customer Watchlist per subscriber.
+export const watchlists = pgTable("watchlists", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  subscriberId: uuid("subscriber_id")
+    .notNull()
+    .unique()
+    .references(() => subscribers.id, { onDelete: "cascade" }),
+  // When the last weekly email went out; the next one covers events recorded since then.
+  lastSentAt: timestamp("last_sent_at", { withTimezone: true }),
+  createdAt: createdAt(),
+});
+
+export const MATCH_STATUSES = ["confirmed", "needs_review", "name_only"] as const;
+export type MatchStatus = (typeof MATCH_STATUSES)[number];
+
+// A customer on a watchlist: the name as the user typed it, and the entity once matched.
+export const watchlistItems = pgTable(
+  "watchlist_items",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    watchlistId: uuid("watchlist_id")
+      .notNull()
+      .references(() => watchlists.id, { onDelete: "cascade" }),
+    rawName: text("raw_name").notNull(),
+    city: text("city"),
+    state: text("state"),
+    entityId: uuid("entity_id").references(() => entities.id),
+    matchStatus: text("match_status").$type<MatchStatus>().notNull(),
+    confidence: doublePrecision("confidence"),
+    createdAt: createdAt(),
+    removedAt: timestamp("removed_at", { withTimezone: true }),
+  },
+  (t) => [index("watchlist_items_list").on(t.watchlistId), index("watchlist_items_entity").on(t.entityId)],
+);
+
+// Look-alike entities for a customer the user has not confirmed yet.
+export const matchCandidates = pgTable(
+  "match_candidates",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    watchlistItemId: uuid("watchlist_item_id")
+      .notNull()
+      .references(() => watchlistItems.id, { onDelete: "cascade" }),
+    entityId: uuid("entity_id")
+      .notNull()
+      .references(() => entities.id),
+    confidence: doublePrecision("confidence").notNull(),
+  },
+  (t) => [uniqueIndex("match_candidates_item_entity").on(t.watchlistItemId, t.entityId)],
+);
+
+// Event types a user turned off. They stay off until the user turns them back on.
+export const watchlistMutes = pgTable(
+  "watchlist_mutes",
+  {
+    watchlistId: uuid("watchlist_id")
+      .notNull()
+      .references(() => watchlists.id, { onDelete: "cascade" }),
+    eventType: text("event_type").notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [uniqueIndex("watchlist_mutes_list_type").on(t.watchlistId, t.eventType)],
+);
+
+// When each watched entity was last searched in federal court records, so the next search starts there.
+export const recapSearches = pgTable("recap_searches", {
+  entityId: uuid("entity_id")
+    .primaryKey()
+    .references(() => entities.id, { onDelete: "cascade" }),
+  lastSearchedAt: timestamp("last_searched_at", { withTimezone: true }).notNull(),
+});

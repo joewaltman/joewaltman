@@ -1,10 +1,12 @@
 import { abc } from "./adapters/abc";
+import { courtListenerJob } from "./adapters/courtlistener";
 import { cslb } from "./adapters/cslb";
 import { sdBizTax } from "./adapters/sd-biztax";
 import { enrichJob } from "./enrich";
 import { radarDigestJob } from "./radar-digest";
 import { type Job, adapterJob } from "./runner";
 import { type ScheduleEntry, pacificDay } from "./schedule";
+import { watchlistDigestJob } from "./watchlist/digest";
 
 export const ARCHIVE_DAYS = 60;
 
@@ -23,7 +25,9 @@ export const JOBS: Record<string, Job> = {
   abc: adapterJob(abc),
   cslb: adapterJob(cslb),
   enrich: enrichJob(),
+  courtlistener: courtListenerJob(),
   "radar-digest": radarDigestJob(),
+  "watchlist-digest": watchlistDigestJob(),
 };
 
 // Pacific time. The city rebuilds its files around 2:07am Pacific, so 5:30am is safely after.
@@ -35,6 +39,9 @@ export const SCHEDULE: ScheduleEntry[] = [
   { job: "cslb", time: "05:30" },
   // After the ingestion jobs, so new businesses are classified before the Monday 6:00am digest.
   { job: "enrich", time: "05:45" },
+  // Federal court dockets for Watchlist customers, before the Monday 6:15am Watchlist email.
+  { job: "courtlistener", time: "05:50" },
   // Monday only, after the morning ingestion and enrichment.
   { job: "radar-digest", time: "06:00", weekdays: [1] },
+  { job: "watchlist-digest", time: "06:15", weekdays: [1] },
 ];
