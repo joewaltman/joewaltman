@@ -1,0 +1,120 @@
+  :root {
+    --text: #1a1a1a;
+    --muted: #555;
+    --bg: #fdfdfc;
+    --rule: #e5e3df;
+    --accent: #1f4a6b;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 18px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  main {
+    max-width: 660px;
+    margin: 0 auto;
+    padding: 56px 24px 96px;
+  }
+  h1 {
+    font-size: 2.25rem;
+    line-height: 1.15;
+    margin: 0 0 0.35em;
+    letter-spacing: -0.01em;
+    font-weight: 600;
+  }
+  .lede {
+    font-size: 1.15rem;
+    color: var(--muted);
+    margin: 0 0 2rem;
+    line-height: 1.45;
+  }
+  figure {
+    margin: 0 0 2.5rem;
+  }
+  figure img {
+    display: block;
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+    border-radius: 2px;
+  }
+  h2 {
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--accent);
+    margin: 2.75rem 0 0.9rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  p { margin: 0 0 1.1rem; }
+  a { color: var(--accent); }
+  a:hover { text-decoration: none; }
+
+  .roles {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem;
+  }
+  .roles li {
+    display: grid;
+    grid-template-columns: 8.5rem 1fr;
+    gap: 1rem;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .roles li:last-child { border-bottom: 0; }
+  .roles .years {
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    font-size: 0.95rem;
+    padding-top: 0.1rem;
+  }
+  .roles .role { }
+  .roles .role .title { font-weight: 600; }
+  .roles .role .co { color: var(--muted); }
+  .note {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-top: 0.25rem;
+  }
+
+  .edu {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0;
+  }
+  .edu li {
+    padding: 0.35rem 0;
+    color: var(--muted);
+  }
+  .edu strong { color: var(--text); font-weight: 600; }
+
+  .date {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin: 0 0 0.75rem;
+  }
+
+  .contact p { margin: 0.35rem 0; }
+
+  @media (max-width: 520px) {
+    body { font-size: 17px; }
+    main { padding: 40px 20px 72px; }
+    h1 { font-size: 1.9rem; }
+    .lede { font-size: 1.05rem; }
+    .roles li {
+      grid-template-columns: 1fr;
+      gap: 0.15rem;
+      padding: 0.7rem 0;
+    }
+    .roles .years { padding-top: 0; font-size: 0.9rem; }
+  }

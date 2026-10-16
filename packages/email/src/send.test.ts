@@ -148,7 +148,7 @@ describe("sendEmail", () => {
       await sendEmail({ db, config: cfg, transport }, { to: "a@example.com", template: t, reason: "r", subscriber });
     }
     for (const m of sent) {
-      expect(m.subject + m.text).not.toMatch(/—/);
+      expect(m.subject + m.text).not.toMatch(/\u2014/);
     }
   });
 });
