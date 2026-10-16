@@ -9,6 +9,9 @@ import {
   subscribers,
   subscriptions,
   suppressions,
+  watchlistItems,
+  watchlistMutes,
+  watchlists,
 } from "@jw/db";
 
 export const EXPORTS = {
@@ -22,6 +25,9 @@ export const EXPORTS = {
   suppressions,
   job_runs: jobRuns,
   prerun_notes: prerunNotes,
+  watchlists,
+  watchlist_items: watchlistItems,
+  watchlist_mutes: watchlistMutes,
 } as const;
 
 export type ExportTable = keyof typeof EXPORTS;

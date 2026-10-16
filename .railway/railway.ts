@@ -62,6 +62,8 @@ export default defineRailway(() => {
       // Signs the CSV links in Radar digests; the website checks them with the same secret.
       SESSION_SECRET: "${{joewaltman.SESSION_SECRET}}",
       // Secrets set by hand in Railway; never written here.
+      // Optional; CourtListener's search works without it at lower rate limits.
+      COURTLISTENER_API_TOKEN: preserve(),
       ARCHIVE_S3_ENDPOINT: preserve(),
       ARCHIVE_S3_BUCKET: preserve(),
       ARCHIVE_S3_ACCESS_KEY_ID: preserve(),

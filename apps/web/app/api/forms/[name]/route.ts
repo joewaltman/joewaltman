@@ -7,7 +7,13 @@ export async function POST(request: Request, { params }: { params: Promise<{ nam
   const handler = Object.hasOwn(FORM_HANDLERS, name) ? FORM_HANDLERS[name] : undefined;
   if (!handler) return new Response("Not found", { status: 404 });
   if (!sameOrigin(request)) return new Response("Forbidden", { status: 403 });
-  const location = await handler(await request.formData());
+  let form: FormData;
+  try {
+    form = await request.formData();
+  } catch {
+    return new Response("Expected a form submission", { status: 400 });
+  }
+  const location = await handler(form);
   // 303 turns the POST into a GET of the next page. A relative Location keeps the proxy's
   // internal host out of the redirect.
   return new Response(null, { status: 303, headers: { Location: location } });

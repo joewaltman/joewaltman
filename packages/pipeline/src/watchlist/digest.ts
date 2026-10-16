@@ -1,10 +1,7 @@
 import { and, eq, isNotNull, isNull, subscribers, subscriptions, watchlists } from "@jw/db";
-import { sendEmail, watchlistDigest } from "@jw/email";
-import { weekLabel } from "@jw/radar";
+import { sendEmail } from "@jw/email";
 import type { Job } from "../runner";
-import { pacificDay } from "../schedule";
-import { SEVERITY_LABELS } from "./events";
-import { watchlistFeed } from "./feed";
+import { watchlistEmail } from "./email";
 
 const DAY = 86_400_000;
 
@@ -35,23 +32,12 @@ export function watchlistDigestJob(): Job {
         // A retry the same week skips lists already sent.
         if (l.lastSentAt && ctx.now.getTime() - l.lastSentAt.getTime() < 6 * DAY) continue;
         const since = l.lastSentAt ?? new Date(ctx.now.getTime() - 7 * DAY);
-        const feed = await watchlistFeed(ctx.db, l.watchlistId, since);
-        if (feed.length === 0) continue;
-        const customers = feed.map((c) => ({
-          name: c.entity && !c.entity.watchOnly ? (c.entity.dba ?? c.entity.name) : c.name,
-          events: c.events.map((e) => ({ severity: SEVERITY_LABELS[e.severity], date: e.date, note: e.note, sourceUrl: e.sourceUrl })),
-        }));
-        if (customers.every((c) => c.events.length === 0)) quiet++;
+        const email = await watchlistEmail(ctx.db, l.watchlistId, since, ctx.now, site);
+        if (!email) continue;
+        if (email.quiet) quiet++;
         const result = await sendEmail(ctx.email, {
           to: l.email,
-          template: watchlistDigest({
-            weekLabel: weekLabel(pacificDay(since), pacificDay(new Date(ctx.now.getTime() - DAY))),
-            totalCustomers: feed.length,
-            customers,
-            needsReview: feed.filter((c) => c.matchStatus === "needs_review").length,
-            dashboardUrl: `${site}/watchlist/list`,
-            wantThisUrl: `${site}/watchlist/erp`,
-          }),
+          template: email.template,
           reason: "You got this because you set up a Customer Watchlist at joewaltman.com/watchlist.",
           subscriber: { id: l.subscriberId, unsubscribeToken: l.unsubscribeToken },
         });

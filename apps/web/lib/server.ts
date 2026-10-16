@@ -4,7 +4,8 @@ import { getDb } from "@jw/db";
 import { type SendDeps, loadEmailConfig } from "@jw/email";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { SESSION_COOKIE, verifySessionValue } from "./admin-auth";
+import { SESSION_COOKIE, SESSION_TTL_MS, createSessionValue, verifySessionValue } from "./admin-auth";
+import { WATCH_COOKIE, type Watcher, watcherByEmail } from "./watch-auth";
 
 export function emailDeps(): SendDeps {
   return { db: getDb(), config: loadEmailConfig() };
@@ -33,4 +34,27 @@ export async function requireAdmin(): Promise<string> {
 
 export function bookingUrl(): string {
   return process.env.BOOKING_URL || "mailto:joe@joewaltman.com";
+}
+
+export async function currentWatcher(): Promise<Watcher | null> {
+  const store = await cookies();
+  const email = verifySessionValue(store.get(WATCH_COOKIE)?.value, sessionSecret(), Date.now(), "watchlist");
+  return email ? watcherByEmail(getDb(), email) : null;
+}
+
+export async function requireWatcher(): Promise<Watcher> {
+  const watcher = await currentWatcher();
+  if (!watcher) redirect("/watchlist/sign-in");
+  return watcher;
+}
+
+export async function startWatchSession(email: string): Promise<void> {
+  const store = await cookies();
+  store.set(WATCH_COOKIE, createSessionValue(email, sessionSecret(), Date.now(), "watchlist"), {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: SESSION_TTL_MS / 1000,
+  });
 }

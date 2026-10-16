@@ -1,5 +1,17 @@
 import { readAnswers, tariffRules, taxonomy, zipClusters } from "@jw/content";
-import { ROLES, TOOLS, eq, handRaises, partners, prerunNotes } from "@jw/db";
+import { ROLES, TOOLS, eq, handRaises, partners, prerunNotes, watchlistMutes } from "@jw/db";
+import {
+  WATCH_EVENT_TYPES,
+  addCustomers,
+  customersFromRows,
+  parseCustomerLines,
+  removeCustomer,
+  reopenMatch,
+  resolveMatch,
+  watchlistEmail,
+} from "@jw/pipeline/watchlist";
+import { sendEmail } from "@jw/email";
+import { parse as parseCsv } from "csv-parse/sync";
 import { cookies } from "next/headers";
 import { z } from "zod";
 import {
@@ -12,11 +24,13 @@ import {
 import { recordHandRaise } from "./hand-raise";
 import { pickAreas, sendTestDigest } from "./radar-admin";
 import { CLIENT_BANDS } from "./radar-view";
-import { currentAdmin, emailDeps, sessionSecret } from "./server";
+import { currentAdmin, currentWatcher, emailDeps, sessionSecret, startWatchSession } from "./server";
 import { confirmByToken, subscribe, unsubscribeByToken } from "./subscriptions";
 import { requestBrokerReview, submitTariff } from "./tariff";
 import { todayLabel } from "./tariff-view";
 import { TOOL_INFO } from "./tools";
+import { WATCH_COOKIE, consumeWatchToken, requestWatchLink, watcherByEmail } from "./watch-auth";
+import { AR_BANDS, INDUSTRIES, REVENUE_BANDS, WATCH_ROLES, pick } from "./watch-view";
 
 // Every form on the site posts to /api/forms/<name>. Each handler does the work and returns the
 // path to send the visitor to. Plain URLs keep working across deploys; Next.js server action IDs
@@ -127,8 +141,15 @@ export const FORM_HANDLERS: Record<string, FormHandler> = {
   },
 
   async confirm(form) {
-    const result = await confirmByToken(emailDeps().db, field(form, "token") ?? "");
-    return result ? `/confirm/result?tool=${result.tool}` : "/confirm/result?invalid=1";
+    const db = emailDeps().db;
+    const result = await confirmByToken(db, field(form, "token") ?? "");
+    if (!result) return "/confirm/result?invalid=1";
+    // The Watchlist confirmation link doubles as the first sign-in.
+    if (result.tool === "watchlist" && (await watcherByEmail(db, result.email))) {
+      await startWatchSession(result.email);
+      return "/watchlist/list?welcome=1";
+    }
+    return `/confirm/result?tool=${result.tool}`;
   },
 
   async unsubscribe(form) {
@@ -176,6 +197,109 @@ export const FORM_HANDLERS: Record<string, FormHandler> = {
       today: todayLabel(),
     });
     return `/tariffrefund/result/${id.data}?review=${outcome}#broker`;
+  },
+
+  async "watchlist-signup"(form) {
+    const partner = slug.safeParse(form.get("partner"));
+    const back = safeReturn(field(form, "returnTo"), "/watchlist");
+    const email = z.email().max(254).safeParse(field(form, "email")?.trim());
+    const company = field(form, "company")?.trim().slice(0, 200);
+    if (!email.success || !company) return `${back}?signup=invalid#signup`;
+    const jobRole = pick(WATCH_ROLES, field(form, "role"));
+    const deps = emailDeps();
+    const outcome = await subscribe(deps, {
+      email: email.data,
+      tool: "watchlist",
+      name: field(form, "name")?.trim().slice(0, 200) || null,
+      company,
+      role: jobRole === "owner" ? "owner" : "other",
+      revenueBand: pick(REVENUE_BANDS, field(form, "revenue")),
+      partnerSlug: partner.success ? partner.data : null,
+      preferences: { jobRole, industry: pick(INDUSTRIES, field(form, "industry")), arBand: pick(AR_BANDS, field(form, "ar")) },
+    });
+    // Someone who already has a list gets a sign-in link instead of a second confirmation.
+    if (outcome === "already-subscribed") {
+      await requestWatchLink(deps, email.data);
+      return "/watchlist/sign-in?sent=1";
+    }
+    return `${back}?signup=${outcome}#signup`;
+  },
+
+  async "watchlist-link"(form) {
+    const email = z.email().safeParse(field(form, "email")?.trim());
+    if (email.success) await requestWatchLink(emailDeps(), email.data);
+    return "/watchlist/sign-in?sent=1";
+  },
+
+  async "watchlist-sign-in"(form) {
+    const email = await consumeWatchToken(emailDeps().db, field(form, "token") ?? "");
+    if (!email || !(await watcherByEmail(emailDeps().db, email))) return "/watchlist/sign-in?expired=1";
+    await startWatchSession(email);
+    return "/watchlist/list";
+  },
+
+  async "watchlist-sign-out"() {
+    const store = await cookies();
+    store.delete(WATCH_COOKIE);
+    return "/watchlist";
+  },
+
+  async "watchlist-add"(form) {
+    const watcher = await currentWatcher();
+    if (!watcher) return "/watchlist/sign-in";
+    const inputs = parseCustomerLines(field(form, "names") ?? "");
+    const file = form.get("file");
+    if (file instanceof File && file.size > 0) {
+      if (file.size > 200_000) return "/watchlist/list?error=file-too-big#add";
+      try {
+        const rows = parseCsv(await file.text(), { bom: true, relax_column_count: true, relax_quotes: true, skip_empty_lines: true }) as string[][];
+        inputs.push(...customersFromRows(rows));
+      } catch {
+        return "/watchlist/list?error=bad-file#add";
+      }
+    }
+    if (inputs.length === 0) return "/watchlist/list?error=empty#add";
+    const result = await addCustomers(emailDeps().db, watcher.watchlistId, inputs);
+    const full = result.skipped.filter((x) => x.reason === "limit").length;
+    const dupes = result.skipped.filter((x) => x.reason === "duplicate").length;
+    return `/watchlist/list?added=${result.added}&full=${full}&dupes=${dupes}#customers`;
+  },
+
+  async "watchlist-pick"(form) {
+    const watcher = await currentWatcher();
+    if (!watcher) return "/watchlist/sign-in";
+    const item = z.uuid().safeParse(form.get("item"));
+    const choice = field(form, "entity");
+    const entity = choice === "none" ? null : z.uuid().safeParse(choice).data;
+    if (item.success && entity !== undefined) await resolveMatch(emailDeps().db, watcher.watchlistId, item.data, entity);
+    return "/watchlist/list#review";
+  },
+
+  async "watchlist-reopen"(form) {
+    const watcher = await currentWatcher();
+    if (!watcher) return "/watchlist/sign-in";
+    const item = z.uuid().safeParse(form.get("item"));
+    if (item.success) await reopenMatch(emailDeps().db, watcher.watchlistId, item.data);
+    return "/watchlist/list#review";
+  },
+
+  async "watchlist-remove"(form) {
+    const watcher = await currentWatcher();
+    if (!watcher) return "/watchlist/sign-in";
+    const item = z.uuid().safeParse(form.get("item"));
+    if (item.success) await removeCustomer(emailDeps().db, watcher.watchlistId, item.data);
+    return "/watchlist/list#customers";
+  },
+
+  async "watchlist-mutes"(form) {
+    const watcher = await currentWatcher();
+    if (!watcher) return "/watchlist/sign-in";
+    const shown = new Set(form.getAll("show").filter((v): v is string => typeof v === "string"));
+    const muted = WATCH_EVENT_TYPES.filter((t) => !shown.has(t));
+    const db = emailDeps().db;
+    await db.delete(watchlistMutes).where(eq(watchlistMutes.watchlistId, watcher.watchlistId));
+    if (muted.length > 0) await db.insert(watchlistMutes).values(muted.map((eventType) => ({ watchlistId: watcher.watchlistId, eventType })));
+    return "/watchlist/list?saved=mutes#mutes";
   },
 
   async "admin-login"(form) {
@@ -233,6 +357,22 @@ export const FORM_HANDLERS: Record<string, FormHandler> = {
     const clusters = pickAreas(form.getAll("areas").filter((v): v is string => typeof v === "string"));
     const result = await sendTestDigest(emailDeps(), clusters);
     return `/admin/radar?${clusters.map((c) => `areas=${c}`).join("&")}&test=${result.status}`;
+  },
+
+  async "admin-watchlist-test"(form) {
+    if (!(await currentAdmin())) return "/admin/login";
+    const id = z.uuid().safeParse(form.get("watchlist"));
+    if (!id.success) return "/admin/watchlist";
+    const deps = emailDeps();
+    const now = new Date();
+    const email = await watchlistEmail(deps.db, id.data, new Date(now.getTime() - 7 * 86_400_000), now, deps.config.siteUrl);
+    if (!email) return "/admin/watchlist?test=empty";
+    const result = await sendEmail(deps, {
+      to: deps.config.adminEmail,
+      template: email.template,
+      reason: "You got this because you asked for a test Watchlist email in the joewaltman.com admin.",
+    });
+    return `/admin/watchlist?test=${result.status}`;
   },
 
   async "admin-prerun-note"(form) {

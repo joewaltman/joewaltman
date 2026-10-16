@@ -42,6 +42,8 @@ export async function consumeLoginToken(
       and(
         eq(authTokens.tokenHash, hashToken(token)),
         eq(authTokens.purpose, "login"),
+        // Watchlist sign-in tokens carry a tool; the admin's do not.
+        isNull(authTokens.tool),
         isNull(authTokens.usedAt),
         gt(authTokens.expiresAt, now),
       ),
@@ -51,25 +53,32 @@ export async function consumeLoginToken(
   return row.email;
 }
 
-function sign(payload: string, secret: string): string {
-  return createHmac("sha256", secret).update(payload).digest("base64url");
+// The scope keeps a Watchlist session from passing as an admin session. Admin cookies were signed
+// before scopes existed, so the admin scope signs the bare payload.
+export type SessionScope = "admin" | "watchlist";
+
+function sign(payload: string, secret: string, scope: SessionScope): string {
+  return createHmac("sha256", secret)
+    .update(scope === "admin" ? payload : `${scope}:${payload}`)
+    .digest("base64url");
 }
 
-export function createSessionValue(email: string, secret: string, now = Date.now()): string {
+export function createSessionValue(email: string, secret: string, now = Date.now(), scope: SessionScope = "admin"): string {
   const payload = `${Buffer.from(email).toString("base64url")}.${now + SESSION_TTL_MS}`;
-  return `${payload}.${sign(payload, secret)}`;
+  return `${payload}.${sign(payload, secret, scope)}`;
 }
 
 export function verifySessionValue(
   value: string | undefined,
   secret: string,
   now = Date.now(),
+  scope: SessionScope = "admin",
 ): string | null {
   if (!value) return null;
   const parts = value.split(".");
   if (parts.length !== 3) return null;
   const [emailPart, expPart, sig] = parts as [string, string, string];
-  const expected = sign(`${emailPart}.${expPart}`, secret);
+  const expected = sign(`${emailPart}.${expPart}`, secret, scope);
   const a = Buffer.from(sig);
   const b = Buffer.from(expected);
   if (a.length !== b.length || !timingSafeEqual(a, b)) return null;
