@@ -25,6 +25,7 @@ Personal site plus four free SMB tools. Full spec: `docs/SPEC.md`.
 - Database: Railway Postgres (not Neon or Supabase).
 - Raw archive: Railway Storage Bucket, San Diego County rows only, gzipped, 60-day retention (not R2).
 - Build order: thin spine, Tariff tool, ingestion spine, Radar, Watchlist, AI-at-Work.
+- Email sends from the root domain `joewaltman.com` through Resend (Joe's call), not a subdomain. Setup: `docs/runbooks/email-setup.md`.
 
 ## Email safety
 

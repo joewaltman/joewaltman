@@ -17,6 +17,8 @@ export interface SendInput {
   showForward?: boolean;
   // Only for Joe's own sign-in links, so an unsubscribe on a test signup cannot lock him out of admin.
   bypassSuppression?: boolean;
+  // Defaults to Joe. A broker review request sets it to the importer so the broker replies to them.
+  replyTo?: string;
 }
 
 export interface SendResult {
@@ -110,7 +112,7 @@ export async function sendEmail(deps: SendDeps, input: SendInput): Promise<SendR
   const message: OutgoingMessage = {
     from: config.from,
     to,
-    replyTo: config.replyTo,
+    replyTo: input.replyTo ?? config.replyTo,
     subject: template.subject,
     html: await render(element),
     text: await render(element, { plainText: true }),

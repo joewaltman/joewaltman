@@ -54,6 +54,89 @@ export function magicLink(input: { url: string }): Template {
   };
 }
 
+export interface TariffResultEmailInput {
+  pathTitle: string;
+  summary: string[];
+  sections: Array<{ title: string; items: string[] }>;
+  resultUrl: string;
+  brokerSummary: string;
+  asOf: string;
+}
+
+export function tariffResult(input: TariffResultEmailInput): Template {
+  return {
+    name: "tariff-result",
+    subject: `Your tariff refund path: ${input.pathTitle}`,
+    preview: input.summary[0] ?? input.pathTitle,
+    body: (
+      <>
+        <Text style={{ ...textStyle, fontSize: "20px", fontWeight: 600 }}>{input.pathTitle}</Text>
+        {input.summary.map((s) => (
+          <Text key={s} style={textStyle}>
+            {s}
+          </Text>
+        ))}
+        {input.sections.map((section) => (
+          <div key={section.title}>
+            <Text style={{ ...textStyle, fontWeight: 600, margin: "18px 0 6px" }}>{section.title}</Text>
+            {section.items.map((item) => (
+              <Text key={item} style={{ ...textStyle, margin: "0 0 6px" }}>
+                {"•"} {item}
+              </Text>
+            ))}
+          </div>
+        ))}
+        <Text style={{ ...textStyle, marginTop: "18px" }}>
+          <Link href={input.resultUrl} style={linkStyle}>
+            See your result with sources
+          </Link>
+        </Text>
+        <Text style={{ ...textStyle, fontWeight: 600, margin: "24px 0 6px" }}>
+          Send this to your broker
+        </Text>
+        <Text
+          style={{
+            ...textStyle,
+            whiteSpace: "pre-wrap",
+            fontSize: "14px",
+            background: "#f3f5f7",
+            padding: "12px",
+          }}
+        >
+          {input.brokerSummary}
+        </Text>
+        <Text style={{ ...textStyle, color: "#555555", fontSize: "13px" }}>
+          This is general information, not legal or customs advice. Rules as of {input.asOf}.
+        </Text>
+      </>
+    ),
+  };
+}
+
+export function brokerReviewRequest(input: {
+  brokerName: string;
+  importerEmail: string;
+  brokerSummary: string;
+}): Template {
+  return {
+    name: "broker-review-request",
+    subject: `Tariff refund review request from ${input.importerEmail}`,
+    preview: `${input.importerEmail} asked for a review of their IEEPA refund path.`,
+    body: (
+      <>
+        <Text style={textStyle}>Hi {input.brokerName},</Text>
+        <Text style={textStyle}>
+          {input.importerEmail} used the Tariff Refund Tool on joewaltman.com and asked for this
+          summary to be sent to you for review. Reply to them directly at {input.importerEmail}.
+        </Text>
+        <Text style={{ ...textStyle, whiteSpace: "pre-wrap", fontSize: "14px", background: "#f3f5f7", padding: "12px" }}>
+          {input.brokerSummary}
+        </Text>
+      </>
+    ),
+  };
+}
+
 export function handRaiseNotice(input: {
   tool: string;
   email: string | null;

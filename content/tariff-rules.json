@@ -1,0 +1,1557 @@
+{
+  "version": "2026-10-16.2",
+  "asOf": "2026-10-16",
+  "facts": {
+    "scotus": {
+      "text": "On February 20, 2026, in Learning Resources v. Trump, the Supreme Court held that IEEPA does not authorize tariffs.",
+      "sources": [
+        "https://www.bradley.com/insights/publications/2026/02/supreme-court-strikes-down-ieepa-tariffs-key-takeaways-and-next-steps-for-businesses/"
+      ],
+      "asOf": "2026-10-16",
+      "verify": false
+    },
+    "atmus": {
+      "text": "On March 4, 2026, the Court of International Trade ordered refunds of IEEPA duties on unliquidated entries and on liquidated entries that are not yet final, for importers whether or not they sued.",
+      "sources": [
+        "https://www.bakerlaw.com/insights/court-of-international-trade-orders-refund-of-ieepa-duties-and-interest-following-supreme-court-decision/"
+      ],
+      "asOf": "2026-10-16",
+      "verify": false,
+      "note": "Appendix A named the case Atmus Filtration and said the order included interest. The source names no case and says the order did not mention interest; interest comes from statute and CAPE (see cape-interest)."
+    },
+    "cape-phase1": {
+      "text": "CBP's CAPE refund process opened April 20, 2026 for unliquidated entries and entries within 80 days of liquidation.",
+      "sources": [
+        "https://www.bakertilly.com/insights/ieepa-refunds",
+        "https://www.chrobinson.com/en-au/resources/insights-and-advisories/client-advisories/2026q3/09-17-26-cbp-cape-phase-3-ieepa-refunds/"
+      ],
+      "asOf": "2026-10-16",
+      "verify": false
+    },
+    "cape-phase3": {
+      "text": "CAPE Phase 3 opened October 6, 2026 for finally liquidated entries under court-ordered reliquidation, only for Court of International Trade plaintiffs who provided a valid importer number by July 30, 2026.",
+      "sources": [
+        "https://www.bakertilly.com/insights/ieepa-refunds",
+        "https://www.chrobinson.com/en-au/resources/insights-and-advisories/client-advisories/2026q3/09-17-26-cbp-cape-phase-3-ieepa-refunds/"
+      ],
+      "asOf": "2026-10-16",
+      "verify": false
+    },
+    "cape-totals": {
+      "text": "As of October 2, 2026, about $126 billion in refunds had been transmitted to Treasury, and about $1.1 billion was held for importers missing ACH bank details.",
+      "sources": [
+        "https://www.bakertilly.com/insights/ieepa-refunds"
+      ],
+      "asOf": "2026-10-16",
+      "verify": false
+    },
+    "ach-only": {
+      "text": "CBP has paid refunds by ACH only since February 6, 2026.",
+      "sources": [],
+      "asOf": "2026-10-16",
+      "verify": true,
+      "note": "In Appendix A, but the February 6 date appears only in a C.H. Robinson link URL, not in any page text. Baker Tilly cites an interim final rule (91 FR 21) requiring electronic refunds through ACE, with no date."
+    },
+    "limitations": {
+      "text": "Suits at the Court of International Trade have a two-year limitations period from the date of deposit, so entries from early 2025 start expiring around February 2027.",
+      "sources": [
+        "https://www.troutman.com/insights/to-sue-or-not-to-sue-that-is-the-question-for-ieepa-tariff-refunds/"
+      ],
+      "asOf": "2026-10-16",
+      "verify": false,
+      "note": "Troutman says the two years run from the date of deposit. Bradley and GingerControl describe the clock as running from accrual."
+    },
+    "class": {
+      "text": "On October 8, 2026 the Court of International Trade certified a class in Freestyle World v. CBP covering importers of record who paid IEEPA duties from February 1, 2025 to February 19, 2026 and did not separately sue. Certification does not yet order refunds. A schedule is due October 22, 2026.",
+      "sources": [
+        "https://www.bakertilly.com/insights/ieepa-refunds"
+      ],
+      "asOf": "2026-10-16",
+      "verify": false
+    },
+    "ddp": {
+      "text": "On delivered-duty-paid courier shipments the courier is often the importer of record, but the entry summary (CBP Form 7501) is what confirms it. Only the importer of record or the broker that filed the entries can file a CAPE claim.",
+      "sources": [
+        "https://gingercontrol.com/blog/ddp-shipments-courier-ior-ieepa-refund"
+      ],
+      "asOf": "2026-10-16",
+      "verify": false,
+      "note": "Corrects Appendix A, which said the courier is always the importer of record and the merchant has no standing. The source says DDP alone does not decide who the importer is, and refunds can go to an eligible designated recipient."
+    },
+    "ieepa-ch99": {
+      "text": "IEEPA duties show up under their own Chapter 99 codes on the CBP Form 7501 entry summary and on the courier or broker duty invoice.",
+      "sources": [
+        "https://gingercontrol.com/blog/ddp-shipments-courier-ior-ieepa-refund"
+      ],
+      "asOf": "2026-10-16",
+      "verify": false,
+      "note": "From the build spec; GingerControl confirms. No source gives the 9903 heading numbers."
+    },
+    "protest-deadline": {
+      "text": "A liquidated entry can be protested within 180 days of liquidation.",
+      "sources": [
+        "https://www.bradley.com/insights/publications/2026/02/supreme-court-strikes-down-ieepa-tariffs-key-takeaways-and-next-steps-for-businesses/",
+        "https://www.troutman.com/insights/to-sue-or-not-to-sue-that-is-the-question-for-ieepa-tariff-refunds/",
+        "https://gingercontrol.com/blog/ddp-shipments-courier-ior-ieepa-refund"
+      ],
+      "asOf": "2026-10-16",
+      "verify": false,
+      "note": "From the build spec's question 5; three cited sources confirm the 180-day window."
+    },
+    "s301": {
+      "text": "Section 301 forced-labor tariffs took effect July 24, 2026, at 10% or 12.5% depending on the country. Lawsuits challenging them were filed the same day.",
+      "sources": [
+        "https://www.akerman.com/en/perspectives/section-301-forced-labor-tariffs-set-to-cover-most-imports-into-the-u-s-starting.html"
+      ],
+      "asOf": "2026-10-16",
+      "verify": false
+    },
+    "s301-10": {
+      "text": "The 10% Section 301 forced-labor rate applies to Canada, Mexico, the EU, the UK, India, Indonesia, Malaysia, Taiwan and others.",
+      "sources": [
+        "https://www.akerman.com/en/perspectives/section-301-forced-labor-tariffs-set-to-cover-most-imports-into-the-u-s-starting.html"
+      ],
+      "asOf": "2026-10-16",
+      "verify": false,
+      "note": "Akerman calls its list illustrative. Clark Hill's proposal listed India at 12.5%; Akerman, after the tariffs took effect, lists India at 10%."
+    },
+    "s301-125": {
+      "text": "The 12.5% Section 301 forced-labor rate applies to China, Vietnam, Thailand, Japan, Korea, Brazil and more than 40 others.",
+      "sources": [
+        "https://www.akerman.com/en/perspectives/section-301-forced-labor-tariffs-set-to-cover-most-imports-into-the-u-s-starting.html"
+      ],
+      "asOf": "2026-10-16",
+      "verify": false
+    },
+    "s232-metals": {
+      "text": "Since April 6, 2026, Section 232 tariffs are 50% on steel, aluminum and copper articles and 25% to 50% on derivatives.",
+      "sources": [
+        "https://www.cov.com/en/news-and-insights/insights/2026/04/current-and-forthcoming-section-232-actions-by-the-trump-administration"
+      ],
+      "asOf": "2026-10-16",
+      "verify": false
+    },
+    "s232-autos": {
+      "text": "Section 232 tariffs on autos and auto parts are 25%.",
+      "sources": [
+        "https://www.cov.com/en/news-and-insights/insights/2026/04/current-and-forthcoming-section-232-actions-by-the-trump-administration"
+      ],
+      "asOf": "2026-10-16",
+      "verify": false
+    },
+    "s232-trucks": {
+      "text": "Section 232 tariffs are 25% on medium and heavy trucks and parts, and 10% on buses.",
+      "sources": [
+        "https://www.cov.com/en/news-and-insights/insights/2026/04/current-and-forthcoming-section-232-actions-by-the-trump-administration"
+      ],
+      "asOf": "2026-10-16",
+      "verify": false
+    },
+    "s232-lumber": {
+      "text": "Section 232 tariffs on timber and lumber are 10%.",
+      "sources": [
+        "https://www.cov.com/en/news-and-insights/insights/2026/04/current-and-forthcoming-section-232-actions-by-the-trump-administration"
+      ],
+      "asOf": "2026-10-16",
+      "verify": false
+    },
+    "s232-furniture": {
+      "text": "Section 232 tariffs on upholstered furniture, kitchen cabinets and vanities are 25% now. Under Proclamation 11000 they rise on January 1, 2027 to 30% for upholstered furniture and 50% for kitchen cabinets and vanities.",
+      "sources": [
+        "https://www.federalregister.gov/citation/91-FR-1039"
+      ],
+      "asOf": "2026-10-16",
+      "verify": false,
+      "note": "Covington's table still shows the increase taking effect January 1, 2026; Proclamation 11000 (91 FR 1039) delays it to January 1, 2027."
+    },
+    "de-minimis": {
+      "text": "The de minimis exemption has been suspended for all countries since August 29, 2025, anchored by interim final rules published June 24, 2026 for all modes other than international mail. The statutory repeal takes effect July 1, 2027.",
+      "sources": [
+        "https://www.federalregister.gov/documents/2026/06/24/2026-12670/indefinite-suspension-of-the-de-minimis-exemption-for-merchandise-arriving-through-all-modes-other"
+      ],
+      "asOf": "2026-10-16",
+      "verify": false
+    },
+    "mpf-min": {
+      "text": "The minimum merchandise processing fee on an informal entry is $26.79.",
+      "sources": [
+        "https://beancount.io/blog/2026/08/13/end-800-de-minimis-exemption-small-importer-2026-guide"
+      ],
+      "asOf": "2026-10-16",
+      "verify": true,
+      "note": "Appendix A says $26.79 per entry. The source calls it the informal entry minimum, and the page shows no date. Confirm with the broker which entries it covers."
+    },
+    "cape-interest": {
+      "text": "CAPE refunds include applicable interest.",
+      "sources": [
+        "https://www.bakertilly.com/insights/ieepa-refunds"
+      ],
+      "asOf": "2026-10-16",
+      "verify": false
+    },
+    "ach-required": {
+      "text": "CBP pays refunds electronically through ACE, so ACH bank details must be on file. About $1.1 billion was being held for importers missing them as of October 2, 2026.",
+      "sources": [
+        "https://www.bakertilly.com/insights/ieepa-refunds"
+      ],
+      "asOf": "2026-10-16",
+      "verify": false
+    },
+    "protest-blocks-cape": {
+      "text": "An entry with an open protest is not eligible for CAPE in any phase.",
+      "sources": [
+        "https://www.troutman.com/insights/to-sue-or-not-to-sue-that-is-the-question-for-ieepa-tariff-refunds/"
+      ],
+      "asOf": "2026-10-16",
+      "verify": true,
+      "note": "Not in Appendix A. Troutman only; Baker Tilly said open-protest handling was under development (July 15)."
+    },
+    "protest-recommended": {
+      "text": "Bradley, BakerLaw and Troutman recommend protective protests while the 180-day window is open. Troutman notes the Court of International Trade held in AGS v. CBP that IEEPA collection is not protestable.",
+      "sources": [
+        "https://www.bradley.com/insights/publications/2026/02/supreme-court-strikes-down-ieepa-tariffs-key-takeaways-and-next-steps-for-businesses/",
+        "https://www.bakerlaw.com/insights/court-of-international-trade-orders-refund-of-ieepa-duties-and-interest-following-supreme-court-decision/",
+        "https://www.troutman.com/insights/to-sue-or-not-to-sue-that-is-the-question-for-ieepa-tariff-refunds/"
+      ],
+      "asOf": "2026-10-16",
+      "verify": true,
+      "note": "Not in Appendix A."
+    },
+    "cape-filing": {
+      "text": "CAPE claims are filed in the ACE Secure Data Portal by the importer of record or the broker that filed the entries, so ACE access is required.",
+      "sources": [
+        "https://www.bakertilly.com/insights/ieepa-refunds",
+        "https://gingercontrol.com/blog/ddp-shipments-courier-ior-ieepa-refund"
+      ],
+      "asOf": "2026-10-16",
+      "verify": true,
+      "note": "Not in Appendix A. Sources disagree on ACE setup time: Baker Tilly says up to six weeks, GingerControl says 3 to 5 business days."
+    },
+    "s301-exemptions": {
+      "text": "USMCA-compliant goods of Canada or Mexico, and articles and parts subject to Section 232, are exempt from the Section 301 forced-labor tariffs.",
+      "sources": [
+        "https://clarkhill.com/news-events/news/ustr-section-301-forced-labor-tariffs-2026/"
+      ],
+      "asOf": "2026-10-16",
+      "verify": true,
+      "note": "In Appendix A, but only Clark Hill's description of the June 2026 proposal mentions these exemptions. Akerman, writing after the tariffs took effect, does not. Akerman also mentions 471 exempt products."
+    },
+    "s301-argued": {
+      "text": "The Section 301 forced-labor tariffs were argued at the Court of International Trade on September 30, 2026, with no ruling yet.",
+      "sources": [],
+      "asOf": "2026-10-16",
+      "verify": true,
+      "note": "In Appendix A, but not found in the cited sources."
+    },
+    "s301-more-countries": {
+      "text": "Akerman's illustrative lists also include, at 10%: Argentina, Bangladesh, Cambodia, Ecuador, El Salvador, Guatemala, Honduras, Jordan, Pakistan, Sri Lanka, and Trinidad and Tobago; at 12.5%: Saudi Arabia, Australia and Switzerland.",
+      "sources": [
+        "https://www.akerman.com/en/perspectives/section-301-forced-labor-tariffs-set-to-cover-most-imports-into-the-u-s-starting.html"
+      ],
+      "asOf": "2026-10-16",
+      "verify": true,
+      "note": "Not in Appendix A. Once confirmed, add these countries to the calculator picklist."
+    },
+    "s301-net-of-mfn": {
+      "text": "For the EU and Taiwan (10%) and for Japan, Korea and Switzerland (12.5%), the Section 301 forced-labor rate is net of the MFN base duty.",
+      "sources": [
+        "https://www.akerman.com/en/perspectives/section-301-forced-labor-tariffs-set-to-cover-most-imports-into-the-u-s-starting.html"
+      ],
+      "asOf": "2026-10-16",
+      "verify": true,
+      "note": "Not in Appendix A."
+    },
+    "s232-country-deals": {
+      "text": "Section 232 actions include country-specific provisions for the UK, EU, Japan and Korea, and Proclamation 11000 excepts countries that reach an agreement.",
+      "sources": [
+        "https://www.cov.com/en/news-and-insights/insights/2026/04/current-and-forthcoming-section-232-actions-by-the-trump-administration",
+        "https://www.federalregister.gov/citation/91-FR-1039"
+      ],
+      "asOf": "2026-10-16",
+      "verify": true,
+      "note": "Not in Appendix A. No rates given."
+    },
+    "s232-semis": {
+      "text": "A 25% Section 232 tariff on specified advanced computing chips and their derivatives took effect January 15, 2026. Other semiconductors are left to negotiations.",
+      "sources": [
+        "https://www.cov.com/en/news-and-insights/insights/2026/04/current-and-forthcoming-section-232-actions-by-the-trump-administration"
+      ],
+      "asOf": "2026-10-16",
+      "verify": true,
+      "note": "Not in Appendix A."
+    },
+    "broker-fee-range": {
+      "text": "A cost example puts customs broker fees at $25 to $75 per entry.",
+      "sources": [
+        "https://beancount.io/blog/2026/08/13/end-800-de-minimis-exemption-small-importer-2026-guide"
+      ],
+      "asOf": "2026-10-16",
+      "verify": true,
+      "note": "Not in Appendix A."
+    }
+  },
+  "questions": [
+    {
+      "id": "imported",
+      "number": 1,
+      "label": "Did you import goods into the US between February 1, 2025 and February 19, 2026?",
+      "type": "single",
+      "required": true,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        },
+        {
+          "value": "not_sure",
+          "label": "Not sure"
+        }
+      ]
+    },
+    {
+      "id": "ieepaPaid",
+      "number": 2,
+      "label": "Were duties paid under the IEEPA tariffs?",
+      "help": "These are the 2025 border or \"fentanyl\" tariffs on Canada, Mexico and China, and the \"reciprocal\" tariffs.",
+      "type": "single",
+      "required": true,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        },
+        {
+          "value": "not_sure",
+          "label": "Not sure"
+        }
+      ],
+      "explainer": {
+        "summary": "How do I tell?",
+        "body": [
+          {
+            "text": "Look at your entry summaries (CBP Form 7501) or the broker or courier duty invoice. IEEPA duties show up under their own Chapter 99 codes, separate from the regular duty.",
+            "facts": [
+              "ieepa-ch99"
+            ]
+          },
+          "Your customs broker can also tell you which of your entries carried IEEPA duties."
+        ]
+      }
+    },
+    {
+      "id": "importerOfRecord",
+      "number": 3,
+      "label": "Who was the importer of record?",
+      "type": "single",
+      "required": true,
+      "options": [
+        {
+          "value": "self",
+          "label": "My company"
+        },
+        {
+          "value": "broker_my_name",
+          "label": "My customs broker, filing in my company's name"
+        },
+        {
+          "value": "courier_ddp",
+          "label": "A courier (UPS, FedEx, DHL) on delivered-duty-paid terms"
+        },
+        {
+          "value": "not_sure",
+          "label": "Not sure"
+        }
+      ]
+    },
+    {
+      "id": "aceAccess",
+      "number": 4,
+      "label": "Do you or your broker have access to the ACE portal?",
+      "help": "ACE is CBP's online system for entries and refunds.",
+      "type": "single",
+      "required": true,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        },
+        {
+          "value": "not_sure",
+          "label": "Not sure"
+        }
+      ]
+    },
+    {
+      "id": "entryStatus",
+      "number": 5,
+      "label": "Where do your entries stand?",
+      "help": "Liquidation is when CBP finalizes the duty on an entry. Your broker can tell you the status of each one.",
+      "type": "single",
+      "required": true,
+      "options": [
+        {
+          "value": "unliquidated",
+          "label": "Not liquidated yet"
+        },
+        {
+          "value": "liquidated_recent",
+          "label": "Liquidated within the last 180 days"
+        },
+        {
+          "value": "final",
+          "label": "Finally liquidated"
+        },
+        {
+          "value": "not_sure",
+          "label": "Not sure"
+        }
+      ]
+    },
+    {
+      "id": "actionsTaken",
+      "number": 6,
+      "label": "Have you done any of these? Check all that apply.",
+      "type": "multi",
+      "required": true,
+      "options": [
+        {
+          "value": "protest",
+          "label": "Filed a protest"
+        },
+        {
+          "value": "own_suit",
+          "label": "Filed my own suit at the Court of International Trade"
+        },
+        {
+          "value": "importer_number",
+          "label": "Gave my importer number to counsel in a Court of International Trade case by July 30, 2026"
+        },
+        {
+          "value": "none",
+          "label": "None of these"
+        },
+        {
+          "value": "not_sure",
+          "label": "Not sure"
+        }
+      ]
+    },
+    {
+      "id": "achOnFile",
+      "number": 7,
+      "label": "Is ACH refund information on file with CBP for your company?",
+      "type": "single",
+      "required": true,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        },
+        {
+          "value": "not_sure",
+          "label": "Not sure"
+        }
+      ]
+    },
+    {
+      "id": "dutyBand",
+      "number": 8,
+      "label": "Roughly how much IEEPA duty did you pay?",
+      "type": "single",
+      "required": true,
+      "options": [
+        {
+          "value": "under_10k",
+          "label": "Under $10,000"
+        },
+        {
+          "value": "10k_50k",
+          "label": "$10,000 to $50,000"
+        },
+        {
+          "value": "50k_250k",
+          "label": "$50,000 to $250,000"
+        },
+        {
+          "value": "250k_1m",
+          "label": "$250,000 to $1 million"
+        },
+        {
+          "value": "over_1m",
+          "label": "Over $1 million"
+        },
+        {
+          "value": "not_sure",
+          "label": "Not sure"
+        }
+      ]
+    },
+    {
+      "id": "brokers",
+      "number": 9,
+      "label": "Which customs broker or brokers filed your entries?",
+      "help": "Optional. It goes into the summary for your broker.",
+      "type": "text",
+      "required": false
+    },
+    {
+      "id": "email",
+      "number": 10,
+      "label": "Your email, for a copy of the result",
+      "type": "email",
+      "required": true
+    },
+    {
+      "id": "importValue",
+      "number": 11,
+      "label": "About how much does your company import in a year?",
+      "help": "Optional.",
+      "type": "single",
+      "required": false,
+      "options": [
+        {
+          "value": "under_250k",
+          "label": "Under $250,000"
+        },
+        {
+          "value": "250k_1m",
+          "label": "$250,000 to $1 million"
+        },
+        {
+          "value": "1m_5m",
+          "label": "$1 million to $5 million"
+        },
+        {
+          "value": "5m_25m",
+          "label": "$5 million to $25 million"
+        },
+        {
+          "value": "over_25m",
+          "label": "Over $25 million"
+        }
+      ]
+    }
+  ],
+  "rules": [
+    {
+      "id": "outside-window",
+      "when": {
+        "imported": [
+          "no"
+        ]
+      },
+      "path": "no-path-dates"
+    },
+    {
+      "id": "not-ieepa",
+      "when": {
+        "ieepaPaid": [
+          "no"
+        ]
+      },
+      "path": "no-path-not-ieepa"
+    },
+    {
+      "id": "courier",
+      "when": {
+        "importerOfRecord": [
+          "courier_ddp"
+        ]
+      },
+      "path": "courier"
+    },
+    {
+      "id": "importer-unknown",
+      "when": {
+        "importerOfRecord": [
+          "not_sure"
+        ]
+      },
+      "path": "find-importer"
+    },
+    {
+      "id": "own-suit",
+      "when": {
+        "actionsTaken": [
+          "own_suit"
+        ]
+      },
+      "path": "own-suit"
+    },
+    {
+      "id": "unliquidated",
+      "when": {
+        "entryStatus": [
+          "unliquidated"
+        ]
+      },
+      "path": "cape"
+    },
+    {
+      "id": "protested",
+      "when": {
+        "entryStatus": [
+          "liquidated_recent",
+          "final"
+        ],
+        "actionsTaken": [
+          "protest"
+        ]
+      },
+      "path": "protest-filed"
+    },
+    {
+      "id": "recently-liquidated",
+      "when": {
+        "entryStatus": [
+          "liquidated_recent"
+        ]
+      },
+      "path": "cape-or-protest"
+    },
+    {
+      "id": "final-with-importer-number",
+      "when": {
+        "entryStatus": [
+          "final"
+        ],
+        "actionsTaken": [
+          "importer_number"
+        ]
+      },
+      "path": "cape-phase3"
+    },
+    {
+      "id": "final",
+      "when": {
+        "entryStatus": [
+          "final"
+        ]
+      },
+      "path": "class"
+    },
+    {
+      "id": "status-unknown",
+      "when": {
+        "entryStatus": [
+          "not_sure"
+        ]
+      },
+      "path": "find-status"
+    }
+  ],
+  "fallbackPath": "find-status",
+  "paths": {
+    "no-path-dates": {
+      "title": "Likely no refund path",
+      "kind": "no-path",
+      "summary": [
+        {
+          "text": "The IEEPA refunds cover duties paid on imports from February 1, 2025 to February 19, 2026. You said you did not import in that window, so there is likely nothing to refund.",
+          "facts": [
+            "class"
+          ]
+        },
+        "If a supplier or courier handled imports for you in that window, check with them before ruling it out."
+      ],
+      "steps": [],
+      "documents": [],
+      "deadlines": []
+    },
+    "no-path-not-ieepa": {
+      "title": "Likely no refund path",
+      "kind": "no-path",
+      "summary": [
+        {
+          "text": "The Supreme Court ruling covers tariffs charged under IEEPA. Section 232 and Section 301 tariffs are separate and still in effect, so they are not part of these refunds.",
+          "facts": [
+            "scotus",
+            "s232-metals",
+            "s301"
+          ]
+        },
+        "If you are not sure which tariffs you paid, your broker can tell you which lines on your entries were IEEPA duties."
+      ],
+      "steps": [],
+      "documents": [],
+      "deadlines": []
+    },
+    "courier": {
+      "title": "Start with your courier",
+      "kind": "next-step",
+      "summary": [
+        {
+          "text": "On delivered-duty-paid courier shipments, the courier is often the importer of record. The entry summary (CBP Form 7501) or the courier's duty invoice shows who it was.",
+          "facts": [
+            "ddp"
+          ]
+        },
+        {
+          "text": "Only the importer of record or the broker that filed the entries can file a CAPE claim.",
+          "facts": [
+            "ddp"
+          ]
+        }
+      ],
+      "steps": [
+        "Ask UPS, FedEx or DHL who was the importer of record on your shipments, and how they are handling IEEPA refunds.",
+        "Ask whether any refund on your shipments will be passed back to you.",
+        "If your company was the importer of record on some entries, run these questions again for those."
+      ],
+      "documents": [
+        "Tracking numbers and dates for shipments from February 1, 2025 to February 19, 2026",
+        "The duty and tax invoices the courier billed you"
+      ],
+      "deadlines": []
+    },
+    "find-importer": {
+      "title": "First, find out who was the importer of record",
+      "kind": "next-step",
+      "summary": [
+        "Who can claim a refund depends on who was the importer of record on each entry.",
+        {
+          "text": "On delivered-duty-paid courier shipments, the courier is often the importer of record. The entry summary (CBP Form 7501) shows who it was.",
+          "facts": [
+            "ddp"
+          ]
+        }
+      ],
+      "steps": [
+        "Ask your customs broker who was the importer of record on your entries since February 1, 2025.",
+        "Then run these questions again with that answer."
+      ],
+      "documents": [],
+      "deadlines": [
+        {
+          "text": "Do not wait long. The time to sue at the Court of International Trade runs two years from the date the duty was deposited, so entries from early 2025 start expiring around February 2027.",
+          "facts": [
+            "limitations"
+          ]
+        }
+      ]
+    },
+    "own-suit": {
+      "title": "Your own Court of International Trade case",
+      "kind": "refund",
+      "summary": [
+        {
+          "text": "Because you filed your own suit, your refund runs through that case. The Freestyle World class covers importers who did not separately sue.",
+          "facts": [
+            "class"
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "text": "If any entries are finally liquidated, confirm with your counsel that your importer number was provided by July 30, 2026. CAPE Phase 3 covers finally liquidated entries only for plaintiffs who did that.",
+          "facts": [
+            "cape-phase3"
+          ]
+        },
+        {
+          "text": "Ask your broker whether your unliquidated entries, and entries within 80 days of liquidation, went through CAPE.",
+          "facts": [
+            "cape-phase1"
+          ]
+        }
+      ],
+      "documents": [
+        "Your case number and your counsel's contact",
+        "Your entry numbers and entry summaries since February 1, 2025"
+      ],
+      "deadlines": []
+    },
+    "cape": {
+      "title": "CAPE refund through your broker",
+      "kind": "refund",
+      "summary": [
+        {
+          "text": "CBP's CAPE refund process has covered unliquidated entries, and entries within 80 days of liquidation, since April 20, 2026.",
+          "facts": [
+            "cape-phase1"
+          ]
+        },
+        {
+          "text": "The Court of International Trade ordered refunds on unliquidated entries and on liquidated entries that are not yet final, whether or not the importer sued.",
+          "facts": [
+            "atmus"
+          ]
+        },
+        {
+          "text": "CAPE refunds include applicable interest.",
+          "facts": [
+            "cape-interest"
+          ]
+        }
+      ],
+      "steps": [
+        "Ask your broker whether your entries have gone through CAPE and where each refund stands.",
+        {
+          "text": "CAPE claims are filed in ACE by the importer of record or the broker that filed the entries, so make sure one of you has ACE access.",
+          "facts": [
+            "cape-filing"
+          ]
+        },
+        {
+          "text": "Make sure your ACH bank details are on file with CBP. Refunds are paid electronically.",
+          "facts": [
+            "ach-required"
+          ]
+        },
+        "Match the refunds that land in your bank account against the amounts your broker reports."
+      ],
+      "documents": [
+        "Your entry numbers and entry summaries since February 1, 2025",
+        "Your broker's invoices showing the duty paid",
+        "Your company's bank details for ACH"
+      ],
+      "deadlines": [
+        {
+          "text": "If an entry is not refunded through CAPE, the time to sue at the Court of International Trade runs two years from the date the duty was deposited. Entries from early 2025 start expiring around February 2027.",
+          "facts": [
+            "limitations"
+          ]
+        }
+      ]
+    },
+    "cape-or-protest": {
+      "title": "CAPE or a protest, through your broker",
+      "kind": "refund",
+      "summary": [
+        {
+          "text": "CAPE covers entries within 80 days of liquidation. Entries liquidated earlier than that are outside CAPE's first phase.",
+          "facts": [
+            "cape-phase1"
+          ]
+        },
+        {
+          "text": "The Court of International Trade ordered refunds on liquidated entries that are not yet final.",
+          "facts": [
+            "atmus"
+          ]
+        }
+      ],
+      "steps": [
+        "Ask your broker which entries are still within 80 days of liquidation and whether they went through CAPE.",
+        "For the rest, ask your broker whether to file a protest, and the protest deadline for each entry.",
+        {
+          "text": "An entry with an open protest is not eligible for CAPE, so check CAPE first for any entry that might still qualify.",
+          "facts": [
+            "protest-blocks-cape"
+          ]
+        },
+        {
+          "text": "Make sure your ACH bank details are on file with CBP. Refunds are paid electronically.",
+          "facts": [
+            "ach-required"
+          ]
+        }
+      ],
+      "documents": [
+        "Your entry numbers, entry summaries and liquidation dates since February 1, 2025",
+        "Your broker's invoices showing the duty paid",
+        "Your company's bank details for ACH"
+      ],
+      "deadlines": [
+        {
+          "text": "A liquidated entry can be protested within 180 days of liquidation.",
+          "facts": [
+            "protest-deadline"
+          ]
+        },
+        "Protest deadlines run from each entry's liquidation date, so ask your broker about them this week.",
+        {
+          "text": "The time to sue at the Court of International Trade runs two years from the date the duty was deposited. Entries from early 2025 start expiring around February 2027.",
+          "facts": [
+            "limitations"
+          ]
+        }
+      ]
+    },
+    "protest-filed": {
+      "title": "Follow up on your protest",
+      "kind": "refund",
+      "summary": [
+        "You have filed a protest, so your broker or counsel is already working the refund on those entries."
+      ],
+      "steps": [
+        "Ask your broker for the status of each protest.",
+        {
+          "text": "An entry with an open protest is not eligible for CAPE in any phase. Ask your broker how that affects your entries.",
+          "facts": [
+            "protest-blocks-cape"
+          ]
+        },
+        "Ask whether any entries without a protest can still go through CAPE.",
+        {
+          "text": "Make sure your ACH bank details are on file with CBP. Refunds are paid electronically.",
+          "facts": [
+            "ach-required"
+          ]
+        }
+      ],
+      "documents": [
+        "Your protest numbers and the entries each one covers",
+        "Your entry summaries and liquidation dates"
+      ],
+      "deadlines": [
+        {
+          "text": "The time to sue at the Court of International Trade runs two years from the date the duty was deposited. Entries from early 2025 start expiring around February 2027.",
+          "facts": [
+            "limitations"
+          ]
+        }
+      ]
+    },
+    "cape-phase3": {
+      "title": "CAPE Phase 3 for finally liquidated entries",
+      "kind": "refund",
+      "summary": [
+        {
+          "text": "Since October 6, 2026, CAPE has covered finally liquidated entries for Court of International Trade plaintiffs who provided an importer number by July 30, 2026. You said you did.",
+          "facts": [
+            "cape-phase3"
+          ]
+        }
+      ],
+      "steps": [
+        "Confirm with your counsel that your importer number was provided by July 30, 2026.",
+        "Ask your broker to confirm your finally liquidated entries are in CAPE Phase 3, and where each refund stands.",
+        {
+          "text": "Make sure your ACH bank details are on file with CBP. Refunds are paid electronically.",
+          "facts": [
+            "ach-required"
+          ]
+        }
+      ],
+      "documents": [
+        "Your case number and your counsel's contact",
+        "Your entry numbers and entry summaries since February 1, 2025",
+        "Your company's bank details for ACH"
+      ],
+      "deadlines": []
+    },
+    "class": {
+      "title": "The Freestyle World class action",
+      "kind": "refund",
+      "summary": [
+        {
+          "text": "Your entries are finally liquidated. CAPE covers finally liquidated entries only for court plaintiffs who provided an importer number by July 30, 2026.",
+          "facts": [
+            "cape-phase3"
+          ]
+        },
+        {
+          "text": "On October 8, 2026 the Court of International Trade certified a class in Freestyle World v. CBP for importers of record who paid IEEPA duties from February 1, 2025 to February 19, 2026 and did not separately sue. Certification does not order refunds yet, and a schedule is due October 22, 2026.",
+          "facts": [
+            "class"
+          ]
+        }
+      ],
+      "steps": [
+        "Keep your entry records together so you can move quickly if the class wins refunds.",
+        {
+          "text": "Make sure your ACH bank details are on file with CBP. Refunds are paid electronically.",
+          "facts": [
+            "ach-required"
+          ]
+        },
+        {
+          "text": "Ask a trade attorney whether to rely on the class or file your own suit. The class covers importers who did not sue separately, so filing your own suit means relying on that suit instead.",
+          "facts": [
+            "class"
+          ]
+        }
+      ],
+      "documents": [
+        "Your entry numbers and entry summaries since February 1, 2025",
+        "Your broker's invoices showing the IEEPA duty paid",
+        "Your company's bank details for ACH"
+      ],
+      "deadlines": [
+        {
+          "text": "If you decide to file your own suit, the limitations period is two years from the date the duty was deposited. Entries from early 2025 start expiring around February 2027.",
+          "facts": [
+            "limitations"
+          ]
+        }
+      ]
+    },
+    "find-status": {
+      "title": "First, find out where your entries stand",
+      "kind": "next-step",
+      "summary": [
+        "The refund path depends on whether each entry is unliquidated, recently liquidated or finally liquidated.",
+        {
+          "text": "CAPE covers unliquidated entries and entries within 80 days of liquidation.",
+          "facts": [
+            "cape-phase1"
+          ]
+        },
+        {
+          "text": "Finally liquidated entries are covered by CAPE only for court plaintiffs who provided an importer number by July 30, 2026. Others are in the Freestyle World class, which has not ordered refunds yet.",
+          "facts": [
+            "cape-phase3",
+            "class"
+          ]
+        }
+      ],
+      "steps": [
+        "Ask your broker for a list of your entries since February 1, 2025, with the liquidation status and date of each.",
+        "Then run these questions again, or send your broker the summary below."
+      ],
+      "documents": [
+        "Your entry numbers since February 1, 2025"
+      ],
+      "deadlines": [
+        {
+          "text": "The time to sue at the Court of International Trade runs two years from the date the duty was deposited. Entries from early 2025 start expiring around February 2027.",
+          "facts": [
+            "limitations"
+          ]
+        }
+      ]
+    }
+  },
+  "actions": [
+    {
+      "id": "check-dates",
+      "when": {
+        "imported": [
+          "not_sure"
+        ]
+      },
+      "onlyForPaths": [
+        "own-suit",
+        "cape",
+        "cape-or-protest",
+        "protest-filed",
+        "cape-phase3",
+        "class",
+        "find-status",
+        "find-importer"
+      ],
+      "title": "Check your import dates",
+      "body": [
+        {
+          "text": "Refunds cover IEEPA duties paid on imports from February 1, 2025 to February 19, 2026.",
+          "facts": [
+            "class"
+          ]
+        },
+        "Ask your broker for a list of your entries in that window."
+      ]
+    },
+    {
+      "id": "check-ieepa",
+      "when": {
+        "ieepaPaid": [
+          "not_sure"
+        ]
+      },
+      "onlyForPaths": [
+        "own-suit",
+        "cape",
+        "cape-or-protest",
+        "protest-filed",
+        "cape-phase3",
+        "class",
+        "find-status",
+        "find-importer",
+        "courier"
+      ],
+      "title": "Check that IEEPA duties were charged",
+      "body": [
+        {
+          "text": "On your entry summaries (CBP Form 7501) or the broker or courier duty invoice, IEEPA duties show up under their own Chapter 99 codes.",
+          "facts": [
+            "ieepa-ch99"
+          ]
+        },
+        "Your broker can tell you which entries carried IEEPA duties."
+      ]
+    },
+    {
+      "id": "ach",
+      "when": {
+        "achOnFile": [
+          "no",
+          "not_sure"
+        ]
+      },
+      "onlyForPaths": [
+        "own-suit",
+        "cape",
+        "cape-or-protest",
+        "protest-filed",
+        "cape-phase3",
+        "class",
+        "find-status"
+      ],
+      "title": "Get ACH refund details on file with CBP",
+      "body": [
+        {
+          "text": "CBP pays refunds electronically, and about $1.1 billion was being held as of October 2, 2026 for importers missing ACH bank details.",
+          "facts": [
+            "ach-required",
+            "cape-totals"
+          ]
+        },
+        "Ask your broker how to get your ACH refund information on file."
+      ]
+    },
+    {
+      "id": "ace",
+      "when": {
+        "aceAccess": [
+          "no",
+          "not_sure"
+        ]
+      },
+      "onlyForPaths": [
+        "own-suit",
+        "cape",
+        "cape-or-protest",
+        "protest-filed",
+        "cape-phase3",
+        "class",
+        "find-status"
+      ],
+      "title": "Get your entry list",
+      "body": [
+        "Ask your broker for a list of your entries since February 1, 2025, with the liquidation date of each. Brokers can pull this from ACE.",
+        {
+          "text": "CAPE claims are filed in ACE, so you or your broker will need ACE access.",
+          "facts": [
+            "cape-filing"
+          ]
+        }
+      ]
+    }
+  ],
+  "calculator": {
+    "futureDate": "2027-01-01",
+    "futureLabel": "January 1, 2027",
+    "categories": [
+      {
+        "id": "upholstered_furniture",
+        "label": "Upholstered furniture",
+        "s232Today": {
+          "pct": 25
+        },
+        "s232Future": {
+          "pct": 30
+        },
+        "facts": [
+          "s232-furniture"
+        ],
+        "notes": []
+      },
+      {
+        "id": "kitchen_cabinets",
+        "label": "Kitchen cabinets and vanities",
+        "s232Today": {
+          "pct": 25
+        },
+        "s232Future": {
+          "pct": 50
+        },
+        "facts": [
+          "s232-furniture"
+        ],
+        "notes": []
+      },
+      {
+        "id": "lumber",
+        "label": "Lumber",
+        "s232Today": {
+          "pct": 10
+        },
+        "s232Future": {
+          "pct": 10
+        },
+        "facts": [
+          "s232-lumber"
+        ],
+        "notes": []
+      },
+      {
+        "id": "steel",
+        "label": "Steel articles",
+        "s232Today": {
+          "pct": 50
+        },
+        "s232Future": {
+          "pct": 50
+        },
+        "facts": [
+          "s232-metals"
+        ],
+        "notes": []
+      },
+      {
+        "id": "aluminum",
+        "label": "Aluminum articles",
+        "s232Today": {
+          "pct": 50
+        },
+        "s232Future": {
+          "pct": 50
+        },
+        "facts": [
+          "s232-metals"
+        ],
+        "notes": []
+      },
+      {
+        "id": "copper",
+        "label": "Copper articles",
+        "s232Today": {
+          "pct": 50
+        },
+        "s232Future": {
+          "pct": 50
+        },
+        "facts": [
+          "s232-metals"
+        ],
+        "notes": []
+      },
+      {
+        "id": "metal_derivatives",
+        "label": "Products made from steel, aluminum or copper",
+        "s232Today": {
+          "low": 25,
+          "high": 50
+        },
+        "s232Future": {
+          "low": 25,
+          "high": 50
+        },
+        "facts": [
+          "s232-metals"
+        ],
+        "notes": [
+          {
+            "text": "Derivative products are taxed at 25% to 50%. Ask your broker which rate applies to yours.",
+            "facts": [
+              "s232-metals"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "auto_parts",
+        "label": "Auto parts",
+        "s232Today": {
+          "pct": 25
+        },
+        "s232Future": {
+          "pct": 25
+        },
+        "facts": [
+          "s232-autos"
+        ],
+        "notes": []
+      },
+      {
+        "id": "trucks",
+        "label": "Medium and heavy trucks and parts",
+        "s232Today": {
+          "pct": 25
+        },
+        "s232Future": {
+          "pct": 25
+        },
+        "facts": [
+          "s232-trucks"
+        ],
+        "notes": []
+      },
+      {
+        "id": "semiconductors",
+        "label": "Semiconductors",
+        "s232Today": null,
+        "s232Future": null,
+        "facts": [],
+        "notes": [
+          {
+            "text": "A 25% Section 232 tariff applies to specified advanced computing chips and their derivatives. Other semiconductors are left to negotiations.",
+            "facts": [
+              "s232-semis"
+            ]
+          },
+          "No Section 232 rate for semiconductors is confirmed here. Ask your broker whether one applies."
+        ]
+      },
+      {
+        "id": "general",
+        "label": "General goods (none of the above)",
+        "s232Today": null,
+        "s232Future": null,
+        "facts": [],
+        "notes": []
+      }
+    ],
+    "countries": [
+      {
+        "id": "canada",
+        "label": "Canada",
+        "s301Pct": 10,
+        "usmca": true,
+        "facts": [
+          "s301-10"
+        ],
+        "netOfMfn": false,
+        "notes": []
+      },
+      {
+        "id": "mexico",
+        "label": "Mexico",
+        "s301Pct": 10,
+        "usmca": true,
+        "facts": [
+          "s301-10"
+        ],
+        "netOfMfn": false,
+        "notes": []
+      },
+      {
+        "id": "eu",
+        "label": "A European Union country",
+        "s301Pct": 10,
+        "usmca": false,
+        "facts": [
+          "s301-10"
+        ],
+        "netOfMfn": true,
+        "notes": [
+          {
+            "text": "Section 232 terms for goods from this country can differ under trade agreements. Ask your broker.",
+            "facts": [
+              "s232-country-deals"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "uk",
+        "label": "United Kingdom",
+        "s301Pct": 10,
+        "usmca": false,
+        "facts": [
+          "s301-10"
+        ],
+        "netOfMfn": false,
+        "notes": [
+          {
+            "text": "Section 232 terms for goods from this country can differ under trade agreements. Ask your broker.",
+            "facts": [
+              "s232-country-deals"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "india",
+        "label": "India",
+        "s301Pct": 10,
+        "usmca": false,
+        "facts": [
+          "s301-10"
+        ],
+        "netOfMfn": false,
+        "notes": []
+      },
+      {
+        "id": "indonesia",
+        "label": "Indonesia",
+        "s301Pct": 10,
+        "usmca": false,
+        "facts": [
+          "s301-10"
+        ],
+        "netOfMfn": false,
+        "notes": []
+      },
+      {
+        "id": "malaysia",
+        "label": "Malaysia",
+        "s301Pct": 10,
+        "usmca": false,
+        "facts": [
+          "s301-10"
+        ],
+        "netOfMfn": false,
+        "notes": []
+      },
+      {
+        "id": "taiwan",
+        "label": "Taiwan",
+        "s301Pct": 10,
+        "usmca": false,
+        "facts": [
+          "s301-10"
+        ],
+        "netOfMfn": true,
+        "notes": []
+      },
+      {
+        "id": "china",
+        "label": "China",
+        "s301Pct": 12.5,
+        "usmca": false,
+        "facts": [
+          "s301-125"
+        ],
+        "netOfMfn": false,
+        "notes": []
+      },
+      {
+        "id": "vietnam",
+        "label": "Vietnam",
+        "s301Pct": 12.5,
+        "usmca": false,
+        "facts": [
+          "s301-125"
+        ],
+        "netOfMfn": false,
+        "notes": []
+      },
+      {
+        "id": "thailand",
+        "label": "Thailand",
+        "s301Pct": 12.5,
+        "usmca": false,
+        "facts": [
+          "s301-125"
+        ],
+        "netOfMfn": false,
+        "notes": []
+      },
+      {
+        "id": "japan",
+        "label": "Japan",
+        "s301Pct": 12.5,
+        "usmca": false,
+        "facts": [
+          "s301-125"
+        ],
+        "netOfMfn": true,
+        "notes": [
+          {
+            "text": "Section 232 terms for goods from this country can differ under trade agreements. Ask your broker.",
+            "facts": [
+              "s232-country-deals"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "korea",
+        "label": "South Korea",
+        "s301Pct": 12.5,
+        "usmca": false,
+        "facts": [
+          "s301-125"
+        ],
+        "netOfMfn": true,
+        "notes": [
+          {
+            "text": "Section 232 terms for goods from this country can differ under trade agreements. Ask your broker.",
+            "facts": [
+              "s232-country-deals"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "brazil",
+        "label": "Brazil",
+        "s301Pct": 12.5,
+        "usmca": false,
+        "facts": [
+          "s301-125"
+        ],
+        "netOfMfn": false,
+        "notes": []
+      },
+      {
+        "id": "other",
+        "label": "Another country",
+        "s301Pct": null,
+        "usmca": false,
+        "facts": [],
+        "netOfMfn": false,
+        "notes": [
+          "The Section 301 forced-labor rate for this country is not confirmed here, so the calculator shows both possible rates."
+        ]
+      }
+    ],
+    "s301": {
+      "unlistedLowPct": 10,
+      "unlistedHighPct": 12.5,
+      "facts": [
+        "s301"
+      ],
+      "note": [
+        {
+          "text": "Lawsuits challenging the Section 301 forced-labor tariffs were filed on July 24, 2026.",
+          "facts": [
+            "s301"
+          ]
+        },
+        {
+          "text": "The tariffs were argued at the Court of International Trade on September 30, 2026. There is no ruling yet.",
+          "facts": [
+            "s301-argued"
+          ]
+        }
+      ],
+      "exemptionsFact": "s301-exemptions",
+      "netOfMfnFact": "s301-net-of-mfn"
+    },
+    "mpfMinimum": {
+      "amount": 26.79,
+      "facts": [
+        "mpf-min"
+      ]
+    },
+    "deMinimis": {
+      "facts": [
+        "de-minimis"
+      ],
+      "note": [
+        {
+          "text": "The de minimis exemption is suspended for all countries, so every shipment pays duty and entry fees, however small. The statutory repeal takes effect July 1, 2027.",
+          "facts": [
+            "de-minimis"
+          ]
+        }
+      ]
+    },
+    "brokerFee": {
+      "low": 25,
+      "high": 75,
+      "facts": [
+        "broker-fee-range"
+      ]
+    }
+  }
+}

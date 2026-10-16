@@ -26,7 +26,7 @@ export function loadEmailConfig(env: NodeJS.ProcessEnv = process.env): EmailConf
   return {
     mode: rawMode as EmailMode,
     adminEmail,
-    from: env.EMAIL_FROM ?? "Joe Waltman <joe@mail.joewaltman.com>",
+    from: env.EMAIL_FROM ?? "Joe Waltman <joe@joewaltman.com>",
     replyTo: env.EMAIL_REPLY_TO ?? adminEmail,
     siteUrl: (env.SITE_URL ?? "http://localhost:3000").replace(/\/$/, ""),
     postalAddress: env.MAIL_POSTAL_ADDRESS?.trim() || null,

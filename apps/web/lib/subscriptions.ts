@@ -50,47 +50,7 @@ export async function subscribe(deps: SendDeps, input: SubscribeInput): Promise<
   if (config.mode === "joe-only" && email !== config.adminEmail) return "not-open";
   if (await isSuppressed(db, email)) return "suppressed";
 
-  let partnerId: string | null = null;
-  if (input.partnerSlug) {
-    const [p] = await db
-      .select({ id: partners.id })
-      .from(partners)
-      .where(eq(partners.slug, input.partnerSlug))
-      .limit(1);
-    partnerId = p?.id ?? null;
-  }
-
-  const [existing] = await db.select().from(subscribers).where(eq(subscribers.email, email)).limit(1);
-  let subscriber = existing;
-  if (!subscriber) {
-    [subscriber] = await db
-      .insert(subscribers)
-      .values({
-        email,
-        name: input.name ?? null,
-        company: input.company ?? null,
-        role: input.role ?? null,
-        revenueBand: input.revenueBand ?? null,
-        headcountBand: input.headcountBand ?? null,
-        partnerId,
-      })
-      .returning();
-  } else {
-    // Fill in blanks without overwriting what we already know.
-    [subscriber] = await db
-      .update(subscribers)
-      .set({
-        name: existing!.name ?? input.name ?? null,
-        company: existing!.company ?? input.company ?? null,
-        role: existing!.role ?? input.role ?? null,
-        revenueBand: existing!.revenueBand ?? input.revenueBand ?? null,
-        headcountBand: existing!.headcountBand ?? input.headcountBand ?? null,
-        partnerId: existing!.partnerId ?? partnerId,
-      })
-      .where(eq(subscribers.id, existing!.id))
-      .returning();
-  }
-  if (!subscriber) throw new Error("subscriber upsert returned no row");
+  const subscriber = await upsertContact(db, { ...input, email });
 
   const [sub] = await db
     .select()
@@ -98,27 +58,11 @@ export async function subscribe(deps: SendDeps, input: SubscribeInput): Promise<
     .where(and(eq(subscriptions.subscriberId, subscriber.id), eq(subscriptions.tool, input.tool)))
     .limit(1);
   if (sub?.active && subscriber.confirmedAt) return "already-subscribed";
-  if (!sub) {
-    await db.insert(subscriptions).values({
-      subscriberId: subscriber.id,
-      tool: input.tool,
-      preferences: input.preferences ?? {},
-      active: false,
-    });
-  } else if (input.preferences) {
-    await db
-      .update(subscriptions)
-      .set({ preferences: input.preferences })
-      .where(eq(subscriptions.id, sub.id));
-  }
-
-  const token = newToken();
-  await db.insert(authTokens).values({
+  const token = await createPendingSubscription(db, {
+    subscriberId: subscriber.id,
     email,
-    tokenHash: hashToken(token),
-    purpose: "confirm",
     tool: input.tool,
-    expiresAt: new Date(Date.now() + CONFIRM_TTL_MS),
+    preferences: input.preferences,
   });
 
   const info = TOOL_INFO[input.tool];
@@ -139,6 +83,85 @@ export async function subscribe(deps: SendDeps, input: SubscribeInput): Promise<
   });
 
   return result.status === "sent" || result.status === "dryrun" ? "check-email" : "send-failed";
+}
+
+export type ContactInput = Omit<SubscribeInput, "tool" | "preferences">;
+
+// Finds or creates the person's row. Fills in blanks without overwriting what we already know.
+export async function upsertContact(db: Db, input: ContactInput) {
+  const email = normalizeEmail(input.email);
+  let partnerId: string | null = null;
+  if (input.partnerSlug) {
+    const [p] = await db
+      .select({ id: partners.id })
+      .from(partners)
+      .where(eq(partners.slug, input.partnerSlug))
+      .limit(1);
+    partnerId = p?.id ?? null;
+  }
+
+  const [existing] = await db.select().from(subscribers).where(eq(subscribers.email, email)).limit(1);
+  const [row] = existing
+    ? await db
+        .update(subscribers)
+        .set({
+          name: existing.name ?? input.name ?? null,
+          company: existing.company ?? input.company ?? null,
+          role: existing.role ?? input.role ?? null,
+          revenueBand: existing.revenueBand ?? input.revenueBand ?? null,
+          headcountBand: existing.headcountBand ?? input.headcountBand ?? null,
+          partnerId: existing.partnerId ?? partnerId,
+        })
+        .where(eq(subscribers.id, existing.id))
+        .returning()
+    : await db
+        .insert(subscribers)
+        .values({
+          email,
+          name: input.name ?? null,
+          company: input.company ?? null,
+          role: input.role ?? null,
+          revenueBand: input.revenueBand ?? null,
+          headcountBand: input.headcountBand ?? null,
+          partnerId,
+        })
+        .returning();
+  if (!row) throw new Error("subscriber upsert returned no row");
+  return row;
+}
+
+// Makes sure an inactive subscription exists and returns a fresh confirm token for it.
+export async function createPendingSubscription(
+  db: Db,
+  input: { subscriberId: string; email: string; tool: Tool; preferences?: Record<string, unknown> },
+): Promise<string> {
+  const [sub] = await db
+    .select()
+    .from(subscriptions)
+    .where(and(eq(subscriptions.subscriberId, input.subscriberId), eq(subscriptions.tool, input.tool)))
+    .limit(1);
+  if (!sub) {
+    await db.insert(subscriptions).values({
+      subscriberId: input.subscriberId,
+      tool: input.tool,
+      preferences: input.preferences ?? {},
+      active: false,
+    });
+  } else if (input.preferences) {
+    await db
+      .update(subscriptions)
+      .set({ preferences: input.preferences })
+      .where(eq(subscriptions.id, sub.id));
+  }
+  const token = newToken();
+  await db.insert(authTokens).values({
+    email: normalizeEmail(input.email),
+    tokenHash: hashToken(token),
+    purpose: "confirm",
+    tool: input.tool,
+    expiresAt: new Date(Date.now() + CONFIRM_TTL_MS),
+  });
+  return token;
 }
 
 export async function confirmByToken(

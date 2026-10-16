@@ -2,6 +2,7 @@ import { randomBytes } from "node:crypto";
 import {
   bigserial,
   boolean,
+  doublePrecision,
   index,
   integer,
   jsonb,
@@ -165,3 +166,28 @@ export const authTokens = pgTable("auth_tokens", {
   usedAt: timestamp("used_at", { withTimezone: true }),
   createdAt: createdAt(),
 });
+
+// Cached USITC lookups, so the calculator does not call the HTS service on every page view.
+export const htsRates = pgTable("hts_rates", {
+  htsNumber: text("hts_number").primaryKey(),
+  description: text("description"),
+  generalRateText: text("general_rate_text"),
+  adValoremPct: doublePrecision("ad_valorem_pct"),
+  sourceUrl: text("source_url").notNull(),
+  raw: jsonb("raw").$type<unknown>(),
+  fetchedAt: timestamp("fetched_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// Joe's notes from the admin pre-run helpers (an importer name, a careers page URL).
+export const prerunNotes = pgTable(
+  "prerun_notes",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    tool: text("tool").$type<Tool>().notNull(),
+    subject: text("subject").notNull(),
+    url: text("url"),
+    note: text("note"),
+    createdAt: createdAt(),
+  },
+  (t) => [index("prerun_notes_tool_created").on(t.tool, t.createdAt)],
+);
