@@ -2,6 +2,7 @@ import { randomBytes } from "node:crypto";
 import {
   bigserial,
   boolean,
+  date,
   doublePrecision,
   index,
   integer,
@@ -190,4 +191,106 @@ export const prerunNotes = pgTable(
     createdAt: createdAt(),
   },
   (t) => [index("prerun_notes_tool_created").on(t.tool, t.createdAt)],
+);
+
+export const SOURCES = [
+  "sos",
+  "sd_biztax",
+  "fbn",
+  "abc",
+  "cslb",
+  "dca",
+  "nppes",
+  "sba",
+  "ucc",
+  "recap",
+  "dlse",
+  "recorder",
+  "osha",
+] as const;
+export type Source = (typeof SOURCES)[number];
+
+export const ENTITY_TYPES = ["corporation", "llc", "partnership", "sole_prop", "nonprofit", "government", "other"] as const;
+export type EntityType = (typeof ENTITY_TYPES)[number];
+
+// One business, merged across sources. Sole proprietors never get a street address or phone stored.
+export const entities = pgTable(
+  "entities",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    canonicalName: text("canonical_name").notNull(),
+    normalizedName: text("normalized_name").notNull(),
+    dba: text("dba"),
+    normalizedDba: text("normalized_dba"),
+    entityType: text("entity_type").$type<EntityType>(),
+    status: text("status"),
+    formedAt: date("formed_at"),
+    address1: text("address1"),
+    address2: text("address2"),
+    city: text("city"),
+    state: text("state"),
+    zip: text("zip"),
+    zipCluster: text("zip_cluster"),
+    county: text("county"),
+    naics: text("naics"),
+    category: text("category"),
+    website: text("website"),
+    phone: text("phone"),
+    summary: text("summary"),
+    createdAt: createdAt(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("entities_name_zip").on(t.normalizedName, t.zip),
+    index("entities_dba_zip").on(t.normalizedDba, t.zip),
+    index("entities_county").on(t.county),
+    index("entities_created").on(t.createdAt),
+  ],
+);
+
+export const entityIdentifiers = pgTable(
+  "entity_identifiers",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    entityId: uuid("entity_id")
+      .notNull()
+      .references(() => entities.id),
+    source: text("source").$type<Source>().notNull(),
+    sourceId: text("source_id").notNull(),
+    // The last record seen from the source, minus fields that identify a person. Monthly diffs compare against it.
+    raw: jsonb("raw").$type<Record<string, unknown>>().notNull(),
+    firstSeen: timestamp("first_seen", { withTimezone: true }).notNull().defaultNow(),
+    lastSeen: timestamp("last_seen", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("entity_identifiers_source_id").on(t.source, t.sourceId),
+    index("entity_identifiers_entity").on(t.entityId),
+  ],
+);
+
+export const SEVERITIES = ["info", "watch", "serious"] as const;
+export type Severity = (typeof SEVERITIES)[number];
+
+export const entityEvents = pgTable(
+  "entity_events",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    entityId: uuid("entity_id")
+      .notNull()
+      .references(() => entities.id),
+    source: text("source").$type<Source>().notNull(),
+    eventType: text("event_type").notNull(),
+    eventDate: date("event_date"),
+    severity: text("severity").$type<Severity>().notNull(),
+    title: text("title").notNull(),
+    summary: text("summary"),
+    sourceUrl: text("source_url"),
+    raw: jsonb("raw").$type<Record<string, unknown>>().notNull().default({}),
+    dedupeKey: text("dedupe_key").notNull().unique(),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    index("entity_events_entity_date").on(t.entityId, t.eventDate),
+    index("entity_events_type_created").on(t.eventType, t.createdAt),
+  ],
 );

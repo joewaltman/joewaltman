@@ -14,3 +14,6 @@ next-env.d.ts
 
 # Dry-run email output
 .email-out/
+
+# Local raw-download archive from pipeline runs
+.archive/

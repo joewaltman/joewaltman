@@ -137,6 +137,39 @@ export function brokerReviewRequest(input: {
   };
 }
 
+export function jobFailed(input: {
+  job: string;
+  error: string;
+  startedAt: string;
+  attempt: number;
+  adminUrl: string;
+}): Template {
+  return {
+    name: "job-failed",
+    subject: `Ingestion job failed: ${input.job}`,
+    preview: input.error.slice(0, 120),
+    body: (
+      <>
+        <Text style={textStyle}>
+          The {input.job} job failed at {input.startedAt} (attempt {input.attempt} today).
+        </Text>
+        <Text style={{ ...textStyle, fontFamily: "Menlo, monospace", fontSize: "13px", whiteSpace: "pre-wrap" }}>
+          {input.error}
+        </Text>
+        <Text style={textStyle}>
+          The scheduler tries once more later today. If the source changed its format, see
+          docs/runbooks/pipeline.md.
+        </Text>
+        <Text style={textStyle}>
+          <Link href={input.adminUrl} style={linkStyle}>
+            Open job runs
+          </Link>
+        </Text>
+      </>
+    ),
+  };
+}
+
 export function handRaiseNotice(input: {
   tool: string;
   email: string | null;

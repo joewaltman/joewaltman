@@ -1,0 +1,29 @@
+{
+  "name": "@jw/pipeline",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "bin": {
+    "pipeline": "./src/cli.ts"
+  },
+  "scripts": {
+    "pipeline": "tsx src/cli.ts",
+    "tick": "tsx src/cli.ts tick",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "3.1152.0",
+    "@jw/content": "workspace:*",
+    "@jw/db": "workspace:*",
+    "@jw/email": "workspace:*",
+    "cheerio": "1.2.0",
+    "csv-parse": "6.2.1",
+    "fflate": "0.8.3",
+    "tsx": "4.23.15"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.10"
+  }
+}

@@ -14,7 +14,8 @@
     "test:watch": "vitest",
     "typecheck": "pnpm -r typecheck",
     "db:generate": "pnpm --filter @jw/db generate",
-    "db:migrate": "pnpm --filter @jw/db migrate"
+    "db:migrate": "pnpm --filter @jw/db migrate",
+    "pipeline": "pnpm --filter @jw/pipeline pipeline"
   },
   "devDependencies": {
     "@types/node": "24.19.2",
