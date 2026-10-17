@@ -64,7 +64,7 @@ describe("AI-at-Work scenarios", () => {
 describe("the rules file", () => {
   it("cross-references cleanly and has no em dashes", () => {
     expect(checkAiworkReferences(rules)).toEqual([]);
-    expect(JSON.stringify(rawRules)).not.toMatch(/—/);
+    expect(JSON.stringify(rawRules)).not.toMatch(/\u2014/);
   });
 
   it("keeps facts beyond Appendix A marked verify until an attorney confirms them", () => {
