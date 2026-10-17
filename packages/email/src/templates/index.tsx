@@ -298,6 +298,65 @@ export function watchlistDigest(input: WatchlistDigestInput): Template {
   };
 }
 
+export interface AiworkResultInput {
+  // "Reviewed by ... as of ..." or the draft notice.
+  standing: string;
+  groups: Array<{ heading: string; items: Array<{ title: string; lines: string[] }> }>;
+  notTriggered: string[];
+  resultUrl: string;
+  // Set when the visitor asked for rule-change emails: the double opt-in link.
+  updatesUrl?: string | null;
+  asOf: string;
+}
+
+export function aiworkResult(input: AiworkResultInput): Template {
+  const count = input.groups.reduce((n, g) => n + g.items.length, 0);
+  return {
+    name: "aiwork-result",
+    subject: count > 0 ? `Your California AI-at-Work checklist: ${count} ${count === 1 ? "item" : "items"}` : "Your California AI-at-Work checklist: nothing to do now",
+    preview: input.groups[0]?.heading ?? "Nothing in your answers triggers these rules today.",
+    body: (
+      <>
+        <Text style={{ ...textStyle, color: "#555555", fontSize: "14px" }}>{input.standing}</Text>
+        {count === 0 ? (
+          <Text style={textStyle}>Nothing in your answers triggers these rules today. Check again if you add AI screening, scheduling or monitoring tools.</Text>
+        ) : null}
+        {input.groups.map((g) => (
+          <div key={g.heading}>
+            <Text style={{ ...textStyle, fontSize: "18px", fontWeight: 600, margin: "22px 0 8px" }}>{g.heading}</Text>
+            {g.items.map((item) => (
+              <div key={item.title}>
+                <Text style={{ ...textStyle, fontWeight: 600, margin: "12px 0 6px" }}>{item.title}</Text>
+                {item.lines.map((line) => (
+                  <Text key={line} style={{ ...textStyle, margin: "0 0 6px" }}>
+                    {"•"} {line}
+                  </Text>
+                ))}
+              </div>
+            ))}
+          </div>
+        ))}
+        {input.notTriggered.length > 0 ? (
+          <Text style={{ ...textStyle, marginTop: "18px" }}>Also checked, and not triggered by your answers: {input.notTriggered.join("; ")}.</Text>
+        ) : null}
+        <Text style={textStyle}>
+          <Link href={input.resultUrl} style={linkStyle}>
+            See your result with sources and notice templates
+          </Link>
+        </Text>
+        {input.updatesUrl ? (
+          <Text style={textStyle}>
+            <Link href={input.updatesUrl} style={linkStyle}>
+              Confirm you want an email when these rules or dates change
+            </Link>
+          </Text>
+        ) : null}
+        <Text style={{ ...textStyle, color: "#555555", fontSize: "13px" }}>Rules as of {input.asOf}.</Text>
+      </>
+    ),
+  };
+}
+
 export function jobFailed(input: {
   job: string;
   error: string;

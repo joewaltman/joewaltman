@@ -60,6 +60,10 @@ export default async function PartnersPage({
           <input className="field" name="logoUrl" type="url" />
         </label>
         <label className="grid gap-1">
+          <span className="text-[0.95rem] font-semibold">Booking link (optional; AI-at-Work partners)</span>
+          <input className="field" name="bookingUrl" type="url" />
+        </label>
+        <label className="grid gap-1">
           <span className="text-[0.95rem] font-semibold">Tool</span>
           <select className="field" name="tool" defaultValue="">
             <option value="">Any</option>

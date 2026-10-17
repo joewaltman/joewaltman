@@ -13,6 +13,7 @@ const NAV: Array<[string, string]> = [
   ["/admin/tariff", "Tariff"],
   ["/admin/radar", "Radar"],
   ["/admin/watchlist", "Watchlist"],
+  ["/admin/aiwork", "AI-at-Work"],
   ["/admin/jobs", "Jobs"],
   ["/admin/drops", "Drops"],
   ["/admin/emails", "Emails"],

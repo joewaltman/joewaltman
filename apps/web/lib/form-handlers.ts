@@ -1,4 +1,4 @@
-import { readAnswers, tariffRules, taxonomy, zipClusters } from "@jw/content";
+import { aiworkRules, readAnswers, tariffRules, taxonomy, zipClusters } from "@jw/content";
 import { ROLES, TOOLS, eq, handRaises, partners, prerunNotes, watchlistMutes } from "@jw/db";
 import {
   WATCH_EVENT_TYPES,
@@ -23,6 +23,8 @@ import {
 } from "./admin-auth";
 import { recordHandRaise } from "./hand-raise";
 import { pickAreas, sendTestDigest } from "./radar-admin";
+import { aiworkOpen, submitAiwork } from "./aiwork";
+import { detectAts, fetchableUrl, readCareersPage } from "./ats";
 import { CLIENT_BANDS } from "./radar-view";
 import { currentAdmin, currentWatcher, emailDeps, sessionSecret, startWatchSession } from "./server";
 import { confirmByToken, subscribe, unsubscribeByToken } from "./subscriptions";
@@ -75,6 +77,7 @@ const partnerSchema = z.object({
   name: z.string().trim().min(1).max(200),
   contactEmail: z.union([z.email(), z.literal("")]).transform((v) => v || null),
   logoUrl: z.union([z.url(), z.literal("")]).transform((v) => v || null),
+  bookingUrl: z.union([z.url(), z.literal("")]).transform((v) => v || null),
   tool: z.union([z.enum(TOOLS), z.literal("")]).transform((v) => v || null),
   notes: z.string().trim().max(2000).transform((v) => v || null),
 });
@@ -185,6 +188,39 @@ export const FORM_HANDLERS: Record<string, FormHandler> = {
       today: todayLabel(),
     });
     return `/tariffrefund/result/${responseId}?emailed=${emailStatus}`;
+  },
+
+  async "aiwork-submit"(form) {
+    const partner = slug.safeParse(form.get("partner"));
+    const back = partner.success ? `/aiwork/p/${partner.data}` : "/aiwork";
+    // Until an attorney's review is recorded, only Joe can run the checker, as a preview.
+    const preview = !aiworkOpen(aiworkRules);
+    if (preview && !(await currentAdmin())) return back;
+    const { answers, errors } = readAnswers(aiworkRules, form);
+    const first = Object.keys(errors)[0];
+    if (first) return `${back}?error=${encodeURIComponent(first)}#q-${first}`;
+    const { responseId, emailStatus } = await submitAiwork(emailDeps(), aiworkRules, {
+      answers,
+      wantsUpdates: form.get("updates") === "yes",
+      partnerSlug: partner.success ? partner.data : null,
+      preview,
+      today: new Intl.DateTimeFormat("en-CA", { timeZone: "America/Los_Angeles" }).format(new Date()),
+    });
+    return `/aiwork/result/${responseId}?emailed=${emailStatus}`;
+  },
+
+  async "admin-aiwork-ats"(form) {
+    if (!(await currentAdmin())) return "/admin/login";
+    const url = fetchableUrl(field(form, "url") ?? "");
+    if (!url) return "/admin/aiwork?ats=bad-url#prerun";
+    const page = await readCareersPage(url);
+    const found = detectAts(url.toString(), page);
+    const vendors = found.length > 0 ? found.map((f) => `${f.vendor} (from the ${f.from === "url" ? "URL" : "page"})`).join(", ") : page ? "no known ATS found" : "page could not be read";
+    const extra = (field(form, "note") ?? "").trim().slice(0, 1500);
+    await emailDeps()
+      .db.insert(prerunNotes)
+      .values({ tool: "aiwork", subject: (field(form, "company") ?? "").trim().slice(0, 200) || url.hostname, url: url.toString(), note: [`ATS: ${vendors}`, extra].filter(Boolean).join(". ") });
+    return "/admin/aiwork#prerun";
   },
 
   async "broker-review"(form) {

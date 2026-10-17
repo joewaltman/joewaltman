@@ -41,6 +41,8 @@ export const partners = pgTable("partners", {
   name: text("name").notNull(),
   logoUrl: text("logo_url"),
   contactEmail: text("contact_email"),
+  // Where a partner's "book a review" link goes (the AI-at-Work Checker's attorney and HR partners).
+  bookingUrl: text("booking_url"),
   tool: text("tool").$type<Tool>(),
   notes: text("notes"),
   createdAt: createdAt(),

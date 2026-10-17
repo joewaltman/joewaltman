@@ -1,7 +1,8 @@
 import type { Question, TariffRules } from "@jw/content";
 import { publicTexts } from "@/lib/tariff-view";
 
-function QuestionField({ q, rules, error }: { q: Question; rules: TariffRules; error?: boolean }) {
+// Shared with the AI-at-Work Checker, whose questions have no explainers.
+export function QuestionField({ q, rules, error }: { q: Question; rules?: TariffRules; error?: boolean }) {
   const legend = (
     <legend id={`q-${q.id}-label`} className="mb-2 font-semibold">
       <span className="mr-1 text-muted tabular-nums">{q.number}.</span> {q.label}
@@ -9,7 +10,7 @@ function QuestionField({ q, rules, error }: { q: Question; rules: TariffRules; e
     </legend>
   );
   const help = q.help ? <p className="mt-0 mb-2 text-[0.95rem] text-muted">{q.help}</p> : null;
-  const explainer = q.explainer ? publicTexts(q.explainer.body, rules) : [];
+  const explainer = q.explainer && rules ? publicTexts(q.explainer.body, rules) : [];
 
   return (
     <fieldset
