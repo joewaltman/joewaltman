@@ -6,6 +6,7 @@ export function RadarList({ digest, limit }: { digest: Digest; limit?: number })
   const sections: Array<[string, typeof rows.newBusinesses]> = [
     ["New businesses", rows.newBusinesses],
     ["Liquor license activity, bars and restaurants", rows.liquor],
+    ["SBA loans over $250,000", rows.capital],
     ["New contractor licenses", rows.licenses],
   ];
   const shown = sections.filter(([, list]) => list.length > 0);

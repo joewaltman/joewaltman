@@ -9,6 +9,8 @@ Code: `packages/pipeline`. Runs as the Railway `pipeline` service, which Railway
 | `abc` | 5:30am | ABC daily export (San Diego County licenses) plus the last 3 days of issued, new application and status change reports |
 | `cslb` | 5:30am | CSLB master license file, San Diego County; events from comparing with the previous run |
 | `dca` | 5:35am | DCA board license files from the public Box folder; reads only boards that posted a new file (monthly). See `dca.md` |
+| `nppes` | 5:40am | CMS weekly NPI file: new San Diego healthcare organizations for the Radar, deactivations for the Watchlist. Individual providers are never read |
+| `sba` | 5:40am | SBA 7(a) and 504 loan files (quarterly): new San Diego loans over $250,000 since the previous file. The first run only records the file date |
 | `enrich` | 5:45am | Category and one-line summary for new businesses (needs `ANTHROPIC_API_KEY`) |
 | `courtlistener` | 5:50am | Federal dockets naming Watchlist customers. See `watchlist.md` |
 | `radar-digest` | 6:00am Mondays | The New Business Radar email |
@@ -42,6 +44,9 @@ Each adapter checks the columns it depends on and fails with a message naming th
 The raw download for every run is in the bucket under `<source>/<YYYY-MM-DD>/`, so a day can be reprocessed after a fix.
 
 ## Source notes
+
+- NPPES: the downloads page at https://download.cms.gov/nppes/NPI_Files.html lists the weekly zips. The job reads each week once (the first run only the latest) and keeps the list of weeks read in its `job_runs` meta. Taxonomy codes map to labels and categories in `content/npi-taxonomy.json`. Authorized official names on organization records are never stored.
+- SBA: the dataset page at https://data.sba.gov/dataset/7a-504-foia links the current `FOIA_7a_FY2020_Present` and `FOIA_504_FY2010_Present` files (about 240 MB together). A loan is recorded when it first appears with an approval date after the previous file's as-of date, dated the day it appears so it reaches that week's Radar; the approval date is in the note. Borrowers marked INDIVIDUAL and cancelled loans are left out. When SBA starts a new range file (FY2030), the pattern in `sbaFiles` still matches "Present".
 
 - **sd-biztax** (`seshat.datasd.org/business_tax_certificates/`): files rebuild around 2:07am Pacific. New accounts cancelled soon after move to the inactive file, so both are read. The portal's terms say downloading counts as accepting them; the data itself is public domain (ODC-PDDL).
 - **abc** (`www.abc.ca.gov`): the export's first line is a title, not the header. Commas inside names are replaced by spaces. Reports are cached by ABC's host for up to 4 hours and land late, hence the 3-day re-read. Transfers appear as license numbers.

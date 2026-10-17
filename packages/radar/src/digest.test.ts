@@ -3,6 +3,7 @@ import { createTestDb } from "@jw/db/testing";
 import { beforeEach, describe, expect, it } from "vitest";
 import { csvToken, digestCsv, readCsvToken } from "./csv";
 import { buildDigest, digestSize, digestWindow, publicRows } from "./digest";
+import { digestEmailSections } from "./format";
 
 let db: Db;
 let n = 0;
@@ -120,6 +121,29 @@ describe("buildDigest", () => {
     ]);
   });
 
+  it("lists SBA loans as capital events, filtered by category, in the email and the CSV", async () => {
+    const shop = await business({ name: "Example Machining Inc", category: "manufacturing", city: "Vista", zip: "92083", zipCluster: "north-county-inland" });
+    await db.insert(entityEvents).values({
+      entityId: shop,
+      source: "sba",
+      eventType: "sba_loan",
+      eventDate: "2026-10-14",
+      severity: "info",
+      title: "SBA 504 loan approved",
+      summary: "Approved 2026-08-02. $1 million to $2 million from Example Development Corporation",
+      dedupeKey: "sba-1",
+    });
+    const d = await buildDigest(db, { ...week, clusters: ["north-county-inland"] });
+    expect(d.capital.map((r) => r.name)).toEqual(["Example Machining Inc"]);
+    expect(digestSize(d)).toBe(1);
+    expect(digestEmailSections(d).find((s) => s.title === "SBA loans over $250,000")!.items).toEqual([
+      "Example Machining Inc, Vista 92083: SBA 504 loan approved. Approved 2026-08-02. $1 million to $2 million from Example Development Corporation.",
+    ]);
+    expect(digestCsv(d)).toContain("SBA loan,2026-10-14,Example Machining Inc");
+    expect(publicRows(d).capital).toEqual([{ name: "Example Machining Inc", type: "SBA 504 loan approved", city: "Vista" }]);
+    expect((await buildDigest(db, { ...week, clusters: ["north-county-inland"], categories: ["dental"] })).capital).toEqual([]);
+  });
+
   it("returns nothing without an area", async () => {
     const id = await business({ name: "X" });
     await event(id, "new_business", "2026-10-14");
@@ -157,7 +181,6 @@ describe("email formatting", () => {
   });
 
   it("writes one line per business with its note and sources", async () => {
-    const { digestEmailSections } = await import("./format");
     const id = await business({ name: "Leucadia Cafe LLC", dba: "Leucadia Cafe", category: "restaurants-bars", summary: "Cafe in Encinitas." });
     await event(id, "new_business", "2026-10-14");
     const sections = digestEmailSections(await buildDigest(db, { ...week, clusters: ["north-county-coastal"] }));

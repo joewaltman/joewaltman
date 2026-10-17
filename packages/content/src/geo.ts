@@ -2,6 +2,7 @@ import { z } from "zod";
 import rawAbcTypes from "../../../content/abc-license-types.json";
 import rawDcaTypes from "../../../content/dca-license-types.json";
 import rawManualDrops from "../../../content/manual-drops.json";
+import rawNpiTaxonomy from "../../../content/npi-taxonomy.json";
 import rawTaxonomy from "../../../content/taxonomy.json";
 import rawZipClusters from "../../../content/zip-clusters.json";
 
@@ -117,3 +118,16 @@ const manualDropsSchema = z.object({ asOf: z.string(), sources: z.record(z.strin
 export const manualDropSources = manualDropsSchema.parse(rawManualDrops);
 export type DropSourceConfig = z.infer<typeof dropSourceSchema>;
 export type DropTypeConfig = z.infer<typeof dropTypeSchema>;
+
+const npiSchema = z.object({
+  source: z.url(),
+  asOf: z.string(),
+  groups: z.array(z.object({ prefix: z.string(), label: z.string().min(1), naics: z.string().regex(/^\d{2,6}$/), skip: z.boolean().optional() })),
+});
+export const npiTaxonomy = npiSchema.parse(rawNpiTaxonomy);
+
+// The group for a NUCC taxonomy code: the longest matching prefix.
+export function npiGroup(code: string | null | undefined) {
+  const c = (code ?? "").trim().toUpperCase();
+  return npiTaxonomy.groups.filter((g) => c.startsWith(g.prefix)).sort((a, b) => b.prefix.length - a.prefix.length)[0] ?? null;
+}

@@ -11,6 +11,8 @@ const SOURCES: Array<[string, string]> = [
   ["California DCA", "https://www.dca.ca.gov/consumers/public_info/index.shtml"],
   ["California ABC", "https://www.abc.ca.gov/"],
   ["City of San Diego", "https://data.sandiego.gov/datasets/business-listings/"],
+  ["CMS NPI registry", "https://npiregistry.cms.hhs.gov/"],
+  ["SBA loan data", "https://data.sba.gov/dataset/7a-504-foia"],
 ];
 
 export function WatchlistLanding({

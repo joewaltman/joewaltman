@@ -76,6 +76,8 @@ export interface Digest extends Window {
   categories: string[];
   newBusinesses: BusinessRow[];
   liquor: EventRow[];
+  // New SBA 7(a) and 504 loans over $250,000.
+  capital: EventRow[];
   licenses: EventRow[];
 }
 
@@ -112,7 +114,7 @@ export function liquorAction(eventType: string, raw: AbcRaw): string | null {
 export async function buildDigest(db: Db, opts: DigestOptions): Promise<Digest> {
   const categories = opts.categories ?? [];
   const wants = (category: string) => categories.length === 0 || categories.includes(category);
-  const empty: Digest = { ...opts, categories, newBusinesses: [], liquor: [], licenses: [] };
+  const empty: Digest = { ...opts, categories, newBusinesses: [], liquor: [], capital: [], licenses: [] };
   if (opts.clusters.length === 0) return empty;
 
   const inWindow = and(gte(entityEvents.eventDate, opts.start), lte(entityEvents.eventDate, opts.end));
@@ -223,6 +225,22 @@ export async function buildDigest(db: Db, opts: DigestOptions): Promise<Digest> 
     details: escrow.size > 0 ? `Escrow: ${[...escrow].join(", ")}` : null,
   }));
 
+  // Capital events: SBA loans over $250,000, in the categories asked for.
+  const capital = (
+    await db
+      .select(eventFields)
+      .from(entityEvents)
+      .innerJoin(entities, eq(entityEvents.entityId, entities.id))
+      .where(
+        and(
+          eq(entityEvents.eventType, "sba_loan"),
+          inWindow,
+          inClusters,
+          categories.length > 0 ? inArray(entities.category, categories) : undefined,
+        ),
+      )
+  ).map(toEventRow);
+
   // New contractor licenses.
   const licenses = wants("construction")
     ? (
@@ -240,11 +258,12 @@ export async function buildDigest(db: Db, opts: DigestOptions): Promise<Digest> 
     ...empty,
     newBusinesses: [...byEntity.values()].sort(byDateThenName((r) => r.firstSeen)),
     liquor: liquor.sort(byDateThenName((r) => r.date)),
+    capital: capital.sort(byDateThenName((r) => r.date)),
     licenses: licenses.sort(byDateThenName((r) => r.date)),
   };
 }
 
-export const digestSize = (d: Digest) => d.newBusinesses.length + d.liquor.length + d.licenses.length;
+export const digestSize = (d: Digest) => d.newBusinesses.length + d.liquor.length + d.capital.length + d.licenses.length;
 
 // What public pages may show: name, type and city only.
 export interface PublicRow {
@@ -253,10 +272,11 @@ export interface PublicRow {
   city: string | null;
 }
 
-export function publicRows(d: Digest): { newBusinesses: PublicRow[]; liquor: PublicRow[]; licenses: PublicRow[] } {
+export function publicRows(d: Digest): { newBusinesses: PublicRow[]; liquor: PublicRow[]; capital: PublicRow[]; licenses: PublicRow[] } {
   return {
     newBusinesses: d.newBusinesses.map((r) => ({ name: r.name, type: categoryLabel(r.category) ?? "Business", city: r.city })),
     liquor: d.liquor.map((r) => ({ name: r.name, type: r.title, city: r.city })),
+    capital: d.capital.map((r) => ({ name: r.name, type: r.title, city: r.city })),
     licenses: d.licenses.map((r) => ({ name: r.name, type: "New contractor license", city: r.city })),
   };
 }

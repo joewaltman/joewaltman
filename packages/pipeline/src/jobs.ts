@@ -1,6 +1,8 @@
 import { abc } from "./adapters/abc";
 import { courtListenerJob } from "./adapters/courtlistener";
 import { dcaJob } from "./adapters/dca";
+import { nppesJob } from "./adapters/nppes";
+import { sbaJob } from "./adapters/sba";
 import { cslb } from "./adapters/cslb";
 import { sdBizTax } from "./adapters/sd-biztax";
 import { manualDropsJob } from "./drops/job";
@@ -27,6 +29,8 @@ export const JOBS: Record<string, Job> = {
   abc: adapterJob(abc),
   cslb: adapterJob(cslb),
   dca: dcaJob(),
+  nppes: nppesJob(),
+  sba: sbaJob(),
   enrich: enrichJob(),
   courtlistener: courtListenerJob(),
   // Not on the schedule: the tick runs it whenever an uploaded file is waiting.
@@ -44,6 +48,10 @@ export const SCHEDULE: ScheduleEntry[] = [
   { job: "cslb", time: "05:30" },
   // DCA posts new files once a month; the daily run only checks the Box folder and reads changed boards.
   { job: "dca", time: "05:35" },
+  // CMS posts the weekly NPI file early Monday morning, before the 6:00am Radar.
+  { job: "nppes", time: "05:40" },
+  // SBA posts quarterly; the daily run only reads the dataset page unless a new file is up.
+  { job: "sba", time: "05:40" },
   // After the ingestion jobs, so new businesses are classified before the Monday 6:00am digest.
   { job: "enrich", time: "05:45" },
   // Federal court dockets for Watchlist customers, before the Monday 6:15am Watchlist email.

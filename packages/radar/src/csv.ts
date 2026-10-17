@@ -26,6 +26,7 @@ export function digestCsv(d: Digest): string {
       "",
     ]),
     ...d.liquor.map((r) => ["Liquor license", r.date, r.name, "", "", r.city, r.zip, r.cluster ? clusterLabel(r.cluster) : "", "ABC liquor license", [r.title, r.details].filter(Boolean).join(": "), "", r.sourceUrl]),
+    ...d.capital.map((r) => ["SBA loan", r.date, r.name, "", "", r.city, r.zip, r.cluster ? clusterLabel(r.cluster) : "", "SBA loan data", [r.title, r.details].filter(Boolean).join(": "), "", r.sourceUrl]),
     ...d.licenses.map((r) => ["New license", r.date, r.name, "", "", r.city, r.zip, r.cluster ? clusterLabel(r.cluster) : "", "CSLB contractor license", r.details, "", r.sourceUrl]),
   ];
   return `${[header, ...rows].map((r) => r.map(cell).join(",")).join("\r\n")}\r\n`;

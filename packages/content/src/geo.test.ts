@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { categoryForNaics, clusterForZip, countyForZip, dcaLicenseTypes, taxonomy, zipClusters } from "./geo";
+import { categoryForNaics, clusterForZip, countyForZip, dcaLicenseTypes, npiGroup, taxonomy, zipClusters } from "./geo";
 
 describe("zip clusters", () => {
   it("has the five San Diego County clusters", () => {
@@ -67,5 +67,16 @@ describe("DCA license types", () => {
     ]);
     expect(categoryForNaics(dcaLicenseTypes.folders.AutomotiveRepair_1310!.types["Automotive Repair Dealer"]!.naics)).toBe("auto");
     expect(categoryForNaics(dcaLicenseTypes.folders.MedicalBoard_0800!.types["Fictitious Name Permit"]!.naics)).toBe("medical");
+  });
+});
+
+describe("NPI taxonomy groups", () => {
+  it("picks the longest prefix and maps to categories", () => {
+    expect(npiGroup("261QD0000X")).toMatchObject({ label: "dental clinic" });
+    expect(npiGroup("261QM1300X")).toMatchObject({ label: "clinic or medical center" });
+    expect(npiGroup("251300000X")!.skip).toBe(true);
+    expect(npiGroup("999999999X")).toMatchObject({ label: "healthcare organization" });
+    expect(categoryForNaics(npiGroup("122300000X")!.naics)).toBe("dental");
+    expect(categoryForNaics(npiGroup("207X00000X")!.naics)).toBe("medical");
   });
 });

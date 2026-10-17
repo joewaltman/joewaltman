@@ -53,6 +53,10 @@ export function digestEmailSections(d: Digest): Array<{ title: string; items: st
       ...cap(d.liquor, (r) => `${r.name}, ${place(r.city, r.zip)}: ${r.title}${r.details ? `. ${r.details}` : ""}. ${shortDate(r.date)}.`),
     },
     {
+      title: "SBA loans over $250,000",
+      ...cap(d.capital, (r) => `${r.name}, ${place(r.city, r.zip)}: ${r.title}. ${r.details ?? ""}`.trim().replace(/([^.])$/, "$1.")),
+    },
+    {
       title: "New contractor licenses",
       ...cap(d.licenses, (r) => `${r.name}, ${place(r.city, r.zip)}${r.details ? `. ${r.details}` : ""}. Issued ${shortDate(r.date)}.`),
     },

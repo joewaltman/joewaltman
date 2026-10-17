@@ -24,6 +24,8 @@ export const WATCH_EVENTS: Record<string, { label: string; source: string }> = {
   dca_status_change: { label: "State license status changes", source: "California DCA" },
   dca_license_removed: { label: "State licenses dropped from the DCA file", source: "California DCA" },
   abc_status_change: { label: "Liquor license status changes", source: "California ABC" },
+  npi_deactivated: { label: "Healthcare provider numbers (NPI) deactivated", source: "CMS NPI registry" },
+  sba_loan: { label: "New SBA loans over $250,000", source: "SBA loan data" },
   account_cancelled: { label: "Business tax account cancellations", source: "City of San Diego" },
 };
 
