@@ -3,7 +3,7 @@ import { type Db, questionnaireResponses, subscriptions } from "@jw/db";
 import { createTestDb } from "@jw/db/testing";
 import type { OutgoingMessage, SendDeps } from "@jw/email";
 import { beforeEach, describe, expect, it } from "vitest";
-import { aiworkOpen, loadAiworkResponse, submitAiwork } from "./aiwork";
+import { aiworkOpen, loadAiworkResponse, standingLine, submitAiwork } from "./aiwork";
 import { reviewPacket } from "./aiwork-packet";
 
 let db: Db;
@@ -33,8 +33,8 @@ beforeEach(async () => {
 });
 
 describe("AI-at-Work submissions", () => {
-  it("stays closed to visitors until an attorney review is recorded", () => {
-    expect(aiworkOpen(aiworkRules)).toBe(false);
+  it("is open to visitors since Joe launched it without attorney review", () => {
+    expect(aiworkOpen(aiworkRules)).toBe(true);
   });
 
   it("saves a preview with every obligation, marked as a draft, and emails it", async () => {
@@ -57,20 +57,27 @@ describe("AI-at-Work submissions", () => {
     expect(await db.select().from(subscriptions)).toMatchObject([{ tool: "aiwork", active: false }]);
   });
 
-  it("shows visitors only confirmed obligations once open", async () => {
-    const { responseId } = await submitAiwork(deps, aiworkRules, { answers, wantsUpdates: false, partnerSlug: null, preview: false, today: "2026-10-17" });
+  it("gives visitors the full checklist with the caveat and numbered assumptions", async () => {
+    const { responseId } = await submitAiwork(deps, aiworkRules, { answers: { ...answers, email: "owner@example.com" }, wantsUpdates: false, partnerSlug: null, preview: false, today: "2026-10-17" });
     const stored = await loadAiworkResponse(db, responseId);
-    expect(stored!.result.obligations).toEqual([]);
-    expect(stored!.result.hidden.length).toBeGreaterThan(0);
-    expect(sent).toHaveLength(0);
+    expect(stored!.preview).toBe(false);
+    expect(stored!.result.obligations.map((o) => o.id)).toEqual(["crc-records", "crc-bias", "crc-accommodation", "sb947-human", "sb947-limits"]);
+    expect(stored!.result.hidden).toEqual([]);
+    expect(standingLine(stored!.result, false)).toMatch(/^This is an information tool, not legal advice, and it has not been reviewed by an attorney\./);
+    const text = sent[0]!.text;
+    expect(text).toContain("it has not been reviewed by an attorney");
+    expect(text).toMatch(/four years, including the data the tool used and produced\. \[1\]/);
+    expect(text).toContain("Assumptions");
+    expect(text).toContain("[1] The regulations' examples focus on hiring.");
   });
 });
 
 describe("review packet", () => {
   it("lists every statement with its status and every obligation with its triggers", () => {
     const text = reviewPacket(aiworkRules);
-    expect(text).toContain("[sb947-size] FOR REVIEW: SB 947 applies to employers of every size.");
-    expect(text).toContain("[crc-ads-effective] CONFIRMED:");
+    expect(text).toContain("[sb947-size] IN USE: SB 947 applies to employers of every size.");
+    expect(text).toContain("Assumption: Neither source states a size threshold for SB 947");
+    expect(text).toContain("[crc-ads-effective] IN USE:");
     expect(text).toContain("Shown when: Q8 (Does any automated tool feed into decisions about discipline, termination, promotion, or pay?) is Discipline or Termination or Not sure");
     expect(text).toContain("This notice is for a technology displacement.");
     expect(text).not.toMatch(/\u2014/);

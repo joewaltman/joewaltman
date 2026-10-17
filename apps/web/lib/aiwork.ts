@@ -14,19 +14,31 @@ import { createPendingSubscription, upsertContact } from "./subscriptions";
 
 export const AIWORK_HAND_RAISE = "Want help choosing or implementing AI tools that stay inside these rules?";
 
-// The checker opens to visitors once an attorney's review is recorded in the rules file.
-export const aiworkOpen = (rules: AiworkRules) => Boolean(rules.review.reviewedBy && rules.review.reviewedOn);
+// Open to visitors once an attorney's review is recorded, or since Joe chose to launch without one.
+export const aiworkOpen = (rules: AiworkRules) => Boolean((rules.review.reviewedBy && rules.review.reviewedOn) || rules.review.launchedWithoutReview);
 
-export function standingLine(result: Pick<AiworkResult, "reviewedBy" | "reviewedOn">, preview: boolean): string {
-  if (preview || !result.reviewedBy || !result.reviewedOn) {
-    return "Draft for attorney review. This is an information tool, not legal advice, and these rules have not been reviewed by an attorney yet.";
+type Standing = Pick<AiworkResult, "reviewedBy" | "reviewedOn"> & { launchedWithoutReview?: string | null };
+
+export function standingLine(result: Standing, preview: boolean): string {
+  if (result.reviewedBy && result.reviewedOn) {
+    return `This is an information tool, not legal advice. Reviewed by ${result.reviewedBy} as of ${formatLongDate(result.reviewedOn)}.`;
   }
-  return `This is an information tool, not legal advice. Reviewed by ${result.reviewedBy} as of ${formatLongDate(result.reviewedOn)}.`;
+  if (result.launchedWithoutReview && !preview) {
+    return "This is an information tool, not legal advice, and it has not been reviewed by an attorney. It is built from the regulations and law firm summaries listed under Sources. Where they leave a point open, it makes an assumption, numbered in the footnotes. Talk to an employment attorney before acting on it.";
+  }
+  return "Draft for attorney review. This is an information tool, not legal advice, and these rules have not been reviewed by an attorney yet.";
 }
+
+// "text [1]" for email.
+const marked = (text: string, notes: number[] = []) => `${text}${notes.map((n) => ` [${n}]`).join("")}`;
 
 // Summary, what to do, and the "not sure" check, as plain lines for email.
 export function obligationLines(o: AiworkObligation): string[] {
-  return [...(o.checkFirst ? [`Check first: ${o.checkFirst}`] : []), ...o.summary.map((s) => s.text), ...o.actions.map((a) => `To do: ${a.text.text}`)];
+  return [
+    ...(o.checkFirst ? [`Check first: ${o.checkFirst}`] : []),
+    ...o.summary.map((s) => marked(s.text, s.notes)),
+    ...o.actions.map((a) => `To do: ${marked(a.text.text, a.text.notes)}`),
+  ];
 }
 
 export interface AiworkSubmission {
@@ -66,13 +78,14 @@ export async function submitAiwork(deps: SendDeps, rules: AiworkRules, input: Ai
     const token = await createPendingSubscription(db, { subscriberId: subscriber.id, email, tool: "aiwork" });
     confirmUrl = `${config.siteUrl}/confirm/${token}`;
   }
-  const groups = obligationGroups(result, input.today).map((g) => ({ heading: g.heading, items: g.items.map((o) => ({ title: o.title, lines: obligationLines(o) })) }));
+  const groups = obligationGroups(result, input.today).map((g) => ({ heading: g.heading, items: g.items.map((o) => ({ title: marked(o.title, o.notes), lines: obligationLines(o) })) }));
   const sent = await sendEmail(deps, {
     to: email,
     template: aiworkResult({
       standing: standingLine(result, input.preview),
       groups,
       notTriggered: result.notTriggered.map((l) => l.name),
+      assumptions: (result.assumptions ?? []).map((a, i) => `[${i + 1}] ${a.text}`),
       resultUrl: `${config.siteUrl}/aiwork/result/${responseId}`,
       updatesUrl: confirmUrl,
       asOf: formatLongDate(result.asOf),

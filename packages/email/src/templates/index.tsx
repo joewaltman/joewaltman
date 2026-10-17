@@ -303,6 +303,8 @@ export interface AiworkResultInput {
   standing: string;
   groups: Array<{ heading: string; items: Array<{ title: string; lines: string[] }> }>;
   notTriggered: string[];
+  // Numbered judgment calls behind the result: "[1] ...".
+  assumptions?: string[];
   resultUrl: string;
   // Set when the visitor asked for rule-change emails: the double opt-in link.
   updatesUrl?: string | null;
@@ -338,6 +340,16 @@ export function aiworkResult(input: AiworkResultInput): Template {
         ))}
         {input.notTriggered.length > 0 ? (
           <Text style={{ ...textStyle, marginTop: "18px" }}>Also checked, and not triggered by your answers: {input.notTriggered.join("; ")}.</Text>
+        ) : null}
+        {input.assumptions && input.assumptions.length > 0 ? (
+          <>
+            <Text style={{ ...textStyle, fontWeight: 600, margin: "22px 0 6px" }}>Assumptions</Text>
+            {input.assumptions.map((a) => (
+              <Text key={a} style={{ ...textStyle, margin: "0 0 6px", fontSize: "14px" }}>
+                {a}
+              </Text>
+            ))}
+          </>
         ) : null}
         <Text style={textStyle}>
           <Link href={input.resultUrl} style={linkStyle}>

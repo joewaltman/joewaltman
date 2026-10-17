@@ -6,26 +6,24 @@ Public pages: `/aiwork` (landing, and the questionnaire once open), `/aiwork/p/[
 
 Everything is in `content/aiwork-rules.json`; the engine is `packages/content/src/aiwork/`.
 
-- `facts`: each statement with `sources`, `asOf` and `verify`. Only the Appendix A facts from the build spec are confirmed. Every other statement has `verify: true`, with the source it came from and a note on what is uncertain.
+- `facts`: each statement with `sources`, `asOf` and `verify`. Where the sources leave a point open, the fact carries an `assumption`: the judgment call, shown to visitors as a numbered footnote wherever their result relies on it. A fact marked `verify: true` is held back from visitors, along with any obligation or template resting on it.
 - `questions`: the spec's ten questions plus an optional email.
 - `laws`: the six rules checked, each with its effective date.
 - `obligations`: what the result lists. Each one names its law and kind (`dated`, `check`, `conditional`, `practice`), the facts it rests on, when it applies (`whenAny`, with `unless` exceptions), what it says, what to do, the note shown when it matched only through a "not sure" answer, and its templates.
 - `templates`: the notice and contract text offered as downloads.
 - `review`: who reviewed the rules and when.
 
-## Launch: the attorney review
+## Launched without attorney review
 
-The checker is closed to visitors until `review.reviewedBy` and `review.reviewedOn` are filled in. Until then, `/aiwork` shows a signup for a launch note, and you (signed in to admin) see the full questionnaire as a preview. Preview results say they are drafts.
+On October 17, 2026 Joe chose to launch without an employment attorney's review (`review.launchedWithoutReview` in the rules file). Every result and template says at the top that it is information, not legal advice, and has not been reviewed by an attorney, and lists its sources and numbered assumptions at the bottom.
 
-1. Download the review packet from `/admin/aiwork` and send it to the attorney. It lists the questions, every statement with its sources and status, every obligation with when it is shown, and the templates.
-2. For each statement the attorney confirms, set `verify` to false (correcting the text if needed). For one they change, update the text and any obligation copy that relies on it.
-3. Fill in `review.reviewedBy` (the name shown on results, for example "Jane Smith, Smith Employment Law") and `review.reviewedOn`, bump `version` and `asOf`, run `pnpm test`, commit and deploy.
+The statements rest on the Civil Rights Council regulations as summarized by Paul Hastings, the CPPA's approved regulation text, the Civil Rights Department's employment page, and Epstein Becker Green and Coblentz summaries of the four 2026 laws. The eight judgment calls are listed on `/admin/aiwork` under "Assumptions in use".
 
-Visitors only ever see obligations and templates whose statements are all confirmed. An obligation resting on a statement still marked verify is left out of their result, with a line saying some rules are still being confirmed.
+To change a judgment call, edit its fact's `assumption` (or the fact itself) and deploy. If an attorney or partner reviews the rules later, download the plain-text rules from `/admin/aiwork`, apply their corrections, fill in `review.reviewedBy` and `review.reviewedOn`, and results will say "Reviewed by" instead.
 
 ## Changing the rules later
 
-Edit the JSON, bump `version` and `asOf`, and add or update a scenario in `packages/content/src/aiwork/scenarios.test.ts`. The tests fail on a reference to an unknown fact, law, question, answer or template, on an em dash, or if a fact outside the confirmed list loses its verify flag without a test change. Stored results keep the version they were made with.
+Edit the JSON, bump `version` and `asOf`, and add or update a scenario in `packages/content/src/aiwork/scenarios.test.ts`. The tests fail on a reference to an unknown fact, law, question, answer or template, on an em dash, on a fact in use without a source, or when the list of assumptions changes without the test changing too. Stored results keep the version they were made with.
 
 ## Partners
 

@@ -1,27 +1,34 @@
 {
-  "version": "2026-10-17.1",
+  "version": "2026-10-17.2",
   "asOf": "2026-10-17",
   "review": {
     "reviewedBy": null,
     "reviewedOn": null,
-    "note": "Not yet reviewed by an attorney. The public checker stays off until reviewedBy and reviewedOn are filled in. Facts marked verify are held back from visitors even after that, until each is confirmed."
+    "launchedWithoutReview": "2026-10-17",
+    "note": "On October 17, 2026 Joe chose to launch without attorney review. Statements the sources leave open carry an assumption, which visitors see as a numbered footnote. If an attorney reviews the rules later, fill in reviewedBy and reviewedOn."
   },
   "facts": {
     "crc-ads-effective": {
       "text": "The Civil Rights Council's regulations on employers' use of automated decision systems under the Fair Employment and Housing Act took effect October 1, 2025.",
-      "sources": ["https://www.paulhastings.com/insights/client-alerts/new-california-regulations-on-employers-use-of-ai-to-make-decisions-go-into-effect-oct-1-2025"],
+      "sources": [
+        "https://www.paulhastings.com/insights/client-alerts/new-california-regulations-on-employers-use-of-ai-to-make-decisions-go-into-effect-oct-1-2025"
+      ],
       "asOf": "2026-10-16",
       "verify": false
     },
     "cppa-admt-compliance": {
       "text": "Businesses subject to the CCPA must comply with the California Privacy Protection Agency's automated decisionmaking technology (ADMT) rules by January 1, 2027.",
-      "sources": ["https://www.whitecase.com/insight-alert/cppa-finalizes-rules-admt-risk-assessments-and-cybersecurity-audits-requirements"],
+      "sources": [
+        "https://www.whitecase.com/insight-alert/cppa-finalizes-rules-admt-risk-assessments-and-cybersecurity-audits-requirements"
+      ],
       "asOf": "2026-10-16",
       "verify": false
     },
     "cppa-risk-assessments": {
       "text": "Under the same CPPA rules, risk assessments are required from January 1, 2026, with first submissions due April 1, 2028.",
-      "sources": ["https://www.whitecase.com/insight-alert/cppa-finalizes-rules-admt-risk-assessments-and-cybersecurity-audits-requirements"],
+      "sources": [
+        "https://www.whitecase.com/insight-alert/cppa-finalizes-rules-admt-risk-assessments-and-cybersecurity-audits-requirements"
+      ],
       "asOf": "2026-10-16",
       "verify": false
     },
@@ -45,61 +52,86 @@
     },
     "ccpa-thresholds": {
       "text": "The CCPA applies to a business with more than $26,625,000 in annual gross revenue, or one that buys, sells or shares the personal information of 100,000 or more consumers or households. The revenue figure is next adjusted in January 2027.",
-      "sources": ["https://cppa.ca.gov/announcements/2024/20241217.html"],
+      "sources": [
+        "https://cppa.ca.gov/announcements/2024/20241217.html"
+      ],
       "asOf": "2026-10-16",
       "verify": false
     },
     "feha-five": {
-      "text": "The Fair Employment and Housing Act's employment rules, including the automated decision system regulations, apply to employers with five or more employees.",
-      "sources": [],
+      "text": "FEHA's employment discrimination rules apply to employers with five or more employees. Its harassment rules apply to every employer.",
+      "sources": [
+        "https://calcivilrights.ca.gov/employment/"
+      ],
       "asOf": "2026-10-17",
-      "verify": true,
-      "note": "FEHA's general employer definition. Neither cited article states the threshold for the ADS regulations; confirm."
+      "verify": false,
+      "assumption": "We assume the automated decision system regulations reach the same employers as FEHA's discrimination rules, those with five or more employees. The sources on the regulations do not state a separate threshold."
     },
     "crc-ads-definition": {
       "text": "An automated decision system is a computational process that makes or helps make an employment decision. Examples include resume screening for terms or patterns, job ads aimed at chosen groups, assessments built on questions, puzzles or games, and analysis of facial expressions, speech or voice in online interviews. Word processors, spreadsheets and similar tools are not covered unless they make employment decisions.",
-      "sources": ["https://www.paulhastings.com/insights/client-alerts/new-california-regulations-on-employers-use-of-ai-to-make-decisions-go-into-effect-oct-1-2025"],
+      "sources": [
+        "https://www.paulhastings.com/insights/client-alerts/new-california-regulations-on-employers-use-of-ai-to-make-decisions-go-into-effect-oct-1-2025"
+      ],
       "asOf": "2026-10-17",
-      "verify": true,
-      "note": "Paraphrased from the Paul Hastings alert's description of the regulations."
+      "verify": false
+    },
+    "ads-scheduling": {
+      "text": "Software that assigns shifts or hours can be an automated decision system.",
+      "sources": [
+        "https://www.paulhastings.com/insights/client-alerts/new-california-regulations-on-employers-use-of-ai-to-make-decisions-go-into-effect-oct-1-2025"
+      ],
+      "asOf": "2026-10-17",
+      "verify": false,
+      "assumption": "The regulations' examples focus on hiring. We treat software that assigns shifts or hours as an automated decision system too, because it decides who gets work, which the definition covers."
     },
     "crc-records": {
       "text": "Employers must keep personnel and other employment records for four years, up from two, including any data used in or resulting from an automated decision system and data used to develop or customize one for the employer.",
-      "sources": ["https://www.paulhastings.com/insights/client-alerts/new-california-regulations-on-employers-use-of-ai-to-make-decisions-go-into-effect-oct-1-2025"],
+      "sources": [
+        "https://www.paulhastings.com/insights/client-alerts/new-california-regulations-on-employers-use-of-ai-to-make-decisions-go-into-effect-oct-1-2025"
+      ],
       "asOf": "2026-10-17",
-      "verify": true
+      "verify": false
     },
     "crc-agents": {
       "text": "Liability for discrimination through an automated decision system extends to an employer's agents, which can include a vendor the employer relies on to make or support employment decisions.",
-      "sources": ["https://www.paulhastings.com/insights/client-alerts/new-california-regulations-on-employers-use-of-ai-to-make-decisions-go-into-effect-oct-1-2025"],
+      "sources": [
+        "https://www.paulhastings.com/insights/client-alerts/new-california-regulations-on-employers-use-of-ai-to-make-decisions-go-into-effect-oct-1-2025"
+      ],
       "asOf": "2026-10-17",
-      "verify": true
+      "verify": false
     },
     "crc-testing": {
       "text": "Anti-bias testing of an automated decision system is not required, but evidence of testing, or the lack of it, is relevant to a discrimination claim or defense.",
-      "sources": ["https://www.paulhastings.com/insights/client-alerts/new-california-regulations-on-employers-use-of-ai-to-make-decisions-go-into-effect-oct-1-2025"],
+      "sources": [
+        "https://www.paulhastings.com/insights/client-alerts/new-california-regulations-on-employers-use-of-ai-to-make-decisions-go-into-effect-oct-1-2025"
+      ],
       "asOf": "2026-10-17",
-      "verify": true
+      "verify": false
     },
     "crc-accommodation": {
       "text": "Tools that measure skill, dexterity or reaction time, or analyze tone of voice, facial expressions or other physical traits, may screen out people with disabilities, so an employer may need to offer a reasonable accommodation. Online application tools that screen or rank applicants by schedule need a way for applicants to ask for an accommodation.",
-      "sources": ["https://www.paulhastings.com/insights/client-alerts/new-california-regulations-on-employers-use-of-ai-to-make-decisions-go-into-effect-oct-1-2025"],
+      "sources": [
+        "https://www.paulhastings.com/insights/client-alerts/new-california-regulations-on-employers-use-of-ai-to-make-decisions-go-into-effect-oct-1-2025"
+      ],
       "asOf": "2026-10-17",
-      "verify": true
+      "verify": false
     },
     "cppa-admt-scope": {
-      "text": "The CPPA's ADMT rules cover the use of automated decisionmaking technology to make significant decisions about consumers, which include employment decisions such as hiring, work assignment, pay, promotion, demotion, suspension and termination. Employees and applicants are consumers under the CCPA.",
-      "sources": ["https://www.whitecase.com/insight-alert/cppa-finalizes-rules-admt-risk-assessments-and-cybersecurity-audits-requirements"],
+      "text": "Under the CPPA rules, a significant decision includes employment decisions: hiring, allocation or assignment of work and compensation, promotion, and demotion, suspension and termination.",
+      "sources": [
+        "https://cppa.ca.gov/regulations/pdf/ccpa_updates_cyber_risk_admt_appr_text.pdf"
+      ],
       "asOf": "2026-10-17",
-      "verify": true,
-      "note": "From the build spec. The White & Case page could not be read automatically, so the list of covered decisions is unconfirmed."
+      "verify": false,
+      "assumption": "The regulations' own examples include notices from an employer to an employee, so we treat employees and applicants as consumers the rules protect."
     },
     "cppa-admt-rights": {
-      "text": "Before using ADMT for a significant decision, a business must give a pre-use notice, let people opt out (with exceptions, such as offering a human appeal) and answer requests for access to information about the ADMT's use. A risk assessment is required.",
-      "sources": ["https://www.whitecase.com/insight-alert/cppa-finalizes-rules-admt-risk-assessments-and-cybersecurity-audits-requirements"],
+      "text": "A business using ADMT for a significant decision must give a pre-use notice that explains the specific purpose, let people opt out unless an exception applies, and answer requests for information about how the ADMT was used. One exception is offering an appeal to a human reviewer who understands the tool's output and has authority to change the decision. For hiring, and for work assignment and pay, another applies when the tool only assesses ability to do the work, works for that purpose, and does not unlawfully discriminate.",
+      "sources": [
+        "https://cppa.ca.gov/regulations/pdf/ccpa_updates_cyber_risk_admt_appr_text.pdf"
+      ],
       "asOf": "2026-10-17",
-      "verify": true,
-      "note": "From the build spec; the exceptions to the opt-out are unconfirmed."
+      "verify": false
     },
     "sb947-rules": {
       "text": "Under SB 947 an employer may not rely solely on an automated decision system for a discipline or termination decision. When an ADS is the primary basis, a person must corroborate its output, the employer must give the employee a written notice after the fact, and on request the employer must give a meaningful, objective description of the employee's data the system used.",
@@ -108,33 +140,42 @@
         "https://www.coblentzlaw.com/news/californias-new-employment-laws-for-2027-what-employers-need-to-know-and-do/"
       ],
       "asOf": "2026-10-17",
-      "verify": true,
-      "note": "Epstein Becker Green notes the law does not define \"primarily.\""
+      "verify": false,
+      "assumption": "SB 947 does not define \"primarily.\" We treat a decision as covered when the tool's output was the main thing it rested on."
     },
     "sb947-notice": {
       "text": "The SB 947 written notice says the decision relied primarily on an ADS, confirms a person reviewed it, names a contact, and describes the employee's rights, including access to their data and protection from retaliation.",
-      "sources": ["https://www.ebglaw.com/insights/publications/four-new-california-laws-reshape-the-rules-for-workplace-ai"],
+      "sources": [
+        "https://www.ebglaw.com/insights/publications/four-new-california-laws-reshape-the-rules-for-workplace-ai"
+      ],
       "asOf": "2026-10-17",
-      "verify": true
+      "verify": false,
+      "assumption": "The sources do not say when the notice must be given. We suggest giving it with the decision."
     },
     "sb947-prohibitions": {
       "text": "SB 947 also bars using an ADS to infer a characteristic protected under FEHA, or to anticipate and act against employees exercising legal rights.",
-      "sources": ["https://www.ebglaw.com/insights/publications/four-new-california-laws-reshape-the-rules-for-workplace-ai"],
+      "sources": [
+        "https://www.ebglaw.com/insights/publications/four-new-california-laws-reshape-the-rules-for-workplace-ai"
+      ],
       "asOf": "2026-10-17",
-      "verify": true
+      "verify": false
     },
     "sb947-penalty": {
       "text": "SB 947 carries civil penalties of $500 per violation, enforced by the Labor Commissioner or public prosecutors.",
-      "sources": ["https://www.ebglaw.com/insights/publications/four-new-california-laws-reshape-the-rules-for-workplace-ai"],
+      "sources": [
+        "https://www.ebglaw.com/insights/publications/four-new-california-laws-reshape-the-rules-for-workplace-ai"
+      ],
       "asOf": "2026-10-17",
-      "verify": true
+      "verify": false
     },
     "sb947-size": {
       "text": "SB 947 applies to employers of every size.",
-      "sources": [],
+      "sources": [
+        "https://www.ebglaw.com/insights/publications/four-new-california-laws-reshape-the-rules-for-workplace-ai"
+      ],
       "asOf": "2026-10-17",
-      "verify": true,
-      "note": "The spec marks the size threshold VERIFY. Neither cited article states one; both describe private and public employers generally."
+      "verify": false,
+      "assumption": "Neither source states a size threshold for SB 947, and both describe it as covering private and public employers generally, so we assume it applies at every size."
     },
     "ab1883-rules": {
       "text": "AB 1883 bars employers from using AI with workplace surveillance tools to recognize, infer or predict an employee's emotional state, or to collect neural data, starting January 1, 2027. It applies even to wellness or stress monitoring.",
@@ -143,20 +184,33 @@
         "https://www.coblentzlaw.com/news/californias-new-employment-laws-for-2027-what-employers-need-to-know-and-do/"
       ],
       "asOf": "2026-10-17",
-      "verify": true
+      "verify": false
     },
     "ab1883-penalty": {
       "text": "AB 1883 carries civil penalties of $500 per violation and gives employees a private right of action.",
-      "sources": ["https://www.ebglaw.com/insights/publications/four-new-california-laws-reshape-the-rules-for-workplace-ai"],
+      "sources": [
+        "https://www.ebglaw.com/insights/publications/four-new-california-laws-reshape-the-rules-for-workplace-ai"
+      ],
       "asOf": "2026-10-17",
-      "verify": true
+      "verify": false
+    },
+    "ab1883-biometrics": {
+      "text": "AB 1883 covers emotion inference and neural data.",
+      "sources": [
+        "https://www.ebglaw.com/insights/publications/four-new-california-laws-reshape-the-rules-for-workplace-ai"
+      ],
+      "asOf": "2026-10-17",
+      "verify": false,
+      "assumption": "We read AB 1883 as limited to emotion inference and neural data. Other biometrics, such as fingerprint time clocks, fall under other California rules this checker does not cover."
     },
     "ab1331-rules": {
       "text": "AB 1331 bars using workplace surveillance tools, including video, audio, location and other electronic monitoring, to monitor bathrooms, except under a court order, starting January 1, 2027. Employees may leave such tools outside before entering. It does not cover locker rooms, cafeterias or break areas.",
-      "sources": ["https://www.ebglaw.com/insights/publications/four-new-california-laws-reshape-the-rules-for-workplace-ai"],
+      "sources": [
+        "https://www.ebglaw.com/insights/publications/four-new-california-laws-reshape-the-rules-for-workplace-ai"
+      ],
       "asOf": "2026-10-17",
-      "verify": true,
-      "note": "The January 1, 2027 date is inferred: the article says three of the four laws take effect then and SB 947 on July 1, 2027. The governor's signing message flagged unclear scope for personal devices and badge systems."
+      "verify": false,
+      "assumption": "One source dates three of the four new laws to January 1, 2027 without naming each, and gives SB 947 a later date, so we assume AB 1331 takes effect January 1, 2027. The governor noted that its reach to personal devices and badge systems is unclear."
     },
     "sb951-rules": {
       "text": "Starting January 1, 2027, when AI or other automated technology causes a mass layoff, relocation or termination in whole or in substantial part, the Cal-WARN notice must say at the top that it is for a technology displacement, and list the number, classification, occupation and work location of affected employees, the job functions being automated and the category of technology.",
@@ -165,13 +219,15 @@
         "https://www.coblentzlaw.com/news/californias-new-employment-laws-for-2027-what-employers-need-to-know-and-do/"
       ],
       "asOf": "2026-10-17",
-      "verify": true
+      "verify": false
     },
     "calwarn-coverage": {
       "text": "Cal-WARN covers employers with an industrial or commercial facility that had 75 or more employees at any time in the prior 12 months, and requires 60 days' written notice.",
-      "sources": ["https://www.ebglaw.com/insights/publications/four-new-california-laws-reshape-the-rules-for-workplace-ai"],
+      "sources": [
+        "https://www.ebglaw.com/insights/publications/four-new-california-laws-reshape-the-rules-for-workplace-ai"
+      ],
       "asOf": "2026-10-17",
-      "verify": true
+      "verify": false
     }
   },
   "questions": [
@@ -182,11 +238,26 @@
       "type": "single",
       "required": true,
       "options": [
-        { "value": "under-5", "label": "Under 5" },
-        { "value": "5-24", "label": "5 to 24" },
-        { "value": "25-74", "label": "25 to 74" },
-        { "value": "75-99", "label": "75 to 99" },
-        { "value": "100-plus", "label": "100 or more" }
+        {
+          "value": "under-5",
+          "label": "Under 5"
+        },
+        {
+          "value": "5-24",
+          "label": "5 to 24"
+        },
+        {
+          "value": "25-74",
+          "label": "25 to 74"
+        },
+        {
+          "value": "75-99",
+          "label": "75 to 99"
+        },
+        {
+          "value": "100-plus",
+          "label": "100 or more"
+        }
       ]
     },
     {
@@ -197,19 +268,58 @@
       "type": "multi",
       "required": true,
       "options": [
-        { "value": "workable", "label": "Workable" },
-        { "value": "greenhouse", "label": "Greenhouse" },
-        { "value": "lever", "label": "Lever" },
-        { "value": "icims", "label": "iCIMS" },
-        { "value": "bamboohr", "label": "BambooHR" },
-        { "value": "workday", "label": "Workday" },
-        { "value": "adp", "label": "ADP" },
-        { "value": "paycor", "label": "Paycor" },
-        { "value": "paylocity", "label": "Paylocity" },
-        { "value": "gusto", "label": "Gusto" },
-        { "value": "indeed", "label": "Indeed-hosted applications" },
-        { "value": "other", "label": "Another system" },
-        { "value": "none", "label": "None" }
+        {
+          "value": "workable",
+          "label": "Workable"
+        },
+        {
+          "value": "greenhouse",
+          "label": "Greenhouse"
+        },
+        {
+          "value": "lever",
+          "label": "Lever"
+        },
+        {
+          "value": "icims",
+          "label": "iCIMS"
+        },
+        {
+          "value": "bamboohr",
+          "label": "BambooHR"
+        },
+        {
+          "value": "workday",
+          "label": "Workday"
+        },
+        {
+          "value": "adp",
+          "label": "ADP"
+        },
+        {
+          "value": "paycor",
+          "label": "Paycor"
+        },
+        {
+          "value": "paylocity",
+          "label": "Paylocity"
+        },
+        {
+          "value": "gusto",
+          "label": "Gusto"
+        },
+        {
+          "value": "indeed",
+          "label": "Indeed-hosted applications"
+        },
+        {
+          "value": "other",
+          "label": "Another system"
+        },
+        {
+          "value": "none",
+          "label": "None"
+        }
       ]
     },
     {
@@ -220,9 +330,18 @@
       "type": "single",
       "required": true,
       "options": [
-        { "value": "yes", "label": "Yes" },
-        { "value": "no", "label": "No" },
-        { "value": "not-sure", "label": "Not sure" }
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        },
+        {
+          "value": "not-sure",
+          "label": "Not sure"
+        }
       ]
     },
     {
@@ -232,9 +351,18 @@
       "type": "single",
       "required": true,
       "options": [
-        { "value": "yes", "label": "Yes" },
-        { "value": "no", "label": "No" },
-        { "value": "not-sure", "label": "Not sure" }
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        },
+        {
+          "value": "not-sure",
+          "label": "Not sure"
+        }
       ]
     },
     {
@@ -244,9 +372,18 @@
       "type": "single",
       "required": true,
       "options": [
-        { "value": "yes", "label": "Yes" },
-        { "value": "no", "label": "No" },
-        { "value": "not-sure", "label": "Not sure" }
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        },
+        {
+          "value": "not-sure",
+          "label": "Not sure"
+        }
       ]
     },
     {
@@ -257,9 +394,18 @@
       "type": "single",
       "required": true,
       "options": [
-        { "value": "yes", "label": "Yes" },
-        { "value": "no", "label": "No" },
-        { "value": "not-sure", "label": "Not sure" }
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        },
+        {
+          "value": "not-sure",
+          "label": "Not sure"
+        }
       ]
     },
     {
@@ -270,9 +416,18 @@
       "type": "single",
       "required": true,
       "options": [
-        { "value": "yes", "label": "Yes" },
-        { "value": "no", "label": "No" },
-        { "value": "not-sure", "label": "Not sure" }
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        },
+        {
+          "value": "not-sure",
+          "label": "Not sure"
+        }
       ]
     },
     {
@@ -283,12 +438,30 @@
       "type": "multi",
       "required": true,
       "options": [
-        { "value": "discipline", "label": "Discipline" },
-        { "value": "termination", "label": "Termination" },
-        { "value": "promotion", "label": "Promotion" },
-        { "value": "pay", "label": "Pay" },
-        { "value": "not-sure", "label": "Not sure" },
-        { "value": "none", "label": "None of these" }
+        {
+          "value": "discipline",
+          "label": "Discipline"
+        },
+        {
+          "value": "termination",
+          "label": "Termination"
+        },
+        {
+          "value": "promotion",
+          "label": "Promotion"
+        },
+        {
+          "value": "pay",
+          "label": "Pay"
+        },
+        {
+          "value": "not-sure",
+          "label": "Not sure"
+        },
+        {
+          "value": "none",
+          "label": "None of these"
+        }
       ]
     },
     {
@@ -298,9 +471,18 @@
       "type": "single",
       "required": true,
       "options": [
-        { "value": "yes", "label": "Yes" },
-        { "value": "no", "label": "No" },
-        { "value": "not-sure", "label": "Not sure" }
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        },
+        {
+          "value": "not-sure",
+          "label": "Not sure"
+        }
       ]
     },
     {
@@ -310,9 +492,18 @@
       "type": "single",
       "required": true,
       "options": [
-        { "value": "yes", "label": "Yes" },
-        { "value": "no", "label": "No" },
-        { "value": "not-sure", "label": "Not sure" }
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        },
+        {
+          "value": "not-sure",
+          "label": "Not sure"
+        }
       ]
     },
     {
@@ -325,12 +516,48 @@
     }
   ],
   "laws": {
-    "crc-ads": { "name": "Civil Rights Council rules on automated decision systems (FEHA)", "effective": "2025-10-01", "facts": ["crc-ads-effective"] },
-    "cppa-admt": { "name": "CPPA rules on automated decisionmaking technology (CCPA)", "effective": "2027-01-01", "facts": ["cppa-admt-compliance"] },
-    "ab1883": { "name": "AB 1883: AI workplace surveillance", "effective": "2027-01-01", "facts": ["ab1883-rules"] },
-    "ab1331": { "name": "AB 1331: bathroom surveillance", "effective": "2027-01-01", "facts": ["ab1331-rules"] },
-    "sb951": { "name": "SB 951: Cal-WARN technology displacement notices", "effective": "2027-01-01", "facts": ["sb951-rules"] },
-    "sb947": { "name": "SB 947: No Robo Bosses Act", "effective": "2027-07-01", "facts": ["sb947-effective"] }
+    "crc-ads": {
+      "name": "Civil Rights Council rules on automated decision systems (FEHA)",
+      "effective": "2025-10-01",
+      "facts": [
+        "crc-ads-effective"
+      ]
+    },
+    "cppa-admt": {
+      "name": "CPPA rules on automated decisionmaking technology (CCPA)",
+      "effective": "2027-01-01",
+      "facts": [
+        "cppa-admt-compliance"
+      ]
+    },
+    "ab1883": {
+      "name": "AB 1883: AI workplace surveillance",
+      "effective": "2027-01-01",
+      "facts": [
+        "ab1883-rules"
+      ]
+    },
+    "ab1331": {
+      "name": "AB 1331: bathroom surveillance",
+      "effective": "2027-01-01",
+      "facts": [
+        "ab1331-rules"
+      ]
+    },
+    "sb951": {
+      "name": "SB 951: Cal-WARN technology displacement notices",
+      "effective": "2027-01-01",
+      "facts": [
+        "sb951-rules"
+      ]
+    },
+    "sb947": {
+      "name": "SB 947: No Robo Bosses Act",
+      "effective": "2027-07-01",
+      "facts": [
+        "sb947-effective"
+      ]
+    }
   },
   "obligations": [
     {
@@ -338,63 +565,270 @@
       "law": "crc-ads",
       "kind": "dated",
       "title": "Keep four years of hiring and personnel records, including data from automated tools",
-      "facts": ["crc-ads-effective", "crc-records", "feha-five"],
-      "whenAny": [{ "aiScreening": ["yes", "not-sure"] }, { "automatedDecisions": ["discipline", "termination", "promotion", "pay", "not-sure"] }, { "autoScheduling": ["yes", "not-sure"] }],
-      "unless": [{ "employees": ["under-5"] }],
-      "summary": [{ "text": "Records from automated screening, scheduling and decision tools now have to be kept for four years, including the data the tool used and produced.", "facts": ["crc-records"] }],
+      "facts": [
+        "crc-ads-effective",
+        "crc-records",
+        "ads-scheduling",
+        "feha-five"
+      ],
+      "whenAny": [
+        {
+          "aiScreening": [
+            "yes",
+            "not-sure"
+          ]
+        },
+        {
+          "automatedDecisions": [
+            "discipline",
+            "termination",
+            "promotion",
+            "pay",
+            "not-sure"
+          ]
+        },
+        {
+          "autoScheduling": [
+            "yes",
+            "not-sure"
+          ]
+        }
+      ],
+      "unless": [
+        {
+          "employees": [
+            "under-5"
+          ]
+        }
+      ],
+      "summary": [
+        {
+          "text": "Records from automated screening, scheduling and decision tools now have to be kept for four years, including the data the tool used and produced.",
+          "facts": [
+            "crc-records",
+            "ads-scheduling"
+          ]
+        },
+        {
+          "text": "These rules apply to employers with five or more employees.",
+          "facts": [
+            "feha-five"
+          ]
+        }
+      ],
       "actions": [
-        { "kind": "records", "text": { "text": "Set a four-year retention period for applicant and personnel records, and include the inputs, scores and outputs of each automated tool.", "facts": ["crc-records"] } },
-        { "kind": "vendor", "text": { "text": "Ask each vendor whether it keeps that data for four years on your behalf, and get it in writing.", "facts": ["crc-records", "crc-agents"] } }
+        {
+          "kind": "records",
+          "text": {
+            "text": "Set a four-year retention period for applicant and personnel records, and include the inputs, scores and outputs of each automated tool.",
+            "facts": [
+              "crc-records"
+            ]
+          }
+        },
+        {
+          "kind": "vendor",
+          "text": {
+            "text": "Ask each vendor whether it keeps that data for four years on your behalf, and get it in writing.",
+            "facts": [
+              "crc-records",
+              "crc-agents"
+            ]
+          }
+        }
       ],
       "checkFirst": "You answered \"not sure\" on at least one question. Ask your vendors whether their tools score, rank, filter or schedule people automatically.",
-      "templates": ["vendor-ads-clause"]
+      "templates": [
+        "vendor-ads-clause"
+      ]
     },
     {
       "id": "crc-bias",
       "law": "crc-ads",
       "kind": "dated",
       "title": "Check your screening tools for bias and document it",
-      "facts": ["crc-ads-effective", "crc-ads-definition", "crc-agents", "crc-testing", "feha-five"],
-      "whenAny": [{ "aiScreening": ["yes", "not-sure"] }, { "automatedDecisions": ["discipline", "termination", "promotion", "pay", "not-sure"] }],
-      "unless": [{ "employees": ["under-5"] }],
+      "facts": [
+        "crc-ads-effective",
+        "crc-ads-definition",
+        "crc-agents",
+        "crc-testing",
+        "feha-five"
+      ],
+      "whenAny": [
+        {
+          "aiScreening": [
+            "yes",
+            "not-sure"
+          ]
+        },
+        {
+          "automatedDecisions": [
+            "discipline",
+            "termination",
+            "promotion",
+            "pay",
+            "not-sure"
+          ]
+        }
+      ],
+      "unless": [
+        {
+          "employees": [
+            "under-5"
+          ]
+        }
+      ],
       "summary": [
-        { "text": "Resume screeners, targeted job ads, game-based assessments and video interview analysis all count as automated decision systems.", "facts": ["crc-ads-definition"] },
-        { "text": "You can be liable for discrimination by a vendor's tool, and records of bias testing count in a dispute.", "facts": ["crc-agents", "crc-testing"] }
+        {
+          "text": "Resume screeners, targeted job ads, game-based assessments and video interview analysis all count as automated decision systems.",
+          "facts": [
+            "crc-ads-definition"
+          ]
+        },
+        {
+          "text": "You can be liable for discrimination by a vendor's tool, and records of bias testing count in a dispute.",
+          "facts": [
+            "crc-agents",
+            "crc-testing"
+          ]
+        },
+        {
+          "text": "These rules apply to employers with five or more employees.",
+          "facts": [
+            "feha-five"
+          ]
+        }
       ],
       "actions": [
-        { "kind": "vendor", "text": { "text": "Ask each vendor for its most recent bias testing results and how often it tests.", "facts": ["crc-testing"] } },
-        { "kind": "vendor", "text": { "text": "Add a contract clause requiring the vendor to cooperate with testing and record requests.", "facts": ["crc-agents"] } },
-        { "kind": "records", "text": { "text": "Keep a short file per tool: what it does, what data it uses, and the testing you have seen.", "facts": ["crc-testing"] } }
+        {
+          "kind": "vendor",
+          "text": {
+            "text": "Ask each vendor for its most recent bias testing results and how often it tests.",
+            "facts": [
+              "crc-testing"
+            ]
+          }
+        },
+        {
+          "kind": "vendor",
+          "text": {
+            "text": "Add a contract clause requiring the vendor to cooperate with testing and record requests.",
+            "facts": [
+              "crc-agents"
+            ]
+          }
+        },
+        {
+          "kind": "records",
+          "text": {
+            "text": "Keep a short file per tool: what it does, what data it uses, and the testing you have seen.",
+            "facts": [
+              "crc-testing"
+            ]
+          }
+        }
       ],
       "checkFirst": "You answered \"not sure.\" Check whether your applicant tracking system scores or ranks applicants; many do by default.",
-      "templates": ["vendor-ads-clause"]
+      "templates": [
+        "vendor-ads-clause"
+      ]
     },
     {
       "id": "crc-accommodation",
       "law": "crc-ads",
       "kind": "dated",
       "title": "Give applicants a way to ask for an accommodation",
-      "facts": ["crc-ads-effective", "crc-accommodation", "feha-five"],
-      "whenAny": [{ "aiScreening": ["yes", "not-sure"] }, { "autoScheduling": ["yes"] }],
-      "unless": [{ "employees": ["under-5"] }],
-      "summary": [{ "text": "Assessments that test speed or skill, video analysis, and application tools that filter by schedule can screen out people with disabilities or religious practices.", "facts": ["crc-accommodation"] }],
+      "facts": [
+        "crc-ads-effective",
+        "crc-accommodation",
+        "feha-five"
+      ],
+      "whenAny": [
+        {
+          "aiScreening": [
+            "yes",
+            "not-sure"
+          ]
+        }
+      ],
+      "unless": [
+        {
+          "employees": [
+            "under-5"
+          ]
+        }
+      ],
+      "summary": [
+        {
+          "text": "Assessments that test speed or skill, video analysis, and application tools that filter applicants by their availability can screen out people with disabilities or religious practices.",
+          "facts": [
+            "crc-accommodation"
+          ]
+        },
+        {
+          "text": "These rules apply to employers with five or more employees.",
+          "facts": [
+            "feha-five"
+          ]
+        }
+      ],
       "actions": [
-        { "kind": "notice", "text": { "text": "Add an accommodation request line to job postings and application pages, with a person who answers it.", "facts": ["crc-accommodation"] } },
-        { "kind": "human", "text": { "text": "Offer an alternative to timed or video assessments on request.", "facts": ["crc-accommodation"] } }
+        {
+          "kind": "notice",
+          "text": {
+            "text": "Add an accommodation request line to job postings and application pages, with a person who answers it.",
+            "facts": [
+              "crc-accommodation"
+            ]
+          }
+        },
+        {
+          "kind": "human",
+          "text": {
+            "text": "Offer an alternative to timed or video assessments on request.",
+            "facts": [
+              "crc-accommodation"
+            ]
+          }
+        }
       ],
       "checkFirst": "You answered \"not sure.\" Check whether your application flow uses assessments, video analysis or schedule filters.",
-      "templates": ["applicant-accommodation-notice"]
+      "templates": [
+        "applicant-accommodation-notice"
+      ]
     },
     {
       "id": "ccpa-check",
       "law": "cppa-admt",
       "kind": "check",
       "title": "Find out whether the CCPA applies to you",
-      "facts": ["ccpa-thresholds", "cppa-admt-compliance"],
-      "whenAny": [{ "ccpa": ["not-sure"] }],
+      "facts": [
+        "ccpa-thresholds",
+        "cppa-admt-compliance"
+      ],
+      "whenAny": [
+        {
+          "ccpa": [
+            "not-sure"
+          ]
+        }
+      ],
       "unless": [],
-      "summary": [{ "text": "The CCPA applies to businesses with more than $26,625,000 in annual revenue, or that buy, sell or share personal information on 100,000 or more consumers or households. If it applies, the CPPA's automated decisionmaking rules start January 1, 2027.", "facts": ["ccpa-thresholds", "cppa-admt-compliance"] }],
-      "actions": [{ "kind": "records", "text": "Ask your CPA or privacy counsel to confirm, using last year's revenue and the number of people whose data you hold, including employees and applicants." }],
+      "summary": [
+        {
+          "text": "The CCPA applies to businesses with more than $26,625,000 in annual revenue, or that buy, sell or share personal information on 100,000 or more consumers or households. If it applies, the CPPA's automated decisionmaking rules start January 1, 2027.",
+          "facts": [
+            "ccpa-thresholds",
+            "cppa-admt-compliance"
+          ]
+        }
+      ],
+      "actions": [
+        {
+          "kind": "records",
+          "text": "Ask your CPA or privacy counsel to confirm, using last year's revenue and the number of people whose data you hold, including employees and applicants."
+        }
+      ],
       "templates": []
     },
     {
@@ -402,117 +836,452 @@
       "law": "cppa-admt",
       "kind": "dated",
       "title": "Prepare a pre-use notice, an opt-out or appeal path, and a risk assessment",
-      "facts": ["cppa-admt-compliance", "cppa-admt-scope", "cppa-admt-rights", "cppa-risk-assessments"],
+      "facts": [
+        "cppa-admt-compliance",
+        "cppa-admt-scope",
+        "cppa-admt-rights",
+        "cppa-risk-assessments"
+      ],
       "whenAny": [
-        { "ccpa": ["yes", "not-sure"], "aiScreening": ["yes", "not-sure"] },
-        { "ccpa": ["yes", "not-sure"], "automatedDecisions": ["discipline", "termination", "promotion", "pay", "not-sure"] },
-        { "ccpa": ["yes", "not-sure"], "autoScheduling": ["yes"] }
+        {
+          "ccpa": [
+            "yes",
+            "not-sure"
+          ],
+          "aiScreening": [
+            "yes",
+            "not-sure"
+          ]
+        },
+        {
+          "ccpa": [
+            "yes",
+            "not-sure"
+          ],
+          "automatedDecisions": [
+            "discipline",
+            "termination",
+            "promotion",
+            "pay",
+            "not-sure"
+          ]
+        },
+        {
+          "ccpa": [
+            "yes",
+            "not-sure"
+          ],
+          "autoScheduling": [
+            "yes"
+          ]
+        }
       ],
       "unless": [],
       "summary": [
-        { "text": "Covered businesses must comply with the CPPA's automated decisionmaking rules by January 1, 2027.", "facts": ["cppa-admt-compliance"] },
-        { "text": "Hiring, work assignment, pay, promotion and termination decisions made with these tools are covered, and applicants and employees count as consumers.", "facts": ["cppa-admt-scope"] }
+        {
+          "text": "Covered businesses must comply with the CPPA's automated decisionmaking rules by January 1, 2027.",
+          "facts": [
+            "cppa-admt-compliance"
+          ]
+        },
+        {
+          "text": "Hiring, work assignment, pay, promotion, demotion, suspension and termination decisions made with these tools are covered.",
+          "facts": [
+            "cppa-admt-scope"
+          ]
+        }
       ],
       "actions": [
-        { "kind": "notice", "text": { "text": "Give applicants and employees a notice before the tool is used: what it does, what decision it supports, and how to opt out or appeal.", "facts": ["cppa-admt-rights"] } },
-        { "kind": "human", "text": { "text": "Set up a way for a person to review a decision on request, which can stand in for an opt-out.", "facts": ["cppa-admt-rights"] } },
-        { "kind": "records", "text": { "text": "Be ready to answer requests about how the tool was used in someone's case.", "facts": ["cppa-admt-rights"] } },
-        { "kind": "assessment", "text": { "text": "Complete a risk assessment for each tool; the first submissions to the CPPA are due April 1, 2028.", "facts": ["cppa-risk-assessments"] } }
+        {
+          "kind": "notice",
+          "text": {
+            "text": "Give applicants and employees a notice before the tool is used: what it does, what decision it supports, and how to opt out or appeal.",
+            "facts": [
+              "cppa-admt-rights"
+            ]
+          }
+        },
+        {
+          "kind": "human",
+          "text": {
+            "text": "Set up an appeal to a person who understands the tool and can change the decision. Offering that appeal can stand in for the opt-out.",
+            "facts": [
+              "cppa-admt-rights"
+            ]
+          }
+        },
+        {
+          "kind": "records",
+          "text": {
+            "text": "Be ready to answer requests about how the tool was used in someone's case.",
+            "facts": [
+              "cppa-admt-rights"
+            ]
+          }
+        },
+        {
+          "kind": "assessment",
+          "text": {
+            "text": "Complete a risk assessment for each tool; the first submissions to the CPPA are due April 1, 2028.",
+            "facts": [
+              "cppa-risk-assessments"
+            ]
+          }
+        }
       ],
       "checkFirst": "This applies only if the CCPA applies to you. See \"Find out whether the CCPA applies to you.\"",
-      "templates": ["admt-pre-use-notice"]
+      "templates": [
+        "admt-pre-use-notice"
+      ]
     },
     {
       "id": "ab1883-stop",
       "law": "ab1883",
       "kind": "dated",
       "title": "Turn off any feature that reads employees' emotions or collects neural data",
-      "facts": ["ab1883-rules", "ab1883-penalty"],
-      "whenAny": [{ "emotionNeural": ["yes", "not-sure"] }],
+      "facts": [
+        "ab1883-rules",
+        "ab1883-penalty",
+        "ab1883-biometrics"
+      ],
+      "whenAny": [
+        {
+          "emotionNeural": [
+            "yes",
+            "not-sure"
+          ]
+        }
+      ],
       "unless": [],
       "summary": [
-        { "text": "AI that recognizes, infers or predicts an employee's emotional state, or collects neural data, is banned in workplace surveillance tools from January 1, 2027, including for wellness programs.", "facts": ["ab1883-rules"] },
-        { "text": "Violations cost $500 each, and employees can sue.", "facts": ["ab1883-penalty"] }
+        {
+          "text": "AI that recognizes, infers or predicts an employee's emotional state, or collects neural data, is banned in workplace surveillance tools from January 1, 2027, including for wellness programs.",
+          "facts": [
+            "ab1883-rules"
+          ]
+        },
+        {
+          "text": "Violations cost $500 each, and employees can sue.",
+          "facts": [
+            "ab1883-penalty"
+          ]
+        },
+        {
+          "text": "Ordinary biometrics such as fingerprint time clocks are outside this law.",
+          "facts": [
+            "ab1883-biometrics"
+          ]
+        }
       ],
       "actions": [
-        { "kind": "stop", "text": { "text": "List every monitoring tool, including what vendors bundle in, and switch off sentiment, mood, stress or attention scoring.", "facts": ["ab1883-rules"] } },
-        { "kind": "vendor", "text": { "text": "Get each vendor to confirm in writing that no emotion inference or neural data collection is active on your account.", "facts": ["ab1883-rules"] } }
+        {
+          "kind": "stop",
+          "text": {
+            "text": "List every monitoring tool, including what vendors bundle in, and switch off sentiment, mood, stress or attention scoring.",
+            "facts": [
+              "ab1883-rules"
+            ]
+          }
+        },
+        {
+          "kind": "vendor",
+          "text": {
+            "text": "Get each vendor to confirm in writing that no emotion inference or neural data collection is active on your account.",
+            "facts": [
+              "ab1883-rules"
+            ]
+          }
+        }
       ],
       "checkFirst": "You answered \"not sure.\" Many productivity and call-center tools include sentiment or attention features; check what is switched on.",
-      "templates": ["monitoring-policy-addendum"]
+      "templates": [
+        "monitoring-policy-addendum"
+      ]
     },
     {
       "id": "ab1331-bathrooms",
       "law": "ab1331",
       "kind": "dated",
       "title": "Remove surveillance from bathrooms",
-      "facts": ["ab1331-rules"],
-      "whenAny": [{ "restroomSurveillance": ["yes", "not-sure"] }],
+      "facts": [
+        "ab1331-rules"
+      ],
+      "whenAny": [
+        {
+          "restroomSurveillance": [
+            "yes",
+            "not-sure"
+          ]
+        }
+      ],
       "unless": [],
-      "summary": [{ "text": "Monitoring bathrooms with video, audio, location or other electronic tools is banned from January 1, 2027, except under a court order. Employees may leave tracked devices outside first. Locker rooms and break areas are not covered by this law.", "facts": ["ab1331-rules"] }],
+      "summary": [
+        {
+          "text": "Monitoring bathrooms with video, audio, location or other electronic tools is banned from January 1, 2027, except under a court order. Employees may leave tracked devices outside first. Locker rooms and break areas are not covered by this law.",
+          "facts": [
+            "ab1331-rules"
+          ]
+        }
+      ],
       "actions": [
-        { "kind": "stop", "text": { "text": "Remove or disable any camera, audio or tracking coverage of bathrooms.", "facts": ["ab1331-rules"] } },
-        { "kind": "notice", "text": { "text": "Tell employees they may leave badges, phones or wearables that track them outside bathrooms, and update the handbook.", "facts": ["ab1331-rules"] } }
+        {
+          "kind": "stop",
+          "text": {
+            "text": "Remove or disable any camera, audio or tracking coverage of bathrooms.",
+            "facts": [
+              "ab1331-rules"
+            ]
+          }
+        },
+        {
+          "kind": "notice",
+          "text": {
+            "text": "Tell employees they may leave badges, phones or wearables that track them outside bathrooms, and update the handbook.",
+            "facts": [
+              "ab1331-rules"
+            ]
+          }
+        }
       ],
       "checkFirst": "You answered \"not sure.\" Check camera fields of view, badge readers and location tracking near bathrooms.",
-      "templates": ["monitoring-policy-addendum"]
+      "templates": [
+        "monitoring-policy-addendum"
+      ]
     },
     {
       "id": "sb951-warn",
       "law": "sb951",
       "kind": "conditional",
       "title": "If AI or automation leads to a layoff, use the new Cal-WARN notice",
-      "facts": ["sb951-rules", "calwarn-coverage"],
+      "facts": [
+        "sb951-rules",
+        "calwarn-coverage"
+      ],
       "whenAny": [
-        { "employees": ["75-99", "100-plus"], "aiScreening": ["yes", "not-sure"] },
-        { "employees": ["75-99", "100-plus"], "autoScheduling": ["yes", "not-sure"] },
-        { "employees": ["75-99", "100-plus"], "monitoring": ["yes", "not-sure"] },
-        { "employees": ["75-99", "100-plus"], "automatedDecisions": ["discipline", "termination", "promotion", "pay", "not-sure"] },
-        { "employees": ["75-99", "100-plus"], "aiCommunications": ["yes", "not-sure"] }
+        {
+          "employees": [
+            "75-99",
+            "100-plus"
+          ],
+          "aiScreening": [
+            "yes",
+            "not-sure"
+          ]
+        },
+        {
+          "employees": [
+            "75-99",
+            "100-plus"
+          ],
+          "autoScheduling": [
+            "yes",
+            "not-sure"
+          ]
+        },
+        {
+          "employees": [
+            "75-99",
+            "100-plus"
+          ],
+          "monitoring": [
+            "yes",
+            "not-sure"
+          ]
+        },
+        {
+          "employees": [
+            "75-99",
+            "100-plus"
+          ],
+          "automatedDecisions": [
+            "discipline",
+            "termination",
+            "promotion",
+            "pay",
+            "not-sure"
+          ]
+        },
+        {
+          "employees": [
+            "75-99",
+            "100-plus"
+          ],
+          "aiCommunications": [
+            "yes",
+            "not-sure"
+          ]
+        }
       ],
       "unless": [],
       "summary": [
-        { "text": "Cal-WARN covers facilities with 75 or more employees and requires 60 days' notice.", "facts": ["calwarn-coverage"] },
-        { "text": "From January 1, 2027, when AI or automation causes a layoff in whole or in substantial part, the notice must open with a technology displacement statement and describe the jobs and technology involved.", "facts": ["sb951-rules"] }
+        {
+          "text": "Cal-WARN covers facilities with 75 or more employees and requires 60 days' notice.",
+          "facts": [
+            "calwarn-coverage"
+          ]
+        },
+        {
+          "text": "From January 1, 2027, when AI or automation causes a layoff in whole or in substantial part, the notice must open with a technology displacement statement and describe the jobs and technology involved.",
+          "facts": [
+            "sb951-rules"
+          ]
+        }
       ],
       "actions": [
-        { "kind": "records", "text": { "text": "When planning a reduction, write down early whether automation is part of the reason, and which job functions it replaces.", "facts": ["sb951-rules"] } },
-        { "kind": "notice", "text": { "text": "Use the technology displacement wording in any Cal-WARN notice where it applies.", "facts": ["sb951-rules"] } }
+        {
+          "kind": "records",
+          "text": {
+            "text": "When planning a reduction, write down early whether automation is part of the reason, and which job functions it replaces.",
+            "facts": [
+              "sb951-rules"
+            ]
+          }
+        },
+        {
+          "kind": "notice",
+          "text": {
+            "text": "Use the technology displacement wording in any Cal-WARN notice where it applies.",
+            "facts": [
+              "sb951-rules"
+            ]
+          }
+        }
       ],
-      "templates": ["warn-technology-displacement"]
+      "templates": [
+        "warn-technology-displacement"
+      ]
     },
     {
       "id": "sb947-human",
       "law": "sb947",
       "kind": "dated",
       "title": "Put a person behind every automated discipline or termination decision",
-      "facts": ["sb947-effective", "sb947-rules", "sb947-notice", "sb947-penalty", "sb947-size"],
-      "whenAny": [{ "automatedDecisions": ["discipline", "termination", "not-sure"] }],
+      "facts": [
+        "sb947-effective",
+        "sb947-rules",
+        "sb947-notice",
+        "sb947-penalty",
+        "sb947-size"
+      ],
+      "whenAny": [
+        {
+          "automatedDecisions": [
+            "discipline",
+            "termination",
+            "not-sure"
+          ]
+        }
+      ],
       "unless": [],
       "summary": [
-        { "text": "From July 1, 2027, an automated decision system cannot be the only basis for discipline or termination. When it is the main basis, a person must corroborate it and the employee gets a written notice.", "facts": ["sb947-effective", "sb947-rules"] },
-        { "text": "Violations cost $500 each.", "facts": ["sb947-penalty"] }
+        {
+          "text": "From July 1, 2027, an automated decision system cannot be the only basis for discipline or termination. When it is the main basis, a person must corroborate it and the employee gets a written notice.",
+          "facts": [
+            "sb947-effective",
+            "sb947-rules",
+            "sb947-size"
+          ]
+        },
+        {
+          "text": "Violations cost $500 each.",
+          "facts": [
+            "sb947-penalty"
+          ]
+        }
       ],
       "actions": [
-        { "kind": "human", "text": { "text": "Add a review step: a named person checks the tool's output against at least one other source before any discipline or termination.", "facts": ["sb947-rules"] } },
-        { "kind": "notice", "text": { "text": "Prepare the written notice for decisions that relied mainly on the tool.", "facts": ["sb947-notice"] } },
-        { "kind": "records", "text": { "text": "Be ready to give an employee, on request, a plain description of their data the tool used.", "facts": ["sb947-rules"] } },
-        { "kind": "vendor", "text": { "text": "Confirm with vendors that you can get that data description out of their system.", "facts": ["sb947-rules"] } }
+        {
+          "kind": "human",
+          "text": {
+            "text": "Add a review step: a named person checks the tool's output against at least one other source before any discipline or termination.",
+            "facts": [
+              "sb947-rules"
+            ]
+          }
+        },
+        {
+          "kind": "notice",
+          "text": {
+            "text": "Prepare the written notice for decisions that relied mainly on the tool, and give it with the decision.",
+            "facts": [
+              "sb947-notice"
+            ]
+          }
+        },
+        {
+          "kind": "records",
+          "text": {
+            "text": "Be ready to give an employee, on request, a plain description of their data the tool used.",
+            "facts": [
+              "sb947-rules"
+            ]
+          }
+        },
+        {
+          "kind": "vendor",
+          "text": {
+            "text": "Confirm with vendors that you can get that data description out of their system.",
+            "facts": [
+              "sb947-rules"
+            ]
+          }
+        }
       ],
       "checkFirst": "You answered \"not sure.\" Check whether attendance, performance or productivity scores from any tool feed into write-ups or terminations.",
-      "templates": ["sb947-post-use-notice"]
+      "templates": [
+        "sb947-post-use-notice"
+      ]
     },
     {
       "id": "sb947-limits",
       "law": "sb947",
       "kind": "dated",
       "title": "Do not use automated tools to infer protected traits or target people who exercise their rights",
-      "facts": ["sb947-effective", "sb947-prohibitions", "sb947-size"],
-      "whenAny": [{ "automatedDecisions": ["discipline", "termination", "promotion", "pay", "not-sure"] }, { "monitoring": ["yes"] }],
+      "facts": [
+        "sb947-effective",
+        "sb947-prohibitions",
+        "sb947-size"
+      ],
+      "whenAny": [
+        {
+          "automatedDecisions": [
+            "discipline",
+            "termination",
+            "promotion",
+            "pay",
+            "not-sure"
+          ]
+        },
+        {
+          "monitoring": [
+            "yes"
+          ]
+        }
+      ],
       "unless": [],
-      "summary": [{ "text": "From July 1, 2027, an automated decision system may not be used to infer a FEHA-protected characteristic, or to anticipate and act against employees exercising legal rights.", "facts": ["sb947-effective", "sb947-prohibitions"] }],
-      "actions": [{ "kind": "vendor", "text": { "text": "Ask vendors whether their tools infer age, health, pregnancy, union interest or similar traits, and switch off anything that does.", "facts": ["sb947-prohibitions"] } }],
-      "templates": ["vendor-ads-clause"]
+      "summary": [
+        {
+          "text": "From July 1, 2027, an automated decision system may not be used to infer a FEHA-protected characteristic, or to anticipate and act against employees exercising legal rights.",
+          "facts": [
+            "sb947-effective",
+            "sb947-prohibitions"
+          ]
+        }
+      ],
+      "actions": [
+        {
+          "kind": "vendor",
+          "text": {
+            "text": "Ask vendors whether their tools infer age, health, pregnancy, union interest or similar traits, and switch off anything that does.",
+            "facts": [
+              "sb947-prohibitions"
+            ]
+          }
+        }
+      ],
+      "templates": [
+        "vendor-ads-clause"
+      ]
     },
     {
       "id": "ai-communications",
@@ -520,10 +1289,23 @@
       "kind": "practice",
       "title": "Have a person check AI-drafted notices before they go out",
       "facts": [],
-      "whenAny": [{ "aiCommunications": ["yes"] }],
+      "whenAny": [
+        {
+          "aiCommunications": [
+            "yes"
+          ]
+        }
+      ],
       "unless": [],
-      "summary": ["Good practice rather than a specific rule. Several of the notices above have required contents, and a drafting error in one is still your error."],
-      "actions": [{ "kind": "human", "text": "Name who reviews AI-drafted employee notices, and keep the final version sent." }],
+      "summary": [
+        "Good practice rather than a specific rule. Several of the notices above have required contents, and a drafting error in one is still your error."
+      ],
+      "actions": [
+        {
+          "kind": "human",
+          "text": "Name who reviews AI-drafted employee notices, and keep the final version sent."
+        }
+      ],
       "templates": []
     }
   ],
@@ -531,7 +1313,9 @@
     "applicant-accommodation-notice": {
       "title": "Accommodation request line for job postings",
       "fileName": "accommodation-request-line.txt",
-      "facts": ["crc-accommodation"],
+      "facts": [
+        "crc-accommodation"
+      ],
       "body": [
         "[Company name] uses automated tools to help review applications, including [describe: resume screening / online assessments / video interview review / schedule matching].",
         "",
@@ -543,7 +1327,12 @@
     "vendor-ads-clause": {
       "title": "Contract clause for HR technology vendors",
       "fileName": "vendor-clause-automated-decisions.txt",
-      "facts": ["crc-records", "crc-agents", "crc-testing", "sb947-prohibitions"],
+      "facts": [
+        "crc-records",
+        "crc-agents",
+        "crc-testing",
+        "sb947-prohibitions"
+      ],
       "body": [
         "Automated decision tools. Vendor will:",
         "",
@@ -563,7 +1352,9 @@
     "admt-pre-use-notice": {
       "title": "Pre-use notice for automated decisionmaking technology",
       "fileName": "pre-use-notice-automated-decisions.txt",
-      "facts": ["cppa-admt-rights"],
+      "facts": [
+        "cppa-admt-rights"
+      ],
       "body": [
         "Notice about automated decision tools at [Company name]",
         "",
@@ -581,7 +1372,10 @@
     "sb947-post-use-notice": {
       "title": "Notice after a discipline or termination decision that relied mainly on an automated tool",
       "fileName": "notice-after-automated-decision.txt",
-      "facts": ["sb947-notice", "sb947-rules"],
+      "facts": [
+        "sb947-notice",
+        "sb947-rules"
+      ],
       "body": [
         "[Date]",
         "",
@@ -603,7 +1397,9 @@
     "warn-technology-displacement": {
       "title": "Cal-WARN technology displacement statement",
       "fileName": "cal-warn-technology-displacement.txt",
-      "facts": ["sb951-rules"],
+      "facts": [
+        "sb951-rules"
+      ],
       "body": [
         "This notice is for a technology displacement.",
         "",
@@ -621,7 +1417,10 @@
     "monitoring-policy-addendum": {
       "title": "Handbook addendum on workplace monitoring",
       "fileName": "monitoring-policy-addendum.txt",
-      "facts": ["ab1883-rules", "ab1331-rules"],
+      "facts": [
+        "ab1883-rules",
+        "ab1331-rules"
+      ],
       "body": [
         "Workplace monitoring",
         "",

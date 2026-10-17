@@ -12,9 +12,13 @@ export function reviewPacket(rules: AiworkRules): string {
     return `Q${q?.number ?? "?"} (${q?.label ?? qid}) is ${labels.join(" or ")}`;
   };
 
-  line("California AI-at-Work Checker: rules for attorney review");
+  line("California AI-at-Work Checker: the rules behind it");
   line(`Rules version ${rules.version}, as of ${formatLongDate(rules.asOf)}.`);
-  line("Prepared from content/aiwork-rules.json on joewaltman.com. Statements marked CONFIRMED come from the build's verified source list; everything marked FOR REVIEW needs your confirmation or correction before visitors see it.");
+  line(
+    rules.review.reviewedBy
+      ? `Reviewed by ${rules.review.reviewedBy} on ${formatLongDate(rules.review.reviewedOn!)}.`
+      : "Not reviewed by an attorney. Statements marked IN USE are shown to visitors; where one rests on a judgment call, the assumption is listed under it and shown to visitors as a footnote. Statements marked FOR REVIEW are held back from visitors.",
+  );
   line();
   line("1. Questions visitors answer");
   for (const q of rules.questions) {
@@ -23,8 +27,9 @@ export function reviewPacket(rules: AiworkRules): string {
   line();
   line("2. Statements the tool relies on");
   for (const [id, f] of Object.entries(rules.facts)) {
-    line(`  [${id}] ${f.verify ? "FOR REVIEW" : "CONFIRMED"}: ${f.text}`);
+    line(`  [${id}] ${f.verify ? "FOR REVIEW" : "IN USE"}: ${f.text}`);
     if (f.sources.length) line(`      Sources: ${f.sources.join(" ; ")}`);
+    if (f.assumption) line(`      Assumption: ${f.assumption}`);
     if (f.note) line(`      Note: ${f.note}`);
   }
   line();

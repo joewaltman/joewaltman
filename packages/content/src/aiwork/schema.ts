@@ -35,7 +35,13 @@ export const templateSchema = z.object({
 export const aiworkRulesSchema = z.object({
   version: z.string().min(1),
   asOf: isoDate,
-  review: z.object({ reviewedBy: z.string().nullable(), reviewedOn: isoDate.nullable(), note: z.string().optional() }),
+  review: z.object({
+    reviewedBy: z.string().nullable(),
+    reviewedOn: isoDate.nullable(),
+    // Set when Joe chose to open the checker without an attorney review; assumptions are footnoted instead.
+    launchedWithoutReview: isoDate.nullable().optional(),
+    note: z.string().optional(),
+  }),
   facts: z.record(z.string(), factSchema),
   questions: z.array(questionSchema).min(1),
   laws: z.record(z.string(), z.object({ name: z.string().min(1), effective: isoDate, facts: z.array(z.string()).min(1) })),

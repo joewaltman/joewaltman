@@ -21,30 +21,56 @@ export default async function AdminAiworkPage({ searchParams }: { searchParams: 
   ]);
   const open = aiworkOpen(aiworkRules);
   const pending = Object.entries(aiworkRules.facts).filter(([, f]) => f.verify);
+  const assumed = Object.entries(aiworkRules.facts).filter(([, f]) => f.assumption && !f.verify);
+  const review = aiworkRules.review;
 
   return (
     <div>
       <h1 className="mb-2 text-[1.75rem] font-semibold">AI-at-Work Checker</h1>
       <p className="mb-2 text-muted">
         Rules version {aiworkRules.version}, as of {formatLongDate(aiworkRules.asOf)}.{" "}
-        {open ? `Open to visitors; reviewed by ${aiworkRules.review.reviewedBy} on ${formatLongDate(aiworkRules.review.reviewedOn!)}.` : "Closed to visitors until an attorney's review is recorded. You can run it as a preview at /aiwork."}
+        {review.reviewedBy
+          ? `Open to visitors; reviewed by ${review.reviewedBy} on ${formatLongDate(review.reviewedOn!)}.`
+          : open
+            ? `Open to visitors since ${formatLongDate(review.launchedWithoutReview!)}, without attorney review; judgment calls are footnoted on every result.`
+            : "Closed to visitors. You can run it as a preview at /aiwork."}
       </p>
       <p className="mb-8">
-        <a href="/admin/aiwork/packet">Download the review packet for the attorney</a> (plain text: questions, every statement with sources, every obligation with its triggers, and the templates). <Link href="/aiwork">Open the checker</Link>.
+        <a href="/admin/aiwork/packet">Download the rules as plain text</a> (questions, every statement with sources and assumptions, every obligation with its triggers, and the templates), for an attorney or partner who wants to check them. <Link href="/aiwork">Open the checker</Link>.
       </p>
 
-      <h2 className="mb-2 text-[1.2rem] font-semibold">Awaiting attorney review ({pending.length})</h2>
+      <h2 className="mb-2 text-[1.2rem] font-semibold">Assumptions in use ({assumed.length})</h2>
       <p className="mb-4 text-[0.95rem] text-muted">
-        After review: set <code>verify</code> to false on each confirmed statement (correcting its text if needed), fill in <code>review.reviewedBy</code> and <code>review.reviewedOn</code> in <code>content/aiwork-rules.json</code>, and deploy.
+        Judgment calls made without attorney review. Visitors see each one as a numbered footnote wherever their result relies on it. Change or remove one in <code>content/aiwork-rules.json</code>.
       </p>
-      <ol className="mb-10 grid list-decimal gap-3 pl-5 text-[0.95rem]">
-        {pending.map(([id, f]) => (
+      <ol className="mb-10 grid list-decimal gap-4 pl-5 text-[0.95rem]">
+        {assumed.map(([id, f]) => (
           <li key={id}>
-            <strong>{id}</strong>: {f.text}
-            {f.note ? <div className="text-muted">{f.note}</div> : null}
+            <strong>{id}</strong>: {f.assumption}
+            <div className="text-muted">
+              Sources:{" "}
+              {f.sources.map((u) => (
+                <a key={u} href={u} className="mr-2" rel="noopener noreferrer" target="_blank">
+                  {new URL(u).hostname}
+                </a>
+              ))}
+            </div>
           </li>
         ))}
       </ol>
+      {pending.length > 0 ? (
+        <>
+          <h2 className="mb-2 text-[1.2rem] font-semibold">Unconfirmed, hidden from visitors ({pending.length})</h2>
+          <ol className="mb-10 grid list-decimal gap-3 pl-5 text-[0.95rem]">
+            {pending.map(([id, f]) => (
+              <li key={id}>
+                <strong>{id}</strong>: {f.text}
+                {f.note ? <div className="text-muted">{f.note}</div> : null}
+              </li>
+            ))}
+          </ol>
+        </>
+      ) : null}
 
       <h2 className="mb-3 text-[1.2rem] font-semibold">Recent results</h2>
       <DataTable

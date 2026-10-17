@@ -26,7 +26,7 @@ const SCENARIOS: Array<[string, Answers, string[]]> = [
   ["a small shop with no automated tools", { employees: "5-24" }, []],
   ["fewer than five employees using AI screening: FEHA rules do not reach them", { employees: "under-5", aiScreening: "yes" }, []],
   ["AI resume screening at a 30-person company", { aiScreening: "yes", ats: ["greenhouse"] }, ["crc-accommodation", "crc-bias", "crc-records"]],
-  ["auto-scheduling only", { autoScheduling: "yes" }, ["crc-accommodation", "crc-records"]],
+  ["auto-scheduling only", { autoScheduling: "yes" }, ["crc-records"]],
   ["CCPA business using AI screening", { aiScreening: "yes", ccpa: "yes" }, ["cppa-admt", "crc-accommodation", "crc-bias", "crc-records"]],
   ["not sure about the CCPA, with automated pay decisions", { ccpa: "not-sure", automatedDecisions: ["pay"] }, ["ccpa-check", "cppa-admt", "crc-bias", "crc-records", "sb947-limits"]],
   ["automated termination input", { automatedDecisions: ["termination"] }, ["crc-bias", "crc-records", "sb947-human", "sb947-limits"]],
@@ -67,25 +67,45 @@ describe("the rules file", () => {
     expect(JSON.stringify(rawRules)).not.toMatch(/\u2014/);
   });
 
-  it("keeps facts beyond Appendix A marked verify until an attorney confirms them", () => {
-    const verified = Object.entries(rules.facts).filter(([, f]) => !f.verify).map(([id]) => id).sort();
-    expect(verified).toEqual(["ccpa-thresholds", "cppa-admt-compliance", "cppa-risk-assessments", "crc-ads-effective", "new-laws-signed", "sb947-effective"]);
-    for (const f of Object.values(rules.facts)) if (!f.verify) expect(f.sources.length).toBeGreaterThan(0);
+  it("backs every statement in use with a source, and marks each judgment call as an assumption", () => {
+    for (const f of Object.values(rules.facts)) {
+      expect(f.verify).toBe(false);
+      expect(f.sources.length).toBeGreaterThan(0);
+    }
+    expect(Object.entries(rules.facts).filter(([, f]) => f.assumption).map(([id]) => id).sort()).toEqual([
+      "ab1331-rules",
+      "ab1883-biometrics",
+      "ads-scheduling",
+      "cppa-admt-scope",
+      "feha-five",
+      "sb947-notice",
+      "sb947-rules",
+      "sb947-size",
+    ]);
+    expect(rules.review.launchedWithoutReview).toBe("2026-10-17");
   });
 
-  it("shows visitors only obligations whose facts are all confirmed, and says which were held back", () => {
-    const r = evaluateAiwork({ ...base, aiScreening: "yes", ccpa: "not-sure" }, rules, "public");
-    expect(r.obligations.map((o) => o.id)).toEqual(["ccpa-check"]);
-    expect(r.hidden.sort()).toEqual(["cppa-admt", "crc-accommodation", "crc-bias", "crc-records"]);
-    expect(r.sources.every((s) => !s.verify)).toBe(true);
+  it("numbers footnotes in reading order and lists each assumption once", () => {
+    const r = evaluateAiwork({ ...base, aiScreening: "yes", automatedDecisions: ["termination"] }, rules, "public");
+    const records = r.obligations.find((o) => o.id === "crc-records")!;
+    expect(records.summary[0]!.notes).toEqual([1]);
+    expect(r.assumptions.map((a) => a.id)).toEqual(["ads-scheduling", "feha-five", "sb947-rules", "sb947-size", "sb947-notice"]);
+    expect(r.obligations.find((o) => o.id === "sb947-human")!.summary[0]!.notes).toEqual([3, 4]);
   });
 
-  it("offers templates as text files, held back from visitors until their facts are confirmed", () => {
-    expect(templateText(rules, "sb947-post-use-notice", "public")).toBeNull();
-    const t = templateText(rules, "sb947-post-use-notice", "admin")!;
+  it("holds back from visitors any obligation resting on a statement marked verify", () => {
+    const unsure = { ...rules, facts: { ...rules.facts, "sb947-rules": { ...rules.facts["sb947-rules"]!, verify: true } } };
+    const r = evaluateAiwork({ ...base, automatedDecisions: ["termination"] }, unsure, "public");
+    expect(r.hidden).toEqual(["sb947-human"]);
+    expect(r.obligations.map((o) => o.id)).toEqual(["crc-records", "crc-bias", "sb947-limits"]);
+    expect(evaluateAiwork({ ...base, automatedDecisions: ["termination"] }, rules, "public").hidden).toEqual([]);
+  });
+
+  it("offers templates as text files with the caveat attached", () => {
+    const t = templateText(rules, "sb947-post-use-notice", "public")!;
     expect(t.fileName).toBe("notice-after-automated-decision.txt");
     expect(t.text).toContain("relied primarily on an automated decision system");
-    expect(t.text).toContain("Information, not legal advice.");
+    expect(t.text).toContain("Information, not legal advice. Not reviewed by an attorney.");
     expect(templateText(rules, "nope", "admin")).toBeNull();
   });
 });

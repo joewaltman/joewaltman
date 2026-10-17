@@ -20,7 +20,7 @@ export interface Assumption {
 // Numbers assumptions in the order they are first cited, so footnote 1 is the first one a reader meets.
 export class AssumptionNotes {
   readonly list: Assumption[] = [];
-  constructor(private readonly rules: TariffRules) {}
+  constructor(private readonly rules: { facts: Record<string, Fact> }) {}
   cite(factIds: string[]): number[] {
     const out: number[] = [];
     for (const id of factIds) {

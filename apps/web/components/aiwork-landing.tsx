@@ -33,10 +33,16 @@ export function AiworkLanding({
         California's rules on AI in the workplace ask of you, what to do about each, and notice templates.
       </p>
       <p>For owners and managers of California employers with five or more employees.</p>
-      {open ? (
+      {open && aiworkRules.review.reviewedBy ? (
         <p className="text-[0.95rem] text-muted">
           An information tool, not legal advice. Reviewed by {aiworkRules.review.reviewedBy} as of{" "}
           {formatLongDate(aiworkRules.review.reviewedOn!)}. Rules as of {formatLongDate(aiworkRules.asOf)}.
+        </p>
+      ) : open ? (
+        <p className="text-[0.95rem] text-muted">
+          An information tool, not legal advice, and not reviewed by an attorney. It is built from the regulations
+          and law firm summaries cited on your result, and footnotes every assumption it makes. Rules as of{" "}
+          {formatLongDate(aiworkRules.asOf)}.
         </p>
       ) : (
         <>

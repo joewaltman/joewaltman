@@ -3,6 +3,7 @@ import { and, eq, getDb, partners } from "@jw/db";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { AssumptionList, Notes } from "@/components/assumptions";
 import { HandRaise } from "@/components/hand-raise";
 import { AIWORK_HAND_RAISE, loadAiworkResponse, standingLine } from "@/lib/aiwork";
 
@@ -27,18 +28,23 @@ const EMAIL_MESSAGES: Record<string, string> = {
 function ObligationCard({ o, preview }: { o: AiworkObligation; preview: boolean }) {
   return (
     <section className="mb-7">
-      <h3 className="mb-1 text-[1.15rem] font-semibold">{o.title}</h3>
+      <h3 className="mb-1 text-[1.15rem] font-semibold">
+        {o.title}
+        <Notes notes={o.notes} />
+      </h3>
       {o.law ? <p className="mt-0 mb-2 text-[0.9rem] text-muted">{o.law.name}</p> : null}
       {o.checkFirst ? <p className="notice">{o.checkFirst}</p> : null}
       {o.summary.map((s) => (
         <p key={s.text} className="mt-0">
           {s.text}
+          <Notes notes={s.notes} />
         </p>
       ))}
       <ul className="mt-0 grid gap-1.5 pl-5">
         {o.actions.map((a) => (
           <li key={a.text.text}>
             <span className="font-semibold">{ACTION_LABELS[a.kind]}:</span> {a.text.text}
+            <Notes notes={a.text.notes} />
           </li>
         ))}
       </ul>
@@ -105,6 +111,7 @@ export default async function AiworkResultPage({ params, searchParams }: { param
       {result.hidden.length > 0 && !preview ? (
         <p className="text-[0.95rem] text-muted">Some rules are still being confirmed and are not shown yet.</p>
       ) : null}
+      <AssumptionList assumptions={result.assumptions} />
       <h2>Sources</h2>
       <ul className="text-[0.95rem]">
         {result.sources.map((s) => (

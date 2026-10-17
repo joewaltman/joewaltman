@@ -1,4 +1,4 @@
-import { type Answers, type ResolvedText, matches } from "../tariff/engine";
+import { type Answers, type Assumption, AssumptionNotes, type ResolvedText, matches } from "../tariff/engine";
 import type { Fact, TextItem } from "../tariff/schema";
 import type { ActionKind, AiworkRules, Obligation } from "./schema";
 
@@ -9,6 +9,8 @@ export interface AiworkObligation {
   kind: Obligation["kind"];
   law: { id: string; name: string; effective: string } | null;
   title: string;
+  // Footnotes for assumptions behind the obligation that no line below cites.
+  notes: number[];
   // True when it matched only through a "not sure" answer.
   uncertain: boolean;
   checkFirst: string | null;
@@ -24,7 +26,10 @@ export interface AiworkResult {
   asOf: string;
   reviewedBy: string | null;
   reviewedOn: string | null;
+  launchedWithoutReview: string | null;
   obligations: AiworkObligation[];
+  // Judgment calls the result relies on, numbered in the order a reader meets them.
+  assumptions: Assumption[];
   // Laws checked that nothing in the answers triggered.
   notTriggered: Array<{ id: string; name: string }>;
   sources: Array<{ id: string } & Fact>;
@@ -46,12 +51,15 @@ export function evaluateAiwork(answers: Answers, rules: AiworkRules, audience: A
   const sure = withoutNotSure(answers);
   const cited = new Set<string>();
   const hidden: string[] = [];
+  const notes = new AssumptionNotes(rules);
   const resolve = (item: TextItem): ResolvedText => {
     const text = typeof item === "string" ? item : item.text;
     const facts = typeof item === "string" ? [] : item.facts;
     for (const f of facts) cited.add(f);
-    return { text, facts, notes: [] };
+    return { text, facts, notes: notes.cite(facts) };
   };
+  const itemFacts = (o: Obligation) =>
+    new Set([...o.summary, ...o.actions.map((a) => a.text)].flatMap((i) => (typeof i === "string" ? [] : i.facts)));
 
   const obligations: AiworkObligation[] = [];
   for (const o of rules.obligations) {
@@ -65,11 +73,15 @@ export function evaluateAiwork(answers: Answers, rules: AiworkRules, audience: A
     for (const f of o.facts) cited.add(f);
     const law = o.law ? rules.laws[o.law]! : null;
     const uncertain = !o.whenAny.some((c) => matches(c, sure));
+    // Cited first so footnote numbers follow reading order: the title, then the lines under it.
+    const inLines = itemFacts(o);
+    const titleNotes = notes.cite(o.facts.filter((f) => !inLines.has(f)));
     obligations.push({
       id: o.id,
       kind: o.kind,
       law: law && o.law ? { id: o.law, name: law.name, effective: law.effective } : null,
       title: o.title,
+      notes: titleNotes,
       uncertain,
       checkFirst: uncertain ? (o.checkFirst ?? null) : null,
       summary: o.summary.map(resolve),
@@ -87,7 +99,9 @@ export function evaluateAiwork(answers: Answers, rules: AiworkRules, audience: A
     asOf: rules.asOf,
     reviewedBy: rules.review.reviewedBy,
     reviewedOn: rules.review.reviewedOn,
+    launchedWithoutReview: rules.review.launchedWithoutReview ?? null,
     obligations,
+    assumptions: notes.list,
     notTriggered: Object.entries(rules.laws)
       .filter(([id]) => !triggered.has(id) && !hiddenLaws.has(id))
       .map(([id, l]) => ({ id, name: l.name })),
@@ -121,5 +135,9 @@ export function templateText(rules: AiworkRules, id: string, audience: AiworkAud
   const t = rules.templates[id];
   if (!t) return null;
   if (audience === "public" && t.facts.some((f) => rules.facts[f]?.verify)) return null;
-  return { fileName: t.fileName, text: `${t.title}\n\n${t.body.join("\n")}\n\nFrom the California AI-at-Work Checker at joewaltman.com/aiwork, rules as of ${formatLongDate(rules.asOf)}. Information, not legal advice.\n` };
+  const reviewed = rules.review.reviewedBy ? `Rules reviewed by ${rules.review.reviewedBy}.` : "Not reviewed by an attorney.";
+  return {
+    fileName: t.fileName,
+    text: `${t.title}\n\n${t.body.join("\n")}\n\nFrom the California AI-at-Work Checker at joewaltman.com/aiwork, rules as of ${formatLongDate(rules.asOf)}. Information, not legal advice. ${reviewed} Adapt this draft to your situation before using it.\n`,
+  };
 }
