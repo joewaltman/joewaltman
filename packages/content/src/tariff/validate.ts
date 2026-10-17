@@ -1,5 +1,5 @@
 import type { Answers } from "./engine";
-import type { TariffRules } from "./schema";
+import type { Question } from "./schema";
 
 export interface ValidationResult {
   answers: Answers;
@@ -10,7 +10,7 @@ const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // Reads a submitted form (any object with getAll) against the questions in the rules file.
 export function readAnswers(
-  rules: TariffRules,
+  rules: { questions: Question[] },
   form: { getAll(name: string): unknown[] },
 ): ValidationResult {
   const answers: Answers = {};

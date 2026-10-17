@@ -1,6 +1,10 @@
+import rawAiworkRules from "../../../content/aiwork-rules.json";
 import rawTariffRules from "../../../content/tariff-rules.json";
+import { type AiworkRules, aiworkRulesSchema, checkAiworkReferences } from "./aiwork/schema";
 import { checkReferences, type TariffRules, tariffRulesSchema } from "./tariff/schema";
 
+export * from "./aiwork/engine";
+export * from "./aiwork/schema";
 export * from "./geo";
 export * from "./tariff/calculator";
 export * from "./tariff/engine";
@@ -18,3 +22,12 @@ function load(): TariffRules {
 }
 
 export const tariffRules: TariffRules = load();
+
+function loadAiwork(): AiworkRules {
+  const rules = aiworkRulesSchema.parse(rawAiworkRules);
+  const problems = checkAiworkReferences(rules);
+  if (problems.length > 0) throw new Error(`content/aiwork-rules.json:\n${problems.join("\n")}`);
+  return rules;
+}
+
+export const aiworkRules: AiworkRules = loadAiwork();
