@@ -50,8 +50,11 @@ describe("AI-at-Work submissions", () => {
     expect(mail.to).toBe("owner@example.com");
     expect(mail.subject).toBe("Your California AI-at-Work checklist: 5 items");
     expect(mail.text).toContain("Draft for attorney review");
-    expect(mail.text).toContain("In effect now (since October 1, 2025)");
-    expect(mail.text).toContain("By July 1, 2027");
+    expect(mail.text).toContain("IN EFFECT NOW (SINCE OCTOBER 1, 2025)");
+    expect(mail.text).toContain("BY JULY 1, 2027");
+    // Red for what is in force now, amber for the July 2027 deadline.
+    expect(mail.html).toContain("#d92d20");
+    expect(mail.html).toContain("#f79009");
     expect(mail.text).toContain(`https://joewaltman.com/aiwork/result/${responseId}`);
     expect(mail.text).toContain("https://joewaltman.com/confirm/");
     expect(await db.select().from(subscriptions)).toMatchObject([{ tool: "aiwork", active: false }]);

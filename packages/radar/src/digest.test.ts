@@ -136,8 +136,8 @@ describe("buildDigest", () => {
     const d = await buildDigest(db, { ...week, clusters: ["north-county-inland"] });
     expect(d.capital.map((r) => r.name)).toEqual(["Example Machining Inc"]);
     expect(digestSize(d)).toBe(1);
-    expect(digestEmailSections(d).find((s) => s.title === "SBA loans over $250,000")!.items).toEqual([
-      "Example Machining Inc, Vista 92083: SBA 504 loan approved. Approved 2026-08-02. $1 million to $2 million from Example Development Corporation.",
+    expect(digestEmailSections(d).find((s) => s.id === "capital")!.rows).toEqual([
+      { key: expect.any(String), name: "Example Machining Inc", sub: "Approved 2026-08-02. $1 million to $2 million from Example Development Corporation", what: "SBA 504 loan approved", place: "Vista 92083", date: "Oct 14", website: null },
     ]);
     expect(digestCsv(d)).toContain("SBA loan,2026-10-14,Example Machining Inc");
     expect(publicRows(d).capital).toEqual([{ name: "Example Machining Inc", type: "SBA 504 loan approved", city: "Vista" }]);
@@ -180,13 +180,13 @@ describe("email formatting", () => {
     expect(areasLabel(["north-county-coastal", "south-bay", "east-county"])).toBe("North County coastal, South Bay and East County");
   });
 
-  it("writes one line per business with its note and sources", async () => {
+  it("makes one table row per business, with its legal name and note", async () => {
     const id = await business({ name: "Leucadia Cafe LLC", dba: "Leucadia Cafe", category: "restaurants-bars", summary: "Cafe in Encinitas." });
     await event(id, "new_business", "2026-10-14");
     const sections = digestEmailSections(await buildDigest(db, { ...week, clusters: ["north-county-coastal"] }));
-    expect(sections[0]!.items).toEqual([
-      "Leucadia Cafe (Leucadia Cafe LLC), restaurants, bars and food service, Encinitas 92024. First seen Oct 14. Cafe in Encinitas. Source: City of San Diego business tax.",
+    expect(sections[0]!.rows).toEqual([
+      { key: id, name: "Leucadia Cafe", sub: "Legal name: Leucadia Cafe LLC. Cafe in Encinitas", what: "Restaurants, bars and food service", place: "Encinitas 92024", date: "Oct 14", website: null },
     ]);
-    expect(sections[1]!.items).toEqual([]);
+    expect(sections[1]!.rows).toEqual([]);
   });
 });

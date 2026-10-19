@@ -29,6 +29,15 @@ export function standingLine(result: Standing, preview: boolean): string {
   return "Draft for attorney review. This is an information tool, not legal advice, and these rules have not been reviewed by an attorney yet.";
 }
 
+// Colors for the email: what is in force now is red, dated deadlines amber.
+export function groupTone(heading: string): "red" | "amber" | "blue" | "purple" | "gray" {
+  if (heading.startsWith("In effect now")) return "red";
+  if (heading.startsWith("By ")) return "amber";
+  if (heading === "Check first") return "blue";
+  if (heading === "If it happens") return "purple";
+  return "gray";
+}
+
 // "text [1]" for email.
 const marked = (text: string, notes: number[] = []) => `${text}${notes.map((n) => ` [${n}]`).join("")}`;
 
@@ -78,7 +87,16 @@ export async function submitAiwork(deps: SendDeps, rules: AiworkRules, input: Ai
     const token = await createPendingSubscription(db, { subscriberId: subscriber.id, email, tool: "aiwork" });
     confirmUrl = `${config.siteUrl}/confirm/${token}`;
   }
-  const groups = obligationGroups(result, input.today).map((g) => ({ heading: g.heading, items: g.items.map((o) => ({ title: marked(o.title, o.notes), lines: obligationLines(o) })) }));
+  const groups = obligationGroups(result, input.today).map((g) => ({
+    heading: g.heading,
+    tone: groupTone(g.heading),
+    items: g.items.map((o) => ({
+      title: marked(o.title, o.notes),
+      summary: o.summary[0] ? marked(o.summary[0].text, o.summary[0].notes) : null,
+      check: o.checkFirst,
+      todo: o.actions.map((a) => marked(a.text.text, a.text.notes)),
+    })),
+  }));
   const sent = await sendEmail(deps, {
     to: email,
     template: aiworkResult({

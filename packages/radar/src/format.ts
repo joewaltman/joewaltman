@@ -28,37 +28,59 @@ export function areasLabel(clusters: string[]): string {
 
 const place = (city: string | null, zip: string | null) => [city, zip].filter(Boolean).join(" ") || "San Diego County";
 
-export function digestEmailSections(d: Digest): Array<{ title: string; items: string[]; more: number }> {
-  const cap = <T>(rows: T[], line: (r: T) => string) => ({
-    items: rows.slice(0, EMAIL_ITEMS_PER_SECTION).map(line),
-    more: Math.max(0, rows.length - EMAIL_ITEMS_PER_SECTION),
-  });
+export interface EmailRow {
+  key: string;
+  name: string;
+  // Legal name, one-line note, loan or license detail.
+  sub: string | null;
+  what: string;
+  place: string;
+  date: string;
+  website: string | null;
+}
+
+export interface EmailSection {
+  id: "new" | "liquor" | "capital" | "licenses";
+  title: string;
+  rows: EmailRow[];
+  // Rows past the email's limit, which are in the CSV.
+  more: number;
+}
+
+// The digest as table rows for the email, up to EMAIL_ITEMS_PER_SECTION per section.
+export function digestEmailSections(d: Digest): EmailSection[] {
+  const cap = (rows: EmailRow[]) => ({ rows: rows.slice(0, EMAIL_ITEMS_PER_SECTION), more: Math.max(0, rows.length - EMAIL_ITEMS_PER_SECTION) });
+  const join = (...parts: Array<string | null | undefined>) => parts.filter((p): p is string => Boolean(p && p.trim())).map((p) => p.trim().replace(/\.$/, "")).join(". ") || null;
   return [
     {
+      id: "new",
       title: "New businesses",
-      ...cap(d.newBusinesses, (r) =>
-        [
-          `${r.name}${r.legalName ? ` (${r.legalName})` : ""}, ${categoryLabel(r.category)?.toLowerCase() ?? "business"}, ${place(r.city, r.zip)}.`,
-          `First seen ${shortDate(r.firstSeen)}.`,
-          r.note ?? "",
-          r.sources.length ? `Source: ${r.sources.join(", ")}.` : "",
-          r.website ?? "",
-        ]
-          .filter(Boolean)
-          .join(" "),
+      ...cap(
+        d.newBusinesses.map((r) => ({
+          key: r.entityId,
+          name: r.name,
+          sub: join(r.legalName ? `Legal name: ${r.legalName}` : null, r.note),
+          what: categoryLabel(r.category) ?? "Business",
+          place: place(r.city, r.zip),
+          date: shortDate(r.firstSeen),
+          website: r.website,
+        })),
       ),
     },
     {
+      id: "liquor",
       title: "Liquor license activity, bars and restaurants",
-      ...cap(d.liquor, (r) => `${r.name}, ${place(r.city, r.zip)}: ${r.title}${r.details ? `. ${r.details}` : ""}. ${shortDate(r.date)}.`),
+      ...cap(d.liquor.map((r) => ({ key: r.entityId, name: r.name, sub: join(r.details), what: r.title, place: place(r.city, r.zip), date: shortDate(r.date), website: null }))),
     },
     {
+      id: "capital",
       title: "SBA loans over $250,000",
-      ...cap(d.capital, (r) => `${r.name}, ${place(r.city, r.zip)}: ${r.title}. ${r.details ?? ""}`.trim().replace(/([^.])$/, "$1.")),
+      ...cap(d.capital.map((r) => ({ key: `${r.entityId}-${r.date}`, name: r.name, sub: join(r.details), what: r.title, place: place(r.city, r.zip), date: shortDate(r.date), website: null }))),
     },
     {
+      id: "licenses",
       title: "New contractor licenses",
-      ...cap(d.licenses, (r) => `${r.name}, ${place(r.city, r.zip)}${r.details ? `. ${r.details}` : ""}. Issued ${shortDate(r.date)}.`),
+      ...cap(d.licenses.map((r) => ({ key: `${r.entityId}-${r.date}`, name: r.name, sub: join(r.details), what: "Contractor license", place: place(r.city, r.zip), date: shortDate(r.date), website: null }))),
     },
   ];
 }

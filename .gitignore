@@ -17,3 +17,4 @@ next-env.d.ts
 
 # Local raw-download archive from pipeline runs
 .archive/
+.email-samples/

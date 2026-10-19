@@ -59,46 +59,56 @@ export interface WatchEventInput {
   raw: Record<string, unknown>;
 }
 
-// One plain-English line per event for the dashboard and the weekly email.
-export function watchNote(e: WatchEventInput): string {
+export interface NoteParts {
+  // A short statement of what happened, without a closing period.
+  headline: string;
+  // Supporting detail (case number, license, escrow company), or null.
+  detail: string | null;
+}
+
+const trimStop = (s: string | null | undefined) => (s ? s.trim().replace(/\.$/, "") : null) || null;
+
+// What happened, split into a headline and a detail line, for the email table and the dashboard.
+export function watchNoteParts(e: WatchEventInput): NoteParts {
   const raw = e.raw ?? {};
   switch (e.eventType) {
     case "abc_status_change": {
-      const line = `Liquor license status changed from ${abcStatus(raw.statusFrom)} to ${abcStatus(raw.status)}.`;
-      const extra = [raw.transfer ? "The record lists a license transfer." : "", raw.escrow ? `Escrow with ${String(raw.escrow)}.` : ""];
-      return [line, ...extra].filter(Boolean).join(" ");
+      const extra = [raw.transfer ? "The record lists a license transfer." : "", raw.escrow ? `Escrow with ${String(raw.escrow)}.` : ""].filter(Boolean).join(" ");
+      return { headline: `Liquor license status changed from ${abcStatus(raw.statusFrom)} to ${abcStatus(raw.status)}`, detail: extra || null };
     }
     case "cslb_status_change": {
       const m = e.title.match(/status: (.+) to (.+)$/);
-      const line = m ? `Contractor license status changed from ${lower(m[1])} to ${lower(m[2])}.` : `${e.title}.`;
-      return e.summary ? `${line} ${e.summary}.` : line;
+      return { headline: m ? `Contractor license status changed from ${lower(m[1])} to ${lower(m[2])}` : e.title, detail: trimStop(e.summary) };
     }
     case "cslb_workers_comp_change": {
       const m = e.title.match(/coverage: (.+) to (.+)$/);
-      return m ? `Workers' comp on the contractor license changed from "${m[1]}" to "${m[2]}".` : `${e.title}.`;
+      return { headline: m ? `Workers' comp on the contractor license changed from "${m[1]}" to "${m[2]}"` : e.title, detail: null };
     }
     case "cslb_bond_cancellation":
-      return `A cancellation of the contractor's license bond is on file. ${e.summary ?? ""}`.trim();
+      return { headline: "A cancellation of the contractor's license bond is on file", detail: trimStop(e.summary) };
     case "cslb_license_removed":
-      return "The contractor license no longer appears in the state's license file.";
+      return { headline: "The contractor license no longer appears in the state's license file", detail: null };
     case "dca_status_change": {
       const m = e.title.match(/^(.+) license status: (.+) to (.+)$/);
-      const line = m ? `State license (${m[1]}) status changed from ${lower(m[2])} to ${lower(m[3])}.` : `${e.title}.`;
-      return e.summary ? `${line} ${e.summary}.` : line;
+      return { headline: m ? `State license (${m[1]}) status changed from ${lower(m[2])} to ${lower(m[3])}` : e.title, detail: trimStop(e.summary) };
     }
     case "dca_license_removed": {
       const m = e.title.match(/^(.+) license no longer in the DCA file$/);
-      const line = `The state license${m ? ` (${m[1]})` : ""} no longer appears in the DCA license file.`;
-      return e.summary ? `${line} ${e.summary}.` : line;
+      return { headline: `The state license${m ? ` (${m[1]})` : ""} no longer appears in the DCA license file`, detail: trimStop(e.summary) };
     }
     case "sos_status_change": {
       const m = e.title.match(/status: (.+) to (.+)$/);
-      const line = m ? `Secretary of State status changed from ${m[1]} to ${m[2]}.` : `${e.title}.`;
-      return e.summary ? `${line} ${e.summary}.` : line;
+      return { headline: m ? `Secretary of State status changed from ${m[1]} to ${m[2]}` : e.title, detail: trimStop(e.summary) };
     }
     case "account_cancelled":
-      return "The City of San Diego business tax account was cancelled.";
+      return { headline: "The City of San Diego business tax account was cancelled", detail: null };
     default:
-      return e.summary ? `${e.title}. ${e.summary}.` : `${e.title}.`;
+      return { headline: trimStop(e.title) ?? e.title, detail: trimStop(e.summary) };
   }
+}
+
+// One plain-English line per event: the headline and detail as sentences.
+export function watchNote(e: WatchEventInput): string {
+  const { headline, detail } = watchNoteParts(e);
+  return detail ? `${headline}. ${detail}${/[.!?]$/.test(detail) ? "" : "."}` : `${headline}.`;
 }

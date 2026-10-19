@@ -79,7 +79,8 @@ describe("radar-digest job", () => {
     expect(out.meta).toMatchObject({ sent: 2, quiet: 1, failed: 0, window: { start: "2026-10-12", end: "2026-10-18" } });
     const cpa = sent.find((m) => m.to === "cpa@example.com")!;
     expect(cpa.subject).toBe("New Business Radar: 1 new business in North County coastal, October 12 to 18, 2026");
-    expect(cpa.text).toContain("Leucadia Cafe (Leucadia Cafe LLC)");
+    expect(cpa.text).toContain("NEW BUSINESSES\n- Leucadia Cafe (Restaurants, bars and food service), Encinitas 92024, Oct 14. Legal name: Leucadia Cafe LLC.");
+    expect(cpa.html).toContain("#12b76a");
     expect(cpa.text).toContain("https://joewaltman.com/newbizradar/csv/");
     expect(cpa.text).toContain("Reply with a name you want more on.");
     expect(cpa.headers["List-Unsubscribe-Post"]).toBe("List-Unsubscribe=One-Click");

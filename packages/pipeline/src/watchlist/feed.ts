@@ -15,7 +15,7 @@ import {
   watchlistMutes,
 } from "@jw/db";
 import { type EntityCard, entityCards } from "./match";
-import { WATCH_EVENTS, WATCH_EVENT_TYPES, watchNote } from "./events";
+import { WATCH_EVENTS, WATCH_EVENT_TYPES, watchNote, watchNoteParts } from "./events";
 
 export interface FeedEvent {
   id: string;
@@ -25,6 +25,8 @@ export interface FeedEvent {
   date: string;
   recordedAt: Date;
   note: string;
+  headline: string;
+  detail: string | null;
   sourceUrl: string | null;
   source: string;
 }
@@ -93,6 +95,7 @@ export async function watchlistFeed(db: Db, watchlistId: string, since: Date): P
         date: e.eventDate ?? e.createdAt.toISOString().slice(0, 10),
         recordedAt: e.createdAt,
         note: watchNote({ eventType: e.eventType, title: e.title, summary: e.summary, raw: e.raw }),
+        ...watchNoteParts({ eventType: e.eventType, title: e.title, summary: e.summary, raw: e.raw }),
         sourceUrl: e.sourceUrl,
         source: WATCH_EVENTS[e.eventType]?.source ?? e.source,
       }))

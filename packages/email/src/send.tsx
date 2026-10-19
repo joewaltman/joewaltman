@@ -59,6 +59,27 @@ export async function isSuppressed(db: Db, email: string): Promise<boolean> {
   return rows.length > 0;
 }
 
+// A template as the HTML a reader would see, with a sample footer, for admin previews.
+export async function previewHtml(template: Template, postalAddress = "[postal address]"): Promise<string> {
+  return render(
+    <Layout preview={template.preview} footer={{ reason: "Preview: this is how the email looks to a subscriber.", postalAddress, unsubscribeUrl: "#", showForward: true }}>
+      {template.body}
+    </Layout>,
+  );
+}
+
+// The footer as plain text, for templates that write their own plain-text part.
+function footerText(input: SendInput, postalAddress: string | null, unsubscribeUrl: string | undefined): string {
+  return [
+    input.reason,
+    input.showForward ? "Know someone who would use this? Forward it to them." : "",
+    unsubscribeUrl ? `Unsubscribe from these emails: ${unsubscribeUrl}` : "",
+    `Joe Waltman, ${postalAddress ?? "[postal address not set]"}`,
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
 export async function sendEmail(deps: SendDeps, input: SendInput): Promise<SendResult> {
   const { db, config } = deps;
   const to = normalizeEmail(input.to);
@@ -128,7 +149,7 @@ export async function sendEmail(deps: SendDeps, input: SendInput): Promise<SendR
     replyTo: input.replyTo ?? config.replyTo,
     subject: template.subject,
     html: await render(element),
-    text: await render(element, { plainText: true }),
+    text: template.text ? `${template.text}\n\n----------------------------------------\n\n${footerText(input, config.postalAddress, urls?.page)}` : await render(element, { plainText: true }),
     headers,
   };
 

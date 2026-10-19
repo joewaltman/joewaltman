@@ -4,8 +4,27 @@
     {
       "name": "web",
       "runtimeExecutable": "corepack",
-      "runtimeArgs": ["pnpm", "--dir", "apps/web", "start"],
+      "runtimeArgs": [
+        "pnpm",
+        "--dir",
+        "apps/web",
+        "start"
+      ],
       "port": 3000
+    },
+    {
+      "name": "email-samples",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8765",
+        "--bind",
+        "127.0.0.1",
+        "--directory",
+        ".email-samples"
+      ],
+      "port": 8765
     }
   ]
 }

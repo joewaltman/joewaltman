@@ -71,9 +71,10 @@ describe("watchlist-digest job", () => {
     const out = await watchlistDigestJob().run(ctx);
     expect(out.meta).toMatchObject({ sent: 2, quiet: 1, failed: 0 });
     const ar = sent.find((m) => m.to === "ar@example.com")!;
-    expect(ar.subject).toBe("Customer Watchlist: new public records on 1 customer, October 12 to 18, 2026");
-    expect(ar.text).toContain("Worth a look, 2026-10-15: Contractor license status changed from clear to suspended.");
-    expect(ar.text).toContain("https://www.cslb.ca.gov/x");
+    expect(ar.subject).toBe("Customer Watchlist: new records on 1 customer, October 12 to 18, 2026");
+    expect(ar.text).toContain("PACIFIC TILE WORKS INC\n- [Worth a look] Oct 15: Contractor license status changed from clear to suspended.\n  Record: https://www.cslb.ca.gov/x");
+    // Amber bar for "worth a look".
+    expect(ar.html).toContain("#f79009");
     expect(ar.headers["List-Unsubscribe-Post"]).toBe("List-Unsubscribe=One-Click");
     expect(sent.find((m) => m.to === "quiet@example.com")!.subject).toBe("Customer Watchlist: nothing new this week");
     expect(sent.some((m) => m.to === "pending@example.com")).toBe(false);

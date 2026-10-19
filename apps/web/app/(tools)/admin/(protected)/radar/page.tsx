@@ -1,6 +1,7 @@
 import { taxonomy, zipClusters } from "@jw/content";
 import { and, desc, eq, getDb, isNull, subscribers, subscriptions } from "@jw/db";
-import { areasLabel, buildDigest, clusterLabel, digestEmailSections, digestSize, digestWindow, weekLabel } from "@jw/radar";
+import { previewHtml, radarDigest } from "@jw/email";
+import { areasLabel, buildDigest, clusterLabel, digestEmailSections, digestWindow, weekLabel } from "@jw/radar";
 import { DataTable } from "@/components/data-table";
 import { adminCsvPath, pickAreas } from "@/lib/radar-admin";
 import { requireAdmin } from "@/lib/server";
@@ -40,7 +41,16 @@ export default async function AdminRadarPage({
       .where(and(eq(subscriptions.tool, "radar"), isNull(subscribers.unsubscribedAt)))
       .orderBy(desc(subscriptions.createdAt)),
   ]);
-  const sections = digestEmailSections(digest);
+  // The digest exactly as a subscriber gets it, rendered by the same template.
+  const emailHtml = await previewHtml(
+    radarDigest({
+      areas: areasLabel(clusters),
+      weekLabel: weekLabel(window.start, window.end),
+      sections: digestEmailSections(digest),
+      csvUrl: adminCsvPath(clusters),
+      wantThisUrl: "/newbizradar/crm",
+    }),
+  );
   const categoryNames = new Map(taxonomy.categories.map((c) => [c.id, c.label]));
   const confirmed = subs.filter((s) => s.active).length;
 
@@ -79,29 +89,7 @@ export default async function AdminRadarPage({
         <a href={adminCsvPath(clusters)}>Download the CSV</a>
       </form>
 
-      <div className="mb-10 max-w-2xl border border-rule p-4 text-[0.95rem]">
-        <p className="mt-0 font-semibold">
-          {digestSize(digest) === 0
-            ? `New Business Radar: a quiet week in ${areasLabel(clusters)}`
-            : `${weekLabel(window.start, window.end)}, ${areasLabel(clusters)}`}
-        </p>
-        {sections
-          .filter((s) => s.items.length > 0)
-          .map((s) => (
-            <div key={s.title}>
-              <p className="mb-1 font-semibold">
-                {s.title} ({s.items.length + s.more})
-              </p>
-              <ul className="mt-0 grid gap-1.5 pl-5">
-                {s.items.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-              {s.more > 0 ? <p className="text-muted">And {s.more} more in the CSV.</p> : null}
-            </div>
-          ))}
-        {digestSize(digest) === 0 ? <p className="mb-0 text-muted">Nothing new in these areas last week.</p> : null}
-      </div>
+      <iframe title="Digest preview" srcDoc={emailHtml} className="mb-10 h-[760px] w-full max-w-2xl border border-rule bg-white" />
 
       <h2 className="mb-3 text-[1.2rem] font-semibold">Subscribers</h2>
       <DataTable

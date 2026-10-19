@@ -111,16 +111,14 @@ export async function submitTariff(
   const assumptions = result.assumptions ?? [];
   const template = tariffResult({
     pathTitle: result.path.title,
+    kind: result.path.kind,
     summary: result.path.summary.map((s) => withMarkers(item(s))),
-    sections: [
-      ...resultSections(result).map((sec) => ({ title: sec.title, items: sec.items.map(withMarkers) })),
-      ...(assumptions.length > 0
-        ? [{ title: "Assumptions", items: assumptions.map((a, i) => `[${i + 1}] ${a.text}`) }]
-        : []),
-      ...(confirmUrl
-        ? [{ title: "Updates", items: [`Confirm you want an email when refund rules or deadlines change: ${confirmUrl}`] }]
-        : []),
-    ],
+    deadlines: result.path.deadlines.map((d) => withMarkers(item(d))),
+    sections: resultSections(result)
+      .filter((sec) => sec.title !== "Deadlines")
+      .map((sec) => ({ title: sec.title, items: sec.items.map(withMarkers) })),
+    assumptions: assumptions.map((a, i) => `[${i + 1}] ${a.text}`),
+    updatesUrl: confirmUrl,
     resultUrl: `${config.siteUrl}/tariffrefund/result/${responseId}`,
     brokerSummary: summaryText,
     asOf: result.asOf,

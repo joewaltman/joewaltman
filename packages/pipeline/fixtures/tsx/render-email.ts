@@ -8,8 +8,8 @@ const db = await createTestDb();
 const config = { mode: "dryrun" as const, adminEmail: "joewaltman@gmail.com", from: "Joe Waltman <joe@joewaltman.com>", replyTo: "joe@joewaltman.com", siteUrl: "https://joewaltman.com", postalAddress: "PO Box 1", resendApiKey: null, dryRunDir: tmpdir() };
 const templates = [
   jobFailed({ job: "x", error: "e", startedAt: "now", attempt: 1, adminUrl: "https://joewaltman.com/admin/jobs" }),
-  radarDigest({ areas: "North County coastal", weekLabel: "October 12 to 18, 2026", sections: [{ title: "New businesses", items: ["Example"], more: 0 }], csvUrl: "https://x", wantThisUrl: "https://x" }),
-  watchlistDigest({ weekLabel: "October 12 to 18, 2026", totalCustomers: 1, customers: [], needsReview: 0, dashboardUrl: "https://x", wantThisUrl: "https://x" }),
+  radarDigest({ areas: "North County coastal", weekLabel: "October 12 to 18, 2026", sections: [{ id: "new", title: "New businesses", rows: [{ key: "1", name: "Example", sub: null, what: "Retail stores", place: "Vista 92083", date: "Oct 14", website: null }], more: 0 }], csvUrl: "https://x", wantThisUrl: "https://x" }),
+  watchlistDigest({ weekLabel: "October 12 to 18, 2026", totalCustomers: 1, rows: [{ customer: "Example LLC", severity: "serious", date: "2026-10-15", headline: "Chapter 11 bankruptcy case filed", detail: null, sourceUrl: "https://x", count: 1 }], needsReview: 0, dashboardUrl: "https://x", wantThisUrl: "https://x" }),
   docketUpdate({ caseName: "Example v. United States", court: "U.S. Court of International Trade", docketUrl: "https://x", why: "test", entries: [{ date: "2026-10-20", number: "12", text: "Order" }] }),
 ];
 for (const template of templates) {
