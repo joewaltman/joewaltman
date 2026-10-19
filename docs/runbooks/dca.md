@@ -10,9 +10,9 @@ The job runs daily at 5:35am Pacific. It reads the Box folder listing (about a d
 
 ## What is kept
 
-Only organization rows (`Indiv/Org` = `O`) in San Diego County, of the license types listed per board in `content/dca-license-types.json`. A row whose name reads as a bare personal name ("FIRST LAST") is skipped even when the board marks it an organization. Street addresses are kept only for types marked `premises` (shops, salons, pharmacies); for the rest only city and ZIP. The archive keeps the header and San Diego rows of each file.
+Only organization rows (`Indiv/Org` = `O`) in San Diego County, and only those are archived,, of the license types listed per board in `content/dca-license-types.json`. A row whose name reads as a bare personal name ("FIRST LAST") is skipped even when the board marks it an organization. Street addresses are kept only for types marked `premises` (shops, salons, pharmacies); for the rest only city and ZIP. The archive keeps the header and San Diego rows of each file.
 
-To read another board or license type, add it to the JSON with a NAICS code (which sets the Radar category). The Dental Board file is `.xlsx` and is not read yet.
+To read another board or license type, add it to the JSON with a NAICS code (which sets the Radar category). The Dental Board posts a real `.xlsx` workbook (dates as Excel day numbers, some columns named differently); `dcaRows` reads both forms. Columns naming a licensee's relationships are dropped.
 
 ## Events
 

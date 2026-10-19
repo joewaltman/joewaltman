@@ -3,6 +3,7 @@ import rawAbcTypes from "../../../content/abc-license-types.json";
 import rawDcaTypes from "../../../content/dca-license-types.json";
 import rawManualDrops from "../../../content/manual-drops.json";
 import rawNpiTaxonomy from "../../../content/npi-taxonomy.json";
+import rawWatchedDockets from "../../../content/watched-dockets.json";
 import rawTaxonomy from "../../../content/taxonomy.json";
 import rawZipClusters from "../../../content/zip-clusters.json";
 
@@ -110,6 +111,8 @@ const dropSourceSchema = z.object({
   recordUrl: z.url(),
   verify: z.boolean(),
   statewide: z.boolean(),
+  // Keep only rows dated within this many days of the upload (by the source's date column).
+  recentDays: z.number().int().positive().optional(),
   columns: z.record(z.string(), z.object({ required: z.boolean().optional(), headers: z.array(z.string().min(1)).min(1) })),
   statuses: z.object({ serious: z.array(z.string()), watch: z.array(z.string()) }).optional(),
   types: z.array(dropTypeSchema).optional(),
@@ -131,3 +134,9 @@ export function npiGroup(code: string | null | undefined) {
   const c = (code ?? "").trim().toUpperCase();
   return npiTaxonomy.groups.filter((g) => c.startsWith(g.prefix)).sort((a, b) => b.prefix.length - a.prefix.length)[0] ?? null;
 }
+
+const docketsSchema = z.object({
+  note: z.string(),
+  dockets: z.array(z.object({ id: z.number().int().positive(), name: z.string().min(1), court: z.string().min(1), url: z.url(), why: z.string().min(1) })),
+});
+export const watchedDockets = docketsSchema.parse(rawWatchedDockets);

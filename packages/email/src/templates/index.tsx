@@ -372,6 +372,40 @@ export function aiworkResult(input: AiworkResultInput): Template {
   };
 }
 
+export function docketUpdate(input: {
+  caseName: string;
+  court: string;
+  docketUrl: string;
+  why: string;
+  entries: Array<{ date: string; number: string; text: string }>;
+}): Template {
+  const n = input.entries.length;
+  return {
+    name: "docket-update",
+    subject: `${n} new ${n === 1 ? "filing" : "filings"} in ${input.caseName}`,
+    preview: input.entries[0]?.text.slice(0, 120) ?? input.caseName,
+    body: (
+      <>
+        <Text style={textStyle}>
+          {input.caseName}, {input.court}.
+        </Text>
+        {input.entries.map((e) => (
+          <Text key={`${e.number}${e.date}`} style={{ ...textStyle, margin: "0 0 8px" }}>
+            {"•"} {e.date}
+            {e.number ? `, entry ${e.number}` : ""}: {e.text}
+          </Text>
+        ))}
+        <Text style={textStyle}>
+          <Link href={input.docketUrl} style={linkStyle}>
+            Open the docket
+          </Link>
+        </Text>
+        <Text style={{ ...textStyle, color: "#555555", fontSize: "14px" }}>{input.why}</Text>
+      </>
+    ),
+  };
+}
+
 export function jobFailed(input: {
   job: string;
   error: string;

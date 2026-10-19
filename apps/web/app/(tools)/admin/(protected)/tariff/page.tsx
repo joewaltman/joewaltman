@@ -1,10 +1,11 @@
-import { answerLabel, evaluateTariff, tariffRules, unverifiedFacts } from "@jw/content";
+import { answerLabel, evaluateTariff, tariffRules, unverifiedFacts, watchedDockets } from "@jw/content";
 import {
   and,
   desc,
   eq,
   events,
   getDb,
+  jobRuns,
   prerunNotes,
   questionnaireResponses,
   subscribers,
@@ -40,7 +41,7 @@ function hiddenUses(): Map<string, string[]> {
 export default async function AdminTariffPage() {
   await requireAdmin();
   const db = getDb();
-  const [responses, reviews, notes] = await Promise.all([
+  const [responses, reviews, notes, [docketRun]] = await Promise.all([
     db
       .select({
         id: questionnaireResponses.id,
@@ -67,7 +68,14 @@ export default async function AdminTariffPage() {
       .where(eq(prerunNotes.tool, "tariff"))
       .orderBy(desc(prerunNotes.createdAt))
       .limit(200),
+    db
+      .select({ meta: jobRuns.meta, startedAt: jobRuns.startedAt })
+      .from(jobRuns)
+      .where(and(eq(jobRuns.job, "dockets"), eq(jobRuns.status, "success")))
+      .orderBy(desc(jobRuns.startedAt))
+      .limit(1),
   ]);
+  const latestFilings = (docketRun?.meta?.latest ?? {}) as Record<string, Array<{ entryNumber: string; dateFiled: string; text: string }>>;
   const verify = unverifiedFacts(tariffRules);
   const assumed = Object.entries(tariffRules.facts)
     .filter(([, f]) => f.assumption && !f.verify)
@@ -118,6 +126,30 @@ export default async function AdminTariffPage() {
           </ol>
         </>
       ) : null}
+
+      <h2 className="mb-2 text-[1.2rem] font-semibold">Court case filings</h2>
+      <p className="mb-3 text-[0.95rem] text-muted">
+        Watched daily; you get an email when a new filing appears.{" "}
+        {docketRun ? `Last checked ${formatDate(docketRun.startedAt.toISOString().slice(0, 10))}.` : "Not checked yet."}
+      </p>
+      {watchedDockets.dockets.map((d) => (
+        <div key={d.id} className="mb-8 text-[0.95rem]">
+          <p className="mb-1">
+            <a href={d.url} rel="noopener noreferrer" target="_blank">
+              {d.name}
+            </a>
+            , {d.court}
+          </p>
+          <ul className="mt-0 grid gap-1 pl-5">
+            {(latestFilings[String(d.id)] ?? []).map((e) => (
+              <li key={`${e.entryNumber}${e.dateFiled}`}>
+                {e.dateFiled}
+                {e.entryNumber ? `, entry ${e.entryNumber}` : ""}: {e.text}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
 
       <h2 className="mb-3 text-[1.2rem] font-semibold">Recent results</h2>
       <DataTable

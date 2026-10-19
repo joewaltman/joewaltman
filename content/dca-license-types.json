@@ -1,100 +1,216 @@
 {
   "source": "https://www.dca.ca.gov/consumers/public_info/index.shtml",
   "boxFolder": "https://dca.box.com/s/oss6hf8jys2bmgxqd2gdz7w4oepm2il9",
-  "asOf": "2026-10-16",
-  "note": "Which DCA license files and license types the pipeline reads, and how each maps to a NAICS code (which sets the Radar category). Only organization rows are read. premises marks licenses tied to a business location, so the street address is kept; for the rest only city and ZIP are kept. Folder names are the Box folder names DCA uses. The Dental Board file is .xlsx and not read yet.",
+  "asOf": "2026-10-19",
+  "note": "Which DCA license files and license types the pipeline reads, and how each maps to a NAICS code (which sets the Radar category). Only organization rows are read. premises marks licenses tied to a business location, so the street address is kept; for the rest only city and ZIP are kept. Folder names are the Box folder names DCA uses. The Dental Board posts a real .xlsx workbook; the rest post tab-separated text named .xls.",
   "folders": {
     "AutomotiveRepair_1310": {
       "agency": "Bureau of Automotive Repair",
       "types": {
-        "Automotive Repair Dealer": { "naics": "811111", "premises": true },
-        "Smog Station - Test & Repair": { "naics": "811198", "premises": true },
-        "Smog Station - Test Only": { "naics": "811198", "premises": true },
-        "Smog Station - Repair Only": { "naics": "811198", "premises": true },
-        "Vehicle Safety Systems Inspection Station": { "naics": "811198", "premises": true }
+        "Automotive Repair Dealer": {
+          "naics": "811111",
+          "premises": true
+        },
+        "Smog Station - Test & Repair": {
+          "naics": "811198",
+          "premises": true
+        },
+        "Smog Station - Test Only": {
+          "naics": "811198",
+          "premises": true
+        },
+        "Smog Station - Repair Only": {
+          "naics": "811198",
+          "premises": true
+        },
+        "Vehicle Safety Systems Inspection Station": {
+          "naics": "811198",
+          "premises": true
+        }
       }
     },
     "BarberingAndCosmetology_0100": {
       "agency": "Board of Barbering and Cosmetology",
       "types": {
-        "Establishment": { "naics": "812112", "premises": true },
-        "Barber Shop": { "naics": "812111", "premises": true },
-        "Schools": { "naics": "611511", "premises": true },
-        "Mobile Unit": { "naics": "812112", "premises": false }
+        "Establishment": {
+          "naics": "812112",
+          "premises": true
+        },
+        "Barber Shop": {
+          "naics": "812111",
+          "premises": true
+        },
+        "Schools": {
+          "naics": "611511",
+          "premises": true
+        },
+        "Mobile Unit": {
+          "naics": "812112",
+          "premises": false
+        }
       }
     },
     "MedicalBoard_0800": {
       "agency": "Medical Board of California",
       "types": {
-        "Fictitious Name Permit": { "naics": "621111", "premises": true }
+        "Fictitious Name Permit": {
+          "naics": "621111",
+          "premises": true
+        }
       }
     },
     "Pharmacy_7200": {
       "agency": "Board of Pharmacy",
       "types": {
-        "Retail Pharmacy": { "naics": "456110", "premises": true },
-        "Clinic Permits": { "naics": "621498", "premises": true },
-        "Hospital Pharmacy": { "naics": "622110", "premises": true },
-        "Resident Licensed Sterile Compounding": { "naics": "456110", "premises": true },
-        "Wholesalers": { "naics": "424210", "premises": true }
+        "Retail Pharmacy": {
+          "naics": "456110",
+          "premises": true
+        },
+        "Clinic Permits": {
+          "naics": "621498",
+          "premises": true
+        },
+        "Hospital Pharmacy": {
+          "naics": "622110",
+          "premises": true
+        },
+        "Resident Licensed Sterile Compounding": {
+          "naics": "456110",
+          "premises": true
+        },
+        "Wholesalers": {
+          "naics": "424210",
+          "premises": true
+        }
       }
     },
     "VeterinaryMedicine_Tech_0460": {
       "agency": "Veterinary Medical Board",
       "types": {
-        "Veterinary Premises": { "naics": "541940", "premises": true }
+        "Veterinary Premises": {
+          "naics": "541940",
+          "premises": true
+        }
       }
     },
     "StructuralPest_8400": {
       "agency": "Structural Pest Control Board",
       "types": {
-        "Company Registration": { "naics": "561710", "premises": true },
-        "Branch Office": { "naics": "561710", "premises": true }
+        "Company Registration": {
+          "naics": "561710",
+          "premises": true
+        },
+        "Branch Office": {
+          "naics": "561710",
+          "premises": true
+        }
       }
     },
     "SecurityAndInvestigativeServices_0120": {
       "agency": "Bureau of Security and Investigative Services",
       "types": {
-        "Private Patrol Operator": { "naics": "561612", "premises": true },
-        "PPO Branch": { "naics": "561612", "premises": true },
-        "Alarm Company Operator": { "naics": "561621", "premises": true },
-        "Locksmith Company": { "naics": "561622", "premises": true },
-        "Private Investigator": { "naics": "561611", "premises": false }
+        "Private Patrol Operator": {
+          "naics": "561612",
+          "premises": true
+        },
+        "PPO Branch": {
+          "naics": "561612",
+          "premises": true
+        },
+        "Alarm Company Operator": {
+          "naics": "561621",
+          "premises": true
+        },
+        "Locksmith Company": {
+          "naics": "561622",
+          "premises": true
+        },
+        "Private Investigator": {
+          "naics": "561611",
+          "premises": false
+        }
       }
     },
     "Accountancy_0300": {
       "agency": "California Board of Accountancy",
       "types": {
-        "Cpa - Corporation": { "naics": "541211", "premises": true },
-        "Cpa - Partnership": { "naics": "541211", "premises": true },
-        "Fictitious Name Registration": { "naics": "541211", "premises": true }
+        "Cpa - Corporation": {
+          "naics": "541211",
+          "premises": true
+        },
+        "Cpa - Partnership": {
+          "naics": "541211",
+          "premises": true
+        },
+        "Fictitious Name Registration": {
+          "naics": "541211",
+          "premises": true
+        }
       }
     },
     "ElectronicApplianceRepair_3900": {
       "agency": "Bureau of Household Goods and Services",
       "types": {
-        "Major Appliance Repair": { "naics": "811412", "premises": true },
-        "Electronic Repair": { "naics": "811211", "premises": true },
-        "Combination-Electronic And Appliance Repair": { "naics": "811412", "premises": true }
+        "Major Appliance Repair": {
+          "naics": "811412",
+          "premises": true
+        },
+        "Electronic Repair": {
+          "naics": "811211",
+          "premises": true
+        },
+        "Combination-Electronic And Appliance Repair": {
+          "naics": "811412",
+          "premises": true
+        }
       }
     },
     "ChiropracticExaminers_8500": {
       "agency": "Board of Chiropractic Examiners",
       "types": {
-        "Corporation": { "naics": "621310", "premises": true }
+        "Corporation": {
+          "naics": "621310",
+          "premises": true
+        }
       }
     },
     "Optometry_0420": {
       "agency": "Board of Optometry",
       "types": {
-        "Fictitious Name Permit": { "naics": "621320", "premises": true },
-        "Registered Dispensing Ophthalmic Busines": { "naics": "456130", "premises": true }
+        "Fictitious Name Permit": {
+          "naics": "621320",
+          "premises": true
+        },
+        "Registered Dispensing Ophthalmic Busines": {
+          "naics": "456130",
+          "premises": true
+        }
       }
     },
     "Funeral_4800": {
       "agency": "Cemetery and Funeral Bureau",
       "types": {
-        "Funeral Director Establishment": { "naics": "812210", "premises": true }
+        "Funeral Director Establishment": {
+          "naics": "812210",
+          "premises": true
+        }
+      }
+    },
+    "Dental_DentalAssistant_0440": {
+      "agency": "Dental Board of California",
+      "types": {
+        "Fictitious Name Permit": {
+          "naics": "621210",
+          "premises": true
+        },
+        "Additional Office Permit": {
+          "naics": "621210",
+          "premises": true
+        },
+        "Mobile Dental Clinic Permit": {
+          "naics": "621210",
+          "premises": false
+        }
       }
     }
   }

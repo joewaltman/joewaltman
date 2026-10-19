@@ -1,7 +1,7 @@
 import { gunzipSync, gzipSync } from "node:zlib";
 import { manualDropSources } from "@jw/content";
 import { type Db, type DropSource, manualDrops } from "@jw/db";
-import { type ColumnMap, detectDelimiter, inSanDiego, mapColumns, splitLine } from "./table";
+import { type ColumnMap, detectDelimiter, inSanDiego, mapColumns, parseDate, splitLine } from "./table";
 
 export class DropError extends Error {}
 
@@ -14,7 +14,13 @@ export interface StoredDrop {
 
 // Reads an uploaded file line by line, checks its header, keeps San Diego County rows for
 // statewide sources, and stores the result gzipped for the pipeline to pick up.
-export async function storeDrop(db: Db, source: DropSource, fileName: string, lines: AsyncIterable<string> | Iterable<string>): Promise<StoredDrop> {
+export async function storeDrop(
+  db: Db,
+  source: DropSource,
+  fileName: string,
+  lines: AsyncIterable<string> | Iterable<string>,
+  now = new Date(),
+): Promise<StoredDrop> {
   const config = manualDropSources.sources[source];
   if (!config) throw new DropError(`Unknown source ${source}`);
   let header: string[] | null = null;
@@ -23,6 +29,8 @@ export async function storeDrop(db: Db, source: DropSource, fileName: string, li
   let map: ColumnMap | null = null;
   const kept: string[] = [];
   let rowsSeen = 0;
+  // For sources posted as long histories (nine years of county FBNs), only recent rows matter.
+  const cutoff = config.recentDays ? new Date(now.getTime() - config.recentDays * 86_400_000).toISOString().slice(0, 10) : null;
   for await (const raw of lines) {
     const line = raw.replace(/^﻿/, "").replace(/\r$/, "");
     if (!line.trim()) continue;
@@ -39,7 +47,13 @@ export async function storeDrop(db: Db, source: DropSource, fileName: string, li
       continue;
     }
     rowsSeen++;
-    if (config.statewide && !inSanDiego(splitLine(line, delimiter), map!)) continue;
+    const cells = splitLine(line, delimiter);
+    if (config.statewide && !inSanDiego(cells, map!)) continue;
+    if (cutoff) {
+      const dateCol = map!.cols.filedAt ?? map!.cols.recordedAt ?? map!.cols.filingDate;
+      const d = dateCol !== undefined ? parseDate(cells[dateCol]) : null;
+      if (!d || d < cutoff) continue;
+    }
     kept.push(line);
   }
   if (!header || !map) throw new DropError("The file is empty.");

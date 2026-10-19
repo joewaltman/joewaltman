@@ -12,12 +12,14 @@ Code: `packages/pipeline`. Runs as the Railway `pipeline` service, which Railway
 | `nppes` | 5:40am | CMS weekly NPI file: new San Diego healthcare organizations for the Radar, deactivations for the Watchlist. Individual providers are never read |
 | `sba` | 5:40am | SBA 7(a) and 504 loan files (quarterly): new San Diego loans over $250,000 since the previous file. The first run only records the file date |
 | `enrich` | 5:45am | Category and one-line summary for new businesses (needs `ANTHROPIC_API_KEY`) |
+| `websites` | 5:47am | Looks for the website of each new business from the last 30 days: tries the obvious .com names and keeps one only if the page names the business and its location and is not a parked domain. Each business is tried once |
 | `courtlistener` | 5:50am | Federal dockets naming Watchlist customers. See `watchlist.md` |
-| `radar-digest` | 6:00am Mondays | The New Business Radar email |
-| `watchlist-digest` | 6:15am Mondays | The Customer Watchlist email |
+| `dockets` | 5:55am | New filings in the court cases listed in `content/watched-dockets.json` (the IEEPA refund class action), emailed to Joe. Needs `COURTLISTENER_API_TOKEN` |
+| `radar-digest` | 6:00am Mondays, again at 9:00am | The New Business Radar email. The 9:00 slot only sends if the early one failed |
+| `watchlist-digest` | 6:15am Mondays, again at 9:00am | The Customer Watchlist email, with the same catch-up |
 | `manual-drops` | Next tick after an upload | Files uploaded at `/admin/drops`. See `manual-drops.md` |
 
-Every run writes a `job_runs` row (see `/admin/jobs`). A failed job is retried once at the next tick; each failure emails Joe. Re-runs are safe: entities match on source identifiers and events dedupe on a key.
+Every run writes a `job_runs` row (see `/admin/jobs`). A failed job is retried once at the next tick; each failure emails Joe. A failure email that cannot be built or sent is logged and the tick carries on. Re-runs are safe: entities match on source identifiers and events dedupe on a key.
 
 A deploy or variable change restarts the pipeline service and cuts off a run in progress. That run stays "running" until the first tick two hours later marks it failed ("Interrupted"), and the scheduler retries it. To avoid it, don't deploy between 5:30 and 6:30am Pacific.
 

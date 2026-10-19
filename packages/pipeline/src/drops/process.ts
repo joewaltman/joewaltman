@@ -252,7 +252,8 @@ export async function processDrop(db: Db, source: DropSource, text: string, now:
       );
       result.upserted++;
       if (filed && filed >= recentCutoff) {
-        await event(r.entityId, { eventType: "new_business", severity: "info", title: "New fictitious business name filed", summary: `San Diego County file ${number}`, eventDate: filed, key: `${number}:new` });
+        // Dated the day the upload is read, so it reaches the next Radar whenever Joe uploads; the filing date is in the note.
+        await event(r.entityId, { eventType: "new_business", severity: "info", title: "New fictitious business name filed", summary: `Filed ${filed}. San Diego County file ${number}`, eventDate: today, key: `${number}:new` });
       }
     }
   }

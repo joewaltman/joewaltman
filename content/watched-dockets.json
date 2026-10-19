@@ -1,0 +1,12 @@
+{
+  "note": "Federal dockets Joe wants an email about when new filings appear, read daily through CourtListener with the pipeline's API key.",
+  "dockets": [
+    {
+      "id": 72304044,
+      "name": "Freestyle World, Inc. v. United States",
+      "court": "U.S. Court of International Trade, case 1:26-cv-01088",
+      "url": "https://www.courtlistener.com/docket/72304044/freestyle-world-inc-v-united-states-of-america/",
+      "why": "The class action for IEEPA tariff refunds. A ruling or schedule change here may mean the Tariff Refund Tool's rules (content/tariff-rules.json) need updating."
+    }
+  ]
+}

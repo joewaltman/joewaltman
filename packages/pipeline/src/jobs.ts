@@ -1,6 +1,7 @@
 import { abc } from "./adapters/abc";
 import { courtListenerJob } from "./adapters/courtlistener";
 import { dcaJob } from "./adapters/dca";
+import { docketsJob } from "./adapters/dockets";
 import { nppesJob } from "./adapters/nppes";
 import { sbaJob } from "./adapters/sba";
 import { cslb } from "./adapters/cslb";
@@ -10,6 +11,7 @@ import { enrichJob } from "./enrich";
 import { radarDigestJob } from "./radar-digest";
 import { type Job, adapterJob } from "./runner";
 import { type ScheduleEntry, pacificDay } from "./schedule";
+import { websitesJob } from "./websites";
 import { watchlistDigestJob } from "./watchlist/digest";
 
 export const ARCHIVE_DAYS = 60;
@@ -32,7 +34,9 @@ export const JOBS: Record<string, Job> = {
   nppes: nppesJob(),
   sba: sbaJob(),
   enrich: enrichJob(),
+  websites: websitesJob(),
   courtlistener: courtListenerJob(),
+  dockets: docketsJob(),
   // Not on the schedule: the tick runs it whenever an uploaded file is waiting.
   "manual-drops": manualDropsJob(),
   "radar-digest": radarDigestJob(),
@@ -54,8 +58,12 @@ export const SCHEDULE: ScheduleEntry[] = [
   { job: "sba", time: "05:40" },
   // After the ingestion jobs, so new businesses are classified before the Monday 6:00am digest.
   { job: "enrich", time: "05:45" },
+  // After enrichment: look for each new business's website before the 6:00am Radar.
+  { job: "websites", time: "05:47" },
   // Federal court dockets for Watchlist customers, before the Monday 6:15am Watchlist email.
   { job: "courtlistener", time: "05:50" },
+  // Court cases Joe follows, such as the IEEPA refund class action (content/watched-dockets.json).
+  { job: "dockets", time: "05:55" },
   // Monday only, after the morning ingestion and enrichment.
   { job: "radar-digest", time: "06:00", weekdays: [1] },
   { job: "watchlist-digest", time: "06:15", weekdays: [1] },

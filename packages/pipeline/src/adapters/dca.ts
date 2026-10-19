@@ -7,6 +7,7 @@ export { looksLikePerson };
 import { type EntityRecord, addEvent, upsertEntity } from "../resolve";
 import { type Job, type JobContext, download } from "../runner";
 import { pacificDay } from "../schedule";
+import { excelDate, xlsxRows } from "../xlsx";
 
 // California Department of Consumer Affairs license files: one tab-separated file (named .xls)
 // per board, posted monthly to a public Box folder linked from the DCA public information page.
@@ -60,7 +61,7 @@ async function listFolder(ctx: JobContext, id: number | null): Promise<BoxItem[]
   return items;
 }
 
-const DATA_FILE = /_Data\d+\.(xls|txt|csv|tsv)$/i;
+const DATA_FILE = /_Data\d+\.(xls|xlsx|txt|csv|tsv)$/i;
 
 export interface DcaRecord {
   sourceId: string;
@@ -89,7 +90,7 @@ export function splitDba(name: string): { name: string; dba: string | null } {
 export function parseDca(body: Uint8Array, folder: string): DcaRecord[] {
   const config = dcaLicenseTypes.folders[folder];
   if (!config) return [];
-  const lines = new TextDecoder("windows-1252").decode(body).split(/\r?\n/);
+  const lines = new TextDecoder("utf-8").decode(body).split(/\r?\n/);
   const header = (lines[0] ?? "").split("\t").map((h) => h.trim());
   const col = (name: string) => header.indexOf(name);
   const c = {
@@ -154,13 +155,36 @@ export function parseDca(body: Uint8Array, folder: string): DcaRecord[] {
   return out;
 }
 
-// The header plus San Diego County rows, for the archive. The full statewide files run to 100 MB.
-export function sanDiegoOnly(body: Uint8Array): Uint8Array {
-  const text = new TextDecoder("windows-1252").decode(body);
-  const lines = text.split(/\r?\n/);
-  const county = (lines[0] ?? "").split("\t").map((h) => h.trim()).indexOf("County");
-  const kept = [lines[0], ...lines.slice(1).filter((l) => (l.split("\t")[county] ?? "").trim().toUpperCase() === "SAN DIEGO")];
-  return new TextEncoder().encode(kept.join("\n"));
+// Some boards name columns differently; these map onto the names the text files use.
+const HEADER_ALIASES: Record<string, string> = {
+  "License Type Name": "License Type",
+  "Address Line1": "Address Line 1",
+  "Address Line2": "Address Line 2",
+  "Zip Code": "Zip",
+};
+// Columns naming people (a licensee's relationships), never kept.
+const DROP_COLUMNS = new Set(["Relationship Name", "Relationship Name Part B"]);
+
+// The header plus San Diego County organization rows, as tab-separated text: what the job parses
+// and archives. The full statewide files run to 100 MB and include individual licensees.
+export function sanDiegoOrganizations(rows: string[][]): Uint8Array {
+  const header = (rows[0] ?? []).map((h) => HEADER_ALIASES[h.trim()] ?? h.trim());
+  const keep = header.map((h, i) => (DROP_COLUMNS.has(h) ? -1 : i)).filter((i) => i >= 0);
+  const county = header.indexOf("County");
+  const kind = header.indexOf("Indiv/Org");
+  const dates = new Set(header.flatMap((h, i) => (/Date$/.test(h) ? [i] : [])));
+  const out = [keep.map((i) => header[i]).join("\t")];
+  for (const r of rows.slice(1)) {
+    if ((r[county] ?? "").trim().toUpperCase() !== "SAN DIEGO" || (r[kind] ?? "").trim() !== "O") continue;
+    out.push(keep.map((i) => (dates.has(i) && /^\d+(\.\d+)?$/.test(r[i] ?? "") ? excelDate(r[i]!) : (r[i] ?? "").replace(/[\t\r\n]+/g, " "))).join("\t"));
+  }
+  return new TextEncoder().encode(out.join("\n"));
+}
+
+// A board's data file as rows: DCA's tab-separated ".xls" text, or a real .xlsx workbook.
+export function dcaRows(name: string, body: Uint8Array): string[][] {
+  if (/\.xlsx$/i.test(name)) return xlsxRows(body);
+  return new TextDecoder("windows-1252").decode(body).split(/\r?\n/).filter((l) => l.length > 0).map((l) => l.split("\t"));
 }
 
 const isGood = (status: string) => /^(active|current)$/i.test(status.trim());
@@ -231,7 +255,7 @@ export function dcaJob(): Job {
         const records: DcaRecord[] = [];
         for (const f of files) {
           const file = await download(ctx, fileUrl(f.id), f.name, undefined, 600_000);
-          const local = sanDiegoOnly(file.body);
+          const local = sanDiegoOrganizations(dcaRows(f.name, file.body));
           archived.push(await ctx.archive.put(archiveKey("dca", today, `${folder.name}_${f.name}`), local));
           records.push(...parseDca(local, folder.name));
         }

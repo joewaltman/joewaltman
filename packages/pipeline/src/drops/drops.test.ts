@@ -129,7 +129,24 @@ describe("processing drops", () => {
     expect(rows.find((e) => e.canonicalName === "Sunrise Mobile Detailing")).toMatchObject({ entityType: "sole_prop", address1: null, zip: "92056" });
     expect(rows.find((e) => e.dba === "Harbor Example Cafe")).toMatchObject({ canonicalName: "Example Hospitality LLC", entityType: "llc", address1: "200 Harbor Dr" });
     expect(JSON.stringify(rows)).not.toContain("REDACTED");
-    expect((await db.select().from(entityEvents)).map((e) => e.eventType)).toEqual(["new_business", "new_business"]);
+    const events = await db.select().from(entityEvents);
+    expect(events.map((e) => [e.eventType, e.eventDate, e.summary])).toEqual([
+      ["new_business", "2026-10-19", "Filed 2026-10-05. San Diego County file 2026-9000001"],
+      ["new_business", "2026-10-19", "Filed 2026-10-06. San Diego County file 2026-9000002"],
+    ]);
+  });
+});
+
+describe("long histories", () => {
+  it("keeps only recent county FBN rows on upload", async () => {
+    const stored = await storeDrop(
+      db,
+      "fbn",
+      "fbn-9-years.csv",
+      ["Instrument Number,Business Name,Record Date", "2018-0000001,Old Example Shop,03/02/2018", "2026-9000004,New Example Shop,10/12/2026", "2026-9000005,Undated Example Shop,"],
+      now,
+    );
+    expect(stored).toMatchObject({ rowsSeen: 3, rowsKept: 1, matched: { fileNumber: "Instrument Number", filedAt: "Record Date" } });
   });
 });
 

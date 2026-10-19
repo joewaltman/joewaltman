@@ -10,6 +10,16 @@ Sign in to `/admin/drops`, pick the source and upload the file (CSV, tab or pipe
 2. Statewide sources (SOS, UCC, Labor Commissioner judgments) are cut to San Diego County by their county or ZIP column.
 3. The rest is stored gzipped in `manual_drops`. The pipeline reads it on the next tick (within 30 minutes) and the page shows rows kept, events added, rows skipped by reason, and which header matched each column.
 
+## County fictitious business names, step by step
+
+1. Open https://arcc-acclaim.sdcounty.ca.gov/FBN (or sdarcc.gov, Recorder/County Clerk, Fictitious Business Name, "FBN Records Search").
+2. Under "FBN Download", click the icon. It downloads a CSV of every FBN filed in the last nine years. If a disclaimer appears first, read and accept it.
+3. Optionally `gzip` the file to upload faster.
+4. Upload it at `/admin/drops` as "San Diego County fictitious business names". Only filings from the last 120 days are kept, so most rows are dropped on purpose.
+5. Repeat weekly, any day. New filings are dated the day the upload is read, so they reach the next Monday's Radar; overlapping uploads are skipped as duplicates.
+
+The county site blocks automated downloads, so this stays a manual step unless the clerk offers an approved feed.
+
 ## What each source turns into
 
 - SOS: an entity per entity number (the number shows on Watchlist matches). A new registration in the last 45 days is a Radar new business; a later file with a different status is `sos_status_change` (suspended or forfeited is serious), and a new statement of information date is `sos_statement_of_information`.

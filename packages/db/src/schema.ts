@@ -241,6 +241,8 @@ export const entities = pgTable(
     naics: text("naics"),
     category: text("category"),
     website: text("website"),
+    // When the website lookup last tried this business, found or not, so each is tried once.
+    websiteCheckedAt: timestamp("website_checked_at", { withTimezone: true }),
     phone: text("phone"),
     summary: text("summary"),
     createdAt: createdAt(),

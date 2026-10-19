@@ -5,7 +5,7 @@ import { createTestDb } from "@jw/db/testing";
 import { beforeEach, describe, expect, it } from "vitest";
 import { memoryArchive } from "../archive";
 import { type JobContext, runJob } from "../runner";
-import { dcaJob, fileUrl, folderUrl, looksLikePerson, parseBoxListing, parseDca, sanDiegoOnly, splitDba } from "./dca";
+import { dcaJob, dcaRows, fileUrl, folderUrl, looksLikePerson, parseBoxListing, parseDca, sanDiegoOrganizations, splitDba } from "./dca";
 
 const dir = path.join(import.meta.dirname, "../../fixtures/dca");
 const read = (name: string) => readFileSync(path.join(dir, name));
@@ -57,13 +57,31 @@ describe("parseDca", () => {
     expect(looksLikePerson("TWIN OAKS NAILS")).toBe(false);
     expect(looksLikePerson("JOHN Q PUBLIC")).toBe(true);
     expect(looksLikePerson("Sunrise Mobile Detailing")).toBe(false);
+    expect(looksLikePerson("ELEVATED SMILES")).toBe(false);
     expect(splitDba("ACME LLC DBA ACME LOCK")).toEqual({ name: "ACME LLC", dba: "ACME LOCK" });
   });
 
-  it("archives only the header and San Diego rows", () => {
-    const kept = new TextDecoder().decode(sanDiegoOnly(read("AutomotiveRepair_Data00.xls")));
-    expect(kept.split("\n")).toHaveLength(5);
+  it("keeps only the header and San Diego organization rows for parsing and the archive", () => {
+    const kept = new TextDecoder().decode(sanDiegoOrganizations(dcaRows("AutomotiveRepair_Data00.xls", read("AutomotiveRepair_Data00.xls"))));
+    expect(kept.split("\n")).toHaveLength(4);
     expect(kept).not.toContain("Bellflower");
+    expect(kept).not.toContain("REDACTED");
+  });
+
+  it("reads the Dental Board's .xlsx workbook, converting its dates and dropping relationship names", () => {
+    const local = sanDiegoOrganizations(dcaRows("DentalBoard_Data00.xlsx", read("DentalBoard_Data00.xlsx")));
+    const text = new TextDecoder().decode(local);
+    expect(text).not.toContain("Relationship Name");
+    expect(text).not.toContain("REDACTED");
+    const recs = parseDca(local, "Dental_DentalAssistant_0440");
+    // The continuing-education provider is not a listed type; Orange County and the individual dentist are left out.
+    expect(recs.map((r) => [r.licenseType, r.entity.name, r.issued, r.status])).toEqual([
+      ["Fictitious Name Permit", "Prime Dental Care", "2012-08-27", "Delinquent"],
+      ["Fictitious Name Permit", "Coastal Dental Associates", "2015-03-20", "Delinquent"],
+      ["Fictitious Name Permit", "Elevated Smiles", "2015-04-22", "Delinquent"],
+      ["Additional Office Permit", "North County Dental Corporation", "2009-10-29", "Current"],
+    ]);
+    expect(recs[0]!.entity).toMatchObject({ naics: "621210", county: "San Diego", zip: "92126" });
   });
 });
 
