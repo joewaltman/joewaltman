@@ -35,6 +35,7 @@ export default defineRailway(() => {
       // Read by the pipeline service; kept here so Joe sets it once.
       ANTHROPIC_API_KEY: preserve(),
       TARIFF_BROKER_SLUG: preserve(),
+      COURTLISTENER_API_TOKEN: preserve(),
     },
   });
 
@@ -62,8 +63,8 @@ export default defineRailway(() => {
       // Signs the CSV links in Radar digests; the website checks them with the same secret.
       SESSION_SECRET: "${{joewaltman.SESSION_SECRET}}",
       // Secrets set by hand in Railway; never written here.
-      // Optional; CourtListener's search works without it at lower rate limits.
-      COURTLISTENER_API_TOKEN: preserve(),
+      // Set on the website service; the court search and docket jobs read it from there.
+      COURTLISTENER_API_TOKEN: "${{joewaltman.COURTLISTENER_API_TOKEN}}",
       ARCHIVE_S3_ENDPOINT: preserve(),
       ARCHIVE_S3_BUCKET: preserve(),
       ARCHIVE_S3_ACCESS_KEY_ID: preserve(),
