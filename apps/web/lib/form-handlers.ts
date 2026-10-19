@@ -1,5 +1,6 @@
 import { aiworkRules, readAnswers, tariffRules, taxonomy, zipClusters } from "@jw/content";
-import { ROLES, TOOLS, eq, handRaises, partners, prerunNotes, watchlistMutes } from "@jw/db";
+import { ROLES, TOOLS, and, eq, handRaises, isNull, jobRequests, partners, prerunNotes, watchlistMutes } from "@jw/db";
+import { JOB_INFO } from "@jw/pipeline/job-list";
 import {
   WATCH_EVENT_TYPES,
   addCustomers,
@@ -409,6 +410,17 @@ export const FORM_HANDLERS: Record<string, FormHandler> = {
       reason: "You got this because you asked for a test Watchlist email in the joewaltman.com admin.",
     });
     return `/admin/watchlist?test=${result.status}`;
+  },
+
+  async "admin-run-job"(form) {
+    if (!(await currentAdmin())) return "/admin/login";
+    const job = field(form, "job") ?? "";
+    if (!Object.hasOwn(JOB_INFO, job)) return "/admin/jobs";
+    const db = emailDeps().db;
+    // One waiting request per job is enough.
+    const [waiting] = await db.select({ id: jobRequests.id }).from(jobRequests).where(and(eq(jobRequests.job, job), isNull(jobRequests.startedAt))).limit(1);
+    if (!waiting) await db.insert(jobRequests).values({ job });
+    return `/admin/jobs?queued=${encodeURIComponent(job)}`;
   },
 
   async "admin-prerun-note"(form) {

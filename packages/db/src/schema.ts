@@ -399,3 +399,17 @@ export const manualDrops = pgTable(
   },
   (t) => [index("manual_drops_status").on(t.status, t.uploadedAt)],
 );
+
+// "Run now" requests from the admin Jobs page. The pipeline's next tick runs each one.
+export const jobRequests = pgTable(
+  "job_requests",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    job: text("job").notNull(),
+    requestedAt: timestamp("requested_at", { withTimezone: true }).notNull().defaultNow(),
+    startedAt: timestamp("started_at", { withTimezone: true }),
+    runId: uuid("run_id"),
+    status: text("status").$type<"success" | "failed" | "unknown-job">(),
+  },
+  (t) => [index("job_requests_pending").on(t.startedAt, t.requestedAt)],
+);

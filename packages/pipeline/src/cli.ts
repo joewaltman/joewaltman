@@ -3,6 +3,7 @@ import { loadEmailConfig } from "@jw/email";
 import { archiveFromEnv } from "./archive";
 import { pendingDrops } from "./drops/job";
 import { JOBS, SCHEDULE } from "./jobs";
+import { runRequestedJobs } from "./requests";
 import { type JobContext, markInterrupted, runJob } from "./runner";
 import { STALE_RUNNING_MS, dueJobs } from "./schedule";
 
@@ -81,15 +82,17 @@ async function tick(): Promise<number> {
     .select({ job: jobRuns.job, status: jobRuns.status, startedAt: jobRuns.startedAt })
     .from(jobRuns)
     .where(gt(jobRuns.startedAt, new Date(ctx.now.getTime() - 2 * 86_400_000)));
-  const due = dueJobs(ctx.now, SCHEDULE, recent);
+  // "Run now" requests from the admin Jobs page go first.
+  const { ran, failed: requestFailures } = await runRequestedJobs(ctx, JOBS, recent);
+  const due = dueJobs(ctx.now, SCHEDULE, recent).filter((d) => !ran.has(d.job));
   // Uploaded files are read on the next tick after they arrive, not at a fixed time.
   const dropsRunning = recent.some((r) => r.job === "manual-drops" && r.status === "running" && ctx.now.getTime() - r.startedAt.getTime() < STALE_RUNNING_MS);
   if (!dropsRunning && (await pendingDrops(ctx.db)) > 0) due.push({ job: "manual-drops", attempt: 1 });
   if (due.length === 0) {
-    ctx.log("nothing due");
-    return 0;
+    if (ran.size === 0) ctx.log("nothing due");
+    return requestFailures > 0 ? 1 : 0;
   }
-  let failed = 0;
+  let failed = requestFailures;
   for (const { job, attempt } of due) {
     ctx.log(`running ${job} (attempt ${attempt})`);
     const outcome = await runJob(JOBS[job]!, { ...ctx, now: new Date() }, attempt);

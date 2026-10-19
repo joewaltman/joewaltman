@@ -5,7 +5,8 @@
   "exports": {
     ".": "./src/index.ts",
     "./watchlist": "./src/watchlist/index.ts",
-    "./drops": "./src/drops/index.ts"
+    "./drops": "./src/drops/index.ts",
+    "./job-list": "./src/job-list.ts"
   },
   "bin": {
     "pipeline": "./src/cli.ts"

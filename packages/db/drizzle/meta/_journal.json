@@ -50,6 +50,13 @@
       "when": 1792421648960,
       "tag": "0006_website_checked",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1792426635082,
+      "tag": "0007_job_requests",
+      "breakpoints": true
     }
   ]
 }
