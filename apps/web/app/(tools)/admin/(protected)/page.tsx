@@ -4,6 +4,7 @@ import {
   emailSends,
   eq,
   getDb,
+  gt,
   handRaises,
   isNull,
   jobRuns,
@@ -18,20 +19,28 @@ import { EXPORT_TABLES } from "../export/[table]/tables";
 export default async function AdminOverview() {
   await requireAdmin();
   const db = getDb();
-  const [[subs], [active], [openRaises], [failedJobs], recentEmails] = await Promise.all([
+  const [[subs], [active], [openRaises], recentRuns, recentEmails] = await Promise.all([
     db.select({ n: count() }).from(subscribers),
     db.select({ n: count() }).from(subscriptions).where(eq(subscriptions.active, true)),
     db.select({ n: count() }).from(handRaises).where(isNull(handRaises.handledAt)),
-    db.select({ n: count() }).from(jobRuns).where(eq(jobRuns.status, "failed")),
+    db
+      .select({ job: jobRuns.job, status: jobRuns.status })
+      .from(jobRuns)
+      .where(gt(jobRuns.startedAt, new Date(Date.now() - 14 * 86_400_000)))
+      .orderBy(desc(jobRuns.startedAt)),
     db.select().from(emailSends).orderBy(desc(emailSends.createdAt)).limit(1),
   ]);
+  // A job counts as failing when its most recent run failed; a later success clears it.
+  const latest = new Map<string, string>();
+  for (const r of recentRuns) if (!latest.has(r.job)) latest.set(r.job, r.status);
+  const failingNow = [...latest.values()].filter((s) => s === "failed").length;
   const config = loadEmailConfig();
 
   const stats: Array<[string, number | string, string]> = [
     ["Open hand-raises", openRaises?.n ?? 0, "/admin/hand-raises"],
     ["Subscribers", subs?.n ?? 0, "/admin/subscribers"],
     ["Active subscriptions", active?.n ?? 0, "/admin/subscribers"],
-    ["Failed job runs", failedJobs?.n ?? 0, "/admin/jobs"],
+    ["Jobs failing now", failingNow, "/admin/jobs"],
   ];
 
   return (
