@@ -16,7 +16,11 @@ const DAY = 86_400_000;
 const FIRST_LOOKBACK_DAYS = 365;
 const OVERLAP_DAYS = 14;
 const MAX_SEARCHES_PER_RUN = 500;
-const PAUSE_MS = 1000;
+// Without a key CourtListener throttles hard, especially from cloud servers, so go slower.
+const PAUSE_MS = { withKey: 1000, anonymous: 4000 };
+const MAX_RETRY_WAIT_MS = 60_000;
+
+export class RateLimited extends Error {}
 
 export interface DocketResult {
   docket_id: number;
@@ -83,15 +87,28 @@ async function search(ctx: JobContext, url: string, token: string | null): Promi
     },
     signal: AbortSignal.timeout(60_000),
   });
-  if (res.status === 429) throw new Error("CourtListener rate limit reached (HTTP 429)");
+  if (res.status === 429) throw new RateLimited(res.headers.get("retry-after") ?? "");
   if (!res.ok) throw new Error(`CourtListener search returned HTTP ${res.status}`);
   const body = (await res.json()) as { results?: DocketResult[] };
   return body.results ?? [];
 }
 
+// One search, waiting once for the time CourtListener asks for when it says to slow down.
+async function searchWithRetry(ctx: JobContext, url: string, token: string | null, wait: (ms: number) => Promise<void>): Promise<DocketResult[]> {
+  try {
+    return await search(ctx, url, token);
+  } catch (err) {
+    if (!(err instanceof RateLimited)) throw err;
+    const seconds = Number(err.message);
+    await wait(Math.min(Number.isFinite(seconds) && seconds > 0 ? seconds * 1000 : 30_000, MAX_RETRY_WAIT_MS));
+    return search(ctx, url, token);
+  }
+}
+
 export function courtListenerJob(
   token: () => string | null = () => process.env.COURTLISTENER_API_TOKEN?.trim() || null,
-  pauseMs = PAUSE_MS,
+  pauseMs: number | null = null,
+  wait: (ms: number) => Promise<void> = (ms) => new Promise((r) => setTimeout(r, ms)),
 ): Job {
   return {
     name: "courtlistener",
@@ -110,11 +127,24 @@ export function courtListenerJob(
         .slice(0, MAX_SEARCHES_PER_RUN);
 
       let events = 0;
+      let searched = 0;
+      let rateLimited = false;
+      const pause = pauseMs ?? (key ? PAUSE_MS.withKey : PAUSE_MS.anonymous);
       const kept: Array<Record<string, unknown>> = [];
       for (const [i, w] of due.entries()) {
-        if (i > 0 && pauseMs > 0) await new Promise((r) => setTimeout(r, pauseMs));
+        if (i > 0 && pause > 0) await wait(pause);
         const from = w.last ? new Date(w.last.getTime() - OVERLAP_DAYS * DAY) : new Date(ctx.now.getTime() - FIRST_LOOKBACK_DAYS * DAY);
-        const results = await search(ctx, searchUrl(w.name, pacificDay(from)), key);
+        let results: DocketResult[];
+        try {
+          results = await searchWithRetry(ctx, searchUrl(w.name, pacificDay(from)), key, wait);
+        } catch (err) {
+          if (!(err instanceof RateLimited)) throw err;
+          // Still throttled after waiting: stop here. The customers not reached are searched first
+          // tomorrow, since the oldest searches go first.
+          rateLimited = true;
+          break;
+        }
+        searched++;
         for (const r of results) {
           const d = describeDocket(r, w.name);
           if (!d) continue;
@@ -139,9 +169,15 @@ export function courtListenerJob(
           .values({ entityId: w.id, lastSearchedAt: ctx.now })
           .onConflictDoUpdate({ target: recapSearches.entityId, set: { lastSearchedAt: ctx.now } });
       }
+      if (rateLimited && searched === 0) {
+        throw new Error(
+          `CourtListener refused every search (HTTP 429, rate limited)${key ? "" : " without an API key. A free key from courtlistener.com, set as COURTLISTENER_API_TOKEN on the pipeline service, raises the limit"}.`,
+        );
+      }
+      if (rateLimited) ctx.log(`courtlistener: rate limited after ${searched} of ${due.length} searches; the rest go first next run`);
       // The archive keeps the matched dockets without party names, so no individual's name is stored.
       const archived = await ctx.archive.put(archiveKey("recap", pacificDay(ctx.now), "matches.json"), new TextEncoder().encode(JSON.stringify(kept)));
-      return { rowsIn: due.length, rowsUpserted: kept.length, events, meta: { searched: due.length, watched: watched.length, authenticated: key !== null, archived } };
+      return { rowsIn: due.length, rowsUpserted: kept.length, events, meta: { searched, due: due.length, rateLimited, watched: watched.length, authenticated: key !== null, archived } };
     },
   };
 }

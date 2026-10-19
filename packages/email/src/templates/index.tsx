@@ -1,3 +1,6 @@
+/** @jsxRuntime automatic @jsxImportSource react */
+// The pipeline runs this package through tsx, which only applies a tsconfig to files inside that
+// config's include, so the JSX transform is pinned here rather than left to the caller's config.
 import { Button, Link, Text } from "@react-email/components";
 import type { ReactElement } from "react";
 import { buttonStyle, linkStyle, textStyle } from "./layout";

@@ -1,3 +1,6 @@
+/** @jsxRuntime automatic @jsxImportSource react */
+// The pipeline runs this package through tsx, which only applies a tsconfig to files inside that
+// config's include, so the JSX transform is pinned here rather than left to the caller's config.
 import {
   Body,
   Container,

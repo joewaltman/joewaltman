@@ -86,3 +86,41 @@ describe("courtlistener job", () => {
     expect(urls[1]).toContain("filed_after=2026-10-05");
   });
 });
+
+describe("courtlistener rate limits", () => {
+  let db: Db;
+  beforeEach(async () => {
+    db = await createTestDb();
+    const [s] = await db.insert(subscribers).values({ email: "ar@example.com" }).returning();
+    const [w] = await db.insert(watchlists).values({ subscriberId: s!.id }).returning();
+    await addCustomers(db, w!.id, [{ name: "Rite Aid Corporation" }, { name: "Northstar Distributing LLC" }, { name: "Harbor Supply Inc" }]);
+  });
+  const ctxWith = (responses: number[]): JobContext => ({
+    db,
+    archive: memoryArchive(),
+    now: new Date("2026-10-19T12:50:00Z"),
+    log: () => {},
+    email: {} as JobContext["email"],
+    fetch: async () => {
+      const status = responses.shift() ?? 200;
+      return status === 429 ? new Response("slow down", { status: 429, headers: { "Retry-After": "5" } }) : new Response(JSON.stringify(fixture));
+    },
+  });
+
+  it("waits once when asked to slow down, then carries on", async () => {
+    const waits: number[] = [];
+    const out = await courtListenerJob(() => null, 0, async (ms) => void waits.push(ms)).run(ctxWith([429, 200, 200, 200]));
+    expect(waits).toEqual([5000]);
+    expect(out.meta).toMatchObject({ searched: 3, due: 3, rateLimited: false, authenticated: false });
+  });
+
+  it("stops cleanly when still throttled, keeping what it found, and starts there next time", async () => {
+    const out = await courtListenerJob(() => null, 0, async () => {}).run(ctxWith([200, 429, 429]));
+    expect(out.meta).toMatchObject({ searched: 1, due: 3, rateLimited: true });
+    expect(await db.select().from(recapSearches)).toHaveLength(1);
+  });
+
+  it("fails, with what to do, when every search is refused", async () => {
+    await expect(courtListenerJob(() => null, 0, async () => {}).run(ctxWith([429, 429]))).rejects.toThrow(/A free key from courtlistener\.com/);
+  });
+});

@@ -59,4 +59,8 @@ export const SCHEDULE: ScheduleEntry[] = [
   // Monday only, after the morning ingestion and enrichment.
   { job: "radar-digest", time: "06:00", weekdays: [1] },
   { job: "watchlist-digest", time: "06:15", weekdays: [1] },
+  // Catch-up slots: if the early send failed, these try again. Both jobs skip anyone already sent
+  // this week, so on a normal Monday they send nothing.
+  { job: "radar-digest", time: "09:00", weekdays: [1] },
+  { job: "watchlist-digest", time: "09:00", weekdays: [1] },
 ];

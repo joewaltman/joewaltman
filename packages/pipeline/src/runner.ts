@@ -115,18 +115,23 @@ export async function runJob(job: Job, ctx: JobContext, attempt = 1): Promise<Ru
       .set({ status: "failed", finishedAt: new Date(), error: error.slice(0, 4000) })
       .where(eq(jobRuns.id, runId));
     ctx.log(`${job.name}: FAILED ${error}`);
-    await sendEmail(ctx.email, {
-      to: ctx.email.config.adminEmail,
-      template: jobFailed({
-        job: job.name,
-        error: error.slice(0, 2000),
-        startedAt: ctx.now.toISOString(),
-        attempt,
-        adminUrl: `${ctx.email.config.siteUrl}/admin/jobs`,
-      }),
-      reason: "You got this because an ingestion job on joewaltman.com failed.",
-      bypassSuppression: true,
-    }).catch((mailErr) => ctx.log(`could not send failure email: ${String(mailErr)}`));
+    // Building or sending the alert must never take down the rest of the tick.
+    try {
+      await sendEmail(ctx.email, {
+        to: ctx.email.config.adminEmail,
+        template: jobFailed({
+          job: job.name,
+          error: error.slice(0, 2000),
+          startedAt: ctx.now.toISOString(),
+          attempt,
+          adminUrl: `${ctx.email.config.siteUrl}/admin/jobs`,
+        }),
+        reason: "You got this because an ingestion job on joewaltman.com failed.",
+        bypassSuppression: true,
+      });
+    } catch (mailErr) {
+      ctx.log(`could not send failure email: ${mailErr instanceof Error ? mailErr.message : String(mailErr)}`);
+    }
     return { status: "failed", runId, error };
   }
 }

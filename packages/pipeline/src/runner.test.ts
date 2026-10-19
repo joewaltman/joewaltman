@@ -82,6 +82,16 @@ describe("runJob", () => {
   });
 });
 
+describe("runJob when the failure email itself breaks", () => {
+  it("records the failure and returns instead of crashing the tick", async () => {
+    const broken = { ...ctx, email: {} as typeof ctx.email };
+    const out = await runJob(adapterJob(adapter(true)), broken);
+    expect(out.status).toBe("failed");
+    const [run] = await db.select().from(jobRuns);
+    expect(run!.status).toBe("failed");
+  });
+});
+
 describe("archiveKey", () => {
   it("gzips plain files and keeps compressed ones as they are", () => {
     expect(archiveKey("abc", "2026-10-16", "DailyExport-CSV.zip")).toBe("abc/2026-10-16/DailyExport-CSV.zip");
