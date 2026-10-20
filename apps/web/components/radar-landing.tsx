@@ -44,7 +44,7 @@ export async function RadarLanding({
         {weekLabel(sample.start, sample.end)}. The emailed list adds the legal name, ZIP code, the
         sources, the date first seen and a one-line note for each business, plus a CSV.
       </p>
-      <RadarList digest={sample} limit={8} />
+      <RadarList digest={sample} limit={8} moreHref={`/newbizradar/${SAMPLE_CLUSTER}`} />
 
       <h2>Every area</h2>
       <ul>
