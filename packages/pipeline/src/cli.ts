@@ -5,7 +5,7 @@ import { pendingDrops } from "./drops/job";
 import { JOBS, SCHEDULE } from "./jobs";
 import { runRequestedJobs } from "./requests";
 import { type JobContext, markInterrupted, runJob } from "./runner";
-import { STALE_RUNNING_MS, dueJobs } from "./schedule";
+import { MAX_ATTEMPTS_PER_SLOT, STALE_RUNNING_MS, dueJobs } from "./schedule";
 
 // Usage:
 //   pnpm pipeline run <job>   run one job now
@@ -90,15 +90,19 @@ async function tick(): Promise<number> {
   if (!dropsRunning && (await pendingDrops(ctx.db)) > 0) due.push({ job: "manual-drops", attempt: 1 });
   if (due.length === 0) {
     if (ran.size === 0) ctx.log("nothing due");
-    return requestFailures > 0 ? 1 : 0;
+    return 0;
   }
   let failed = requestFailures;
   for (const { job, attempt } of due) {
     ctx.log(`running ${job} (attempt ${attempt})`);
-    const outcome = await runJob(JOBS[job]!, { ...ctx, now: new Date() }, attempt);
+    // A first failure is retried at the next tick, so only the last try emails.
+    const outcome = await runJob(JOBS[job]!, { ...ctx, now: new Date() }, attempt, attempt >= MAX_ATTEMPTS_PER_SLOT);
     if (outcome.status === "failed") failed++;
   }
-  return failed > 0 ? 1 : 0;
+  // Failed jobs are recorded and emailed; exiting with an error code would also make Railway report a
+  // crashed deployment. Only an error that escapes the tick itself exits non-zero.
+  if (failed > 0) ctx.log(`${failed} job(s) failed; see /admin/jobs`);
+  return 0;
 }
 
 main().then(

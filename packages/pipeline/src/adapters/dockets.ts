@@ -26,16 +26,27 @@ export function readEntries(body: unknown): DocketEntry[] {
   });
 }
 
-async function latestEntries(ctx: JobContext, docketId: number, token: string): Promise<DocketEntry[]> {
-  const res = await ctx.fetch(`${ENTRIES_URL}?docket=${docketId}&order_by=-date_filed`, {
-    headers: { Authorization: `Token ${token}`, "User-Agent": "joewaltman.com public-records pipeline (joe@joewaltman.com)" },
-    signal: AbortSignal.timeout(60_000),
-  });
+async function latestEntries(ctx: JobContext, docketId: number, token: string, wait: (ms: number) => Promise<void>): Promise<DocketEntry[]> {
+  const get = () =>
+    ctx.fetch(`${ENTRIES_URL}?docket=${docketId}&order_by=-date_filed`, {
+      headers: { Authorization: `Token ${token}`, "User-Agent": "joewaltman.com public-records pipeline (joe@joewaltman.com)" },
+      signal: AbortSignal.timeout(60_000),
+    });
+  let res = await get();
+  // Asked to slow down (the court search may have just used the minute's allowance): wait once.
+  if (res.status === 429) {
+    const seconds = Number(res.headers.get("retry-after"));
+    await wait(Math.min(Number.isFinite(seconds) && seconds > 0 ? seconds * 1000 : 30_000, 60_000));
+    res = await get();
+  }
   if (!res.ok) throw new Error(`CourtListener docket ${docketId} returned HTTP ${res.status}`);
   return readEntries(await res.json());
 }
 
-export function docketsJob(token: () => string | null = () => process.env.COURTLISTENER_API_TOKEN?.trim() || null): Job {
+export function docketsJob(
+  token: () => string | null = () => process.env.COURTLISTENER_API_TOKEN?.trim() || null,
+  wait: (ms: number) => Promise<void> = (ms) => new Promise((r) => setTimeout(r, ms)),
+): Job {
   return {
     name: "dockets",
     async run(ctx) {
@@ -52,7 +63,7 @@ export function docketsJob(token: () => string | null = () => process.env.COURTL
       const latest: Record<string, DocketEntry[]> = {};
       let emailed = 0;
       for (const d of watchedDockets.dockets) {
-        const entries = await latestEntries(ctx, d.id, key);
+        const entries = await latestEntries(ctx, d.id, key, wait);
         const before = seen[String(d.id)];
         const fresh = before ? entries.filter((e) => !before.includes(e.id)) : [];
         nextSeen[String(d.id)] = [...new Set([...entries.map((e) => e.id), ...(before ?? [])])].slice(0, 300);

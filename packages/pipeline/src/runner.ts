@@ -60,9 +60,21 @@ export function adapterJob<R>(adapter: Adapter<R>): Job {
   };
 }
 
-export async function download(ctx: JobContext, url: string, name: string, init?: RequestInit, timeoutMs = 120_000): Promise<FetchedFile> {
+// Waits between download tries. Sources sometimes refuse briefly (CSLB answered 403 for a few minutes
+// one morning), so the tries are spread over about three minutes rather than seconds.
+export const DOWNLOAD_RETRY_DELAYS_MS = [15_000, 60_000, 120_000];
+
+export async function download(
+  ctx: JobContext,
+  url: string,
+  name: string,
+  init?: RequestInit,
+  timeoutMs = 120_000,
+  delaysMs: number[] = DOWNLOAD_RETRY_DELAYS_MS,
+): Promise<FetchedFile> {
   let lastError: unknown;
-  for (let attempt = 1; attempt <= 3; attempt++) {
+  const tries = delaysMs.length + 1;
+  for (let attempt = 1; attempt <= tries; attempt++) {
     try {
       const res = await ctx.fetch(url, {
         ...init,
@@ -74,7 +86,7 @@ export async function download(ctx: JobContext, url: string, name: string, init?
     } catch (err) {
       lastError = err;
       ctx.log(`download attempt ${attempt} failed for ${url}: ${err instanceof Error ? err.message : String(err)}`);
-      if (attempt < 3) await new Promise((r) => setTimeout(r, 2000 * attempt));
+      if (attempt < tries) await new Promise((r) => setTimeout(r, delaysMs[attempt - 1]));
     }
   }
   throw lastError;
@@ -88,7 +100,9 @@ export interface RunOutcome {
 }
 
 // Runs one job with a job_runs row around it. A failure is recorded and emailed to Joe, never swallowed.
-export async function runJob(job: Job, ctx: JobContext, attempt = 1): Promise<RunOutcome> {
+// alert: whether a failure emails Joe. The scheduler passes false for a first failure it will retry
+// in half an hour, so a source that hiccups and recovers does not send an email.
+export async function runJob(job: Job, ctx: JobContext, attempt = 1, alert = true): Promise<RunOutcome> {
   const [row] = await ctx.db
     .insert(jobRuns)
     .values({ job: job.name, status: "running", startedAt: ctx.now })
@@ -116,21 +130,23 @@ export async function runJob(job: Job, ctx: JobContext, attempt = 1): Promise<Ru
       .where(eq(jobRuns.id, runId));
     ctx.log(`${job.name}: FAILED ${error}`);
     // Building or sending the alert must never take down the rest of the tick.
-    try {
-      await sendEmail(ctx.email, {
-        to: ctx.email.config.adminEmail,
-        template: jobFailed({
-          job: job.name,
-          error: error.slice(0, 2000),
-          startedAt: ctx.now.toISOString(),
-          attempt,
-          adminUrl: `${ctx.email.config.siteUrl}/admin/jobs`,
-        }),
-        reason: "You got this because an ingestion job on joewaltman.com failed.",
-        bypassSuppression: true,
-      });
-    } catch (mailErr) {
-      ctx.log(`could not send failure email: ${mailErr instanceof Error ? mailErr.message : String(mailErr)}`);
+    if (alert) {
+      try {
+        await sendEmail(ctx.email, {
+          to: ctx.email.config.adminEmail,
+          template: jobFailed({
+            job: job.name,
+            error: error.slice(0, 2000),
+            startedAt: ctx.now.toISOString(),
+            attempt,
+            adminUrl: `${ctx.email.config.siteUrl}/admin/jobs`,
+          }),
+          reason: "You got this because an ingestion job on joewaltman.com failed.",
+          bypassSuppression: true,
+        });
+      } catch (mailErr) {
+        ctx.log(`could not send failure email: ${mailErr instanceof Error ? mailErr.message : String(mailErr)}`);
+      }
     }
     return { status: "failed", runId, error };
   }

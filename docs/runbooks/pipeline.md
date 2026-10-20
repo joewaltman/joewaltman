@@ -19,7 +19,7 @@ Code: `packages/pipeline`. Runs as the Railway `pipeline` service, which Railway
 | `watchlist-digest` | 6:15am Mondays, again at 9:00am | The Customer Watchlist email, with the same catch-up |
 | `manual-drops` | Next tick after an upload | Files uploaded at `/admin/drops`. See `manual-drops.md` |
 
-Every run writes a `job_runs` row (see `/admin/jobs`). A failed job is retried once at the next tick; each failure emails Joe. A failure email that cannot be built or sent is logged and the tick carries on. Re-runs are safe: entities match on source identifiers and events dedupe on a key.
+Every run writes a `job_runs` row (see `/admin/jobs`). A failed job is retried once at the next tick. Only the retry's failure emails Joe, so a source that refuses for a few minutes and then recovers sends nothing; both failures are on `/admin/jobs`. A job started with Run now emails on any failure. A failure email that cannot be built or sent is logged and the tick carries on. Downloads try four times over about three minutes before a job counts as failed. The tick exits normally even when a job fails, so Railway only reports a crashed deployment when something outside the jobs breaks. Re-runs are safe: entities match on source identifiers and events dedupe on a key.
 
 A deploy or variable change restarts the pipeline service and cuts off a run in progress. That run stays "running" until the first tick two hours later marks it failed ("Interrupted"), and the scheduler retries it. To avoid it, don't deploy between 5:30 and 6:30am Pacific.
 

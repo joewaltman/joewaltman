@@ -3,7 +3,7 @@ import { createTestDb } from "@jw/db/testing";
 import type { OutgoingMessage, SendDeps } from "@jw/email";
 import { beforeEach, describe, expect, it } from "vitest";
 import { archiveKey, memoryArchive } from "./archive";
-import { type Adapter, type JobContext, adapterJob, markInterrupted, runJob } from "./runner";
+import { type Adapter, type JobContext, adapterJob, download, markInterrupted, runJob } from "./runner";
 
 let db: Db;
 let sent: OutgoingMessage[];
@@ -79,6 +79,25 @@ describe("runJob", () => {
     expect(sent[0]!.to).toBe("joe@joewaltman.com");
     expect(sent[0]!.subject).toBe("Ingestion job failed: demo");
     expect(sent[0]!.text).toContain("attempt 2 today");
+  });
+});
+
+describe("runJob alerts", () => {
+  it("records a failure without emailing when the scheduler will retry it", async () => {
+    const out = await runJob(adapterJob(adapter(true)), ctx, 1, false);
+    expect(out.status).toBe("failed");
+    expect(sent).toHaveLength(0);
+  });
+});
+
+describe("download", () => {
+  it("tries again after a refusal and returns the file once the source answers", async () => {
+    let calls = 0;
+    const flaky = { ...ctx, fetch: async () => (++calls < 3 ? new Response("no", { status: 403 }) : new Response("data")) };
+    const file = await download(flaky, "https://example.com/f.csv", "f.csv", undefined, 5000, [0, 0, 0]);
+    expect(calls).toBe(3);
+    expect(new TextDecoder().decode(file.body)).toBe("data");
+    await expect(download({ ...ctx, fetch: async () => new Response("no", { status: 403 }) }, "https://example.com/f.csv", "f.csv", undefined, 5000, [0, 0])).rejects.toThrow(/HTTP 403/);
   });
 });
 

@@ -71,6 +71,20 @@ describe("dockets job", () => {
     expect(sent).toHaveLength(1);
   });
 
+  it("waits once when CourtListener asks it to slow down", async () => {
+    const waits: number[] = [];
+    let first = true;
+    const slow = { ...ctx(), fetch: async () => {
+      if (first) {
+        first = false;
+        return new Response("slow down", { status: 429, headers: { "Retry-After": "7" } });
+      }
+      return new Response(JSON.stringify(page(entries)));
+    } };
+    expect((await runJob(docketsJob(() => "tok", async (ms) => void waits.push(ms)), slow)).status).toBe("success");
+    expect(waits).toEqual([7000]);
+  });
+
   it("fails clearly without the API key", async () => {
     const out = await runJob(docketsJob(() => null), { ...ctx(), email: { ...ctx().email, config: { ...ctx().email.config, mode: "dryrun" } } });
     expect(out.status).toBe("failed");
