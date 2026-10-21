@@ -102,6 +102,31 @@ export default async function AiworkResultPage({ params, searchParams }: { param
           ))}
         </div>
       ))}
+      {result.vendors ? (
+        <div>
+          <h2>Check your hiring software</h2>
+          {result.vendors.answeredNo ? <p className="notice">{result.vendors.answeredNo}</p> : null}
+          {result.vendors.intro.map((l) => (
+            <p key={l.text} className="mt-0 text-[0.95rem] text-muted">
+              {l.text}
+              <Notes notes={l.notes} />
+            </p>
+          ))}
+          {result.vendors.systems.map((v) => (
+            <section key={v.id} className="mb-6">
+              <h3 className="mb-1 text-[1.1rem] font-semibold">{v.name}</h3>
+              <ul className="mt-0 grid gap-1.5 pl-5">
+                {v.lines.map((l) => (
+                  <li key={l.text}>
+                    {l.text}
+                    <Notes notes={l.notes} />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      ) : null}
       {result.notTriggered.length > 0 ? (
         <>
           <h2>Also checked</h2>

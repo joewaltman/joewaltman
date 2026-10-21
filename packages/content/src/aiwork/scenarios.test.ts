@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import rawRules from "../../../../content/aiwork-rules.json";
 import type { Answers } from "../tariff/engine";
-import { evaluateAiwork, obligationGroups, templateText } from "./engine";
+import { evaluateAiwork, obligationGroups, templateText, upcomingLaws } from "./engine";
 import { aiworkRulesSchema, checkAiworkReferences } from "./schema";
 
 const rules = aiworkRulesSchema.parse(rawRules);
@@ -81,6 +81,7 @@ describe("the rules file", () => {
       "sb947-notice",
       "sb947-rules",
       "sb947-size",
+      "vendor-features-ads",
     ]);
     expect(rules.review.launchedWithoutReview).toBe("2026-10-17");
   });
@@ -107,5 +108,46 @@ describe("the rules file", () => {
     expect(t.text).toContain("relied primarily on an automated decision system");
     expect(t.text).toContain("Information, not legal advice. Not reviewed by an attorney.");
     expect(templateText(rules, "nope", "admin")).toBeNull();
+  });
+});
+
+describe("the January 1 headline", () => {
+  it("names the laws that start next, from the rules file", () => {
+    const next = upcomingLaws(rules, "2026-10-21")!;
+    expect(next.headline).toBe("Four California rules on AI at work start January 1, 2027");
+    expect(next.laws.map((l) => l.id)).toEqual(["cppa-admt", "ab1883", "ab1331", "sb951"]);
+    expect(next.laws.every((l) => l.short)).toBe(true);
+  });
+
+  it("moves on to the next date once a date passes, and goes away when every law is in effect", () => {
+    expect(upcomingLaws(rules, "2027-01-01")!.headline).toBe("One California rule on AI at work starts July 1, 2027");
+    expect(upcomingLaws(rules, "2027-07-01")).toBeNull();
+  });
+});
+
+describe("hiring system notes", () => {
+  it("covers every system in question 2", () => {
+    const options = rules.questions.find((q) => q.id === "ats")!.options!.map((o) => o.value).filter((v) => v !== "none");
+    expect(Object.keys(rules.vendors.systems).sort()).toEqual([...options].sort());
+  });
+
+  it("adds notes for the systems picked, after the obligations' footnotes", () => {
+    const r = evaluateAiwork({ ...base, ats: ["other"], automatedDecisions: ["termination"] }, rules, "public");
+    expect(r.vendors!.systems.map((v) => v.id)).toEqual(["other"]);
+    expect(r.vendors!.answeredNo).toContain("question 3");
+    // The vendor intro's assumption comes last, after the five the obligations cite.
+    expect(r.assumptions.map((a) => a.id).at(-1)).toBe("vendor-features-ads");
+    expect(r.vendors!.intro[0]!.notes).toEqual([6]);
+    expect(r.sources.map((s) => s.id)).toContain("crc-agents");
+  });
+
+  it("leaves the section out when no system is picked, and drops the nudge when the answer is yes", () => {
+    expect(evaluateAiwork(base, rules, "public").vendors).toBeNull();
+    expect(evaluateAiwork({ ...base, ats: ["other"], aiScreening: "yes" }, rules, "public").vendors!.answeredNo).toBeNull();
+  });
+
+  it("mentions the CCPA rules only when the CCPA may apply", () => {
+    const line = (ccpa: string) => evaluateAiwork({ ...base, ats: ["other"], ccpa }, rules, "public").vendors!.intro.some((l) => l.text.includes("CCPA"));
+    expect([line("no"), line("yes"), line("not-sure")]).toEqual([false, true, true]);
   });
 });

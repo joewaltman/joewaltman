@@ -1,4 +1,4 @@
-import { aiworkRules, formatLongDate } from "@jw/content";
+import { aiworkRules, formatLongDate, upcomingLaws } from "@jw/content";
 import { HandRaise } from "@/components/hand-raise";
 import { SignupForm } from "@/components/signup-form";
 import { QuestionField } from "@/components/tariff-form";
@@ -19,6 +19,8 @@ export function AiworkLanding({
 }) {
   const open = aiworkOpen(aiworkRules);
   const base = partner ? `/aiwork/p/${partner.slug}` : "/aiwork";
+  // "Four California rules on AI at work start January 1, 2027", from the rules file; gone once every law is in effect.
+  const next = upcomingLaws(aiworkRules, new Intl.DateTimeFormat("en-CA", { timeZone: "America/Los_Angeles" }).format(new Date()));
   return (
     <div className="prose-plain">
       {partner ? (
@@ -27,11 +29,33 @@ export function AiworkLanding({
           <span>Shared with you by {partner.name}.</span>
         </p>
       ) : null}
-      <h1 className="mb-3 text-[2rem] leading-tight font-semibold">California AI-at-Work Checker</h1>
-      <p className="text-[1.1rem] text-muted">
-        Ten questions about the hiring, scheduling and monitoring tools you use. The result is a dated list of what
-        California's rules on AI in the workplace ask of you, what to do about each, and notice templates.
-      </p>
+      {next ? (
+        <>
+          <p className="mb-2 text-[0.82rem] font-semibold tracking-[0.09em] text-accent uppercase">California AI-at-Work Checker</p>
+          <h1 className="mt-0 mb-4 text-[2rem] leading-tight font-semibold">{next.headline}</h1>
+          <ul className="m-0 mb-5 grid list-none gap-2 p-0">
+            {next.laws.map((l) => (
+              <li key={l.id} className="rounded-md border border-rule bg-white px-4 py-3" style={{ borderLeft: "3px solid #f79009" }}>
+                <span className="block leading-snug font-semibold">{l.name}</span>
+                {l.short ? <span className="mt-0.5 block text-[0.95rem] leading-snug text-muted">{l.short}</span> : null}
+              </li>
+            ))}
+          </ul>
+          <p className="text-[1.1rem] text-muted">
+            Ten questions about the hiring, scheduling and monitoring tools you use show which of these, and of the
+            rules already in effect, apply to you. The result is a dated list of what to do about each, with notice
+            templates.
+          </p>
+        </>
+      ) : (
+        <>
+          <h1 className="mb-3 text-[2rem] leading-tight font-semibold">California AI-at-Work Checker</h1>
+          <p className="text-[1.1rem] text-muted">
+            Ten questions about the hiring, scheduling and monitoring tools you use. The result is a dated list of what
+            California's rules on AI in the workplace ask of you, what to do about each, and notice templates.
+          </p>
+        </>
+      )}
       <p>For owners and managers of California employers with five or more employees.</p>
       {open && aiworkRules.review.reviewedBy ? (
         <p className="text-[0.95rem] text-muted">

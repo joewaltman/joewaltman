@@ -1,5 +1,5 @@
 {
-  "version": "2026-10-17.2",
+  "version": "2026-10-21.1",
   "asOf": "2026-10-17",
   "review": {
     "reviewedBy": null,
@@ -227,6 +227,195 @@
         "https://www.ebglaw.com/insights/publications/four-new-california-laws-reshape-the-rules-for-workplace-ai"
       ],
       "asOf": "2026-10-17",
+      "verify": false
+    },
+    "vendor-features-ads": {
+      "text": "An automated decision system is defined by what it does: a computational process that makes or helps make an employment decision, such as screening resumes for terms or patterns.",
+      "sources": [
+        "https://www.paulhastings.com/insights/client-alerts/new-california-regulations-on-employers-use-of-ai-to-make-decisions-go-into-effect-oct-1-2025"
+      ],
+      "asOf": "2026-10-21",
+      "verify": false,
+      "assumption": "We assume a feature built into an applicant tracking system that scores, ranks, filters or matches applicants counts as an automated decision system when it is turned on and used, the same as a standalone tool. The sources describe tools by what they do, not by who sells them or where they run."
+    },
+    "vendor-workday-hiredscore": {
+      "text": "Workday's HiredScore AI for Recruiting grades applicants by comparing their resumes with the job requirements, and its Candidate Fast Lane can advance top-rated applicants automatically. HiredScore is a separate product that needs its own license, and grading is switched on in HiredScore's general settings.",
+      "sources": [
+        "https://doc.workday.com/admin-guide/en-us/workday-feature-descriptions/workday-hiredscore/hiredscore-ai-for-recruiting.html",
+        "https://doc.workday.com/hiredscore/en-us/workday-hiredscore/hiredscore-implementation-guide/hiredscore-tenant-setup-processes/configure-hiredscore-general-settings.html",
+        "https://doc.workday.com/hiredscore/en-us/workday-hiredscore/hiredscore-release-notes/2025/march/wednesday-19th-march.html"
+      ],
+      "asOf": "2026-10-21",
+      "verify": false
+    },
+    "vendor-workday-skills": {
+      "text": "Candidate Skills Match in Workday Recruiting uses machine learning to rate how well each application's skills match the job requisition, once an administrator sets it up.",
+      "sources": [
+        "https://doc.workday.com/admin-guide/en-us/human-capital-management/recruiting/candidates/candidate-skills-match/bmj1604095304483.html"
+      ],
+      "asOf": "2026-10-21",
+      "verify": false
+    },
+    "vendor-workday-paradox": {
+      "text": "Workday's Paradox candidate experience agent asks required knockout questions by chat or text and qualifies or disqualifies candidates.",
+      "sources": [
+        "https://www.workday.com/en-us/products/conversational-ai/candidate-experience.html"
+      ],
+      "asOf": "2026-10-21",
+      "verify": false
+    },
+    "vendor-greenhouse-matching": {
+      "text": "Greenhouse Talent Matching, part of Real Talent, scores resumes against a job calibration and groups applicants as Strong, Good, Partial or Limited Match. A Site Admin turns it on in Configure > AI Tools, and each job has its own off switch.",
+      "sources": [
+        "https://support.greenhouse.io/hc/en-us/articles/41396009937307-Talent-Matching"
+      ],
+      "asOf": "2026-10-21",
+      "verify": false
+    },
+    "vendor-greenhouse-keywords": {
+      "text": "Greenhouse keyword suggestions filter application review to resumes that match keywords drawn from the job post.",
+      "sources": [
+        "https://support.greenhouse.io/hc/en-us/articles/33043749845403-Greenhouse-AI-features"
+      ],
+      "asOf": "2026-10-21",
+      "verify": false
+    },
+    "vendor-lever-talentfit": {
+      "text": "Lever Talent Fit scores applicants against requirements drawn from the job description. A Super Admin turns it on in Settings > AI Capabilities > Screening Capabilities, and each job posting has its own switch.",
+      "sources": [
+        "https://help.lever.co/s/article/Talent-Fit-in-Lever"
+      ],
+      "asOf": "2026-10-21",
+      "verify": false
+    },
+    "vendor-lever-vonq": {
+      "text": "Lever sells AI Screening by VONQ as an add-on. It screens applicants by chat or voice and returns a ranked shortlist.",
+      "sources": [
+        "https://www.lever.co/vonq-ai-screening",
+        "https://www.lever.co/pricing"
+      ],
+      "asOf": "2026-10-21",
+      "verify": false
+    },
+    "vendor-icims-rolefit": {
+      "text": "iCIMS AI Talent Explorer can rank a job's applicants by role fit.",
+      "sources": [
+        "https://community.icims.com/resource/1775577485000/SpringRelease2026PostWebinarAnsweredFAQ"
+      ],
+      "asOf": "2026-10-21",
+      "verify": false
+    },
+    "vendor-icims-sourcing": {
+      "text": "iCIMS turned on its AI Sourcing Agent for all CXM customers. It matches candidates already in the database to jobs by skills and can send invite-to-apply emails automatically.",
+      "sources": [
+        "https://community.icims.com/resource/1775577485000/SpringRelease2026PostWebinarAnsweredFAQ"
+      ],
+      "asOf": "2026-10-21",
+      "verify": false
+    },
+    "vendor-icims-frontline": {
+      "text": "iCIMS Frontline AI, an add-on for high-volume hourly hiring, takes applications and screens applicants by chat.",
+      "sources": [
+        "https://community.icims.com/resource/1775577485000/SpringRelease2026PostWebinarAnsweredFAQ"
+      ],
+      "asOf": "2026-10-21",
+      "verify": false
+    },
+    "vendor-workable-agent": {
+      "text": "Workable's Screening Agent scores each applicant out of 100 against an ideal candidate profile. Set up for a job, it can move candidates above a score to a chosen stage and disqualify those who miss criteria marked as disqualifying. It runs on AI credits: paid Recruiting plans include 3,000, and more cost extra. Settings > Workflow turns AI off for the whole account.",
+      "sources": [
+        "https://help.workable.com/hc/en-us/articles/38381544828695-Using-the-Workable-Agent"
+      ],
+      "asOf": "2026-10-21",
+      "verify": false
+    },
+    "vendor-workable-knockout": {
+      "text": "Workable knock-out questions can automatically disqualify applicants who answer No to a yes-or-no question on the application form.",
+      "sources": [
+        "https://help.workable.com/hc/en-us/articles/115012238688"
+      ],
+      "asOf": "2026-10-21",
+      "verify": false
+    },
+    "vendor-bamboohr-ai": {
+      "text": "BambooHR's published list of Bamboo AI capabilities, in open beta for all customers, includes no feature that scores, ranks or filters job applicants.",
+      "sources": [
+        "https://www.bamboohr.com/product-updates/bamboo-ai"
+      ],
+      "asOf": "2026-10-21",
+      "verify": false
+    },
+    "vendor-adp-profile": {
+      "text": "ADP's Profile Relevance, in ADP Workforce Now Recruitment and ADP Recruitment Management, uses machine learning to rate how closely each applicant's experience, role and skills match the job description. ADP says there are no cut-off ratings, all applications stay visible to employers, and candidates can opt out.",
+      "sources": [
+        "https://www.adp.com/-/media/adp/no-cache/candidate-relevancy/profile-relevance-faq-jul-2026.pdf"
+      ],
+      "asOf": "2026-10-21",
+      "verify": false
+    },
+    "vendor-adp-run": {
+      "text": "RUN by ADP's HR Pro bundle includes an applicant tracking system from CareerPlug.",
+      "sources": [
+        "https://adpsupport.careerplug.com/adp-frequently-asked-questions-faq"
+      ],
+      "asOf": "2026-10-21",
+      "verify": false
+    },
+    "vendor-paycor-wise": {
+      "text": "Paycor's WISE Assistant for Recruiting reviews applicants with AI and matches them against the job's requirements to help employers prioritize candidates.",
+      "sources": [
+        "https://www.paycor.com/hcm-software/wise-assistant-for-recruiting/"
+      ],
+      "asOf": "2026-10-21",
+      "verify": false
+    },
+    "vendor-paylocity-fit": {
+      "text": "Paylocity's Candidate Fit agent, part of Ignite AI, compares applicants with criteria drawn from the job description and lists those meeting the most criteria first. In the AI Hub, admins turn each agent on or off and choose whether candidates are told about AI and can opt out.",
+      "sources": [
+        "https://www.paylocity.com/resources/learn/blogs/how-ignite-ai-helps-recruiters-focus-on-the-right-people-faster/"
+      ],
+      "asOf": "2026-10-21",
+      "verify": false
+    },
+    "vendor-paylocity-screening": {
+      "text": "Paylocity says its recruiting product uses AI to screen and route candidates.",
+      "sources": [
+        "https://www.paylocity.com/products/hr/talent-management-system/recruiting/"
+      ],
+      "asOf": "2026-10-21",
+      "verify": false
+    },
+    "vendor-gusto-recruiting": {
+      "text": "Gusto's help article on Gusto Recruiting describes no automatic scoring, ranking or knock-out questions. Applicant scorecards are filled in by people.",
+      "sources": [
+        "https://support.gusto.com/article/210909121602053/post-jobs-and-manage-applicants-with-gusto-recruiting-for-admins"
+      ],
+      "asOf": "2026-10-21",
+      "verify": false
+    },
+    "vendor-gusto-jobcase": {
+      "text": "Gusto sponsored job posts can let Jobcase's algorithm decide which job boards publish the post.",
+      "sources": [
+        "https://support.gusto.com/article/210909121602053/post-jobs-and-manage-applicants-with-gusto-recruiting-for-admins"
+      ],
+      "asOf": "2026-10-21",
+      "verify": false
+    },
+    "vendor-indeed-dealbreakers": {
+      "text": "On Indeed, applicants whose answers miss a screener question marked as a deal breaker are automatically moved down and into the Rejected tab.",
+      "sources": [
+        "https://www.indeed.com/hire/resources/howtohub/how-to-use-screener-questions-on-indeed"
+      ],
+      "asOf": "2026-10-21",
+      "verify": false
+    },
+    "vendor-indeed-smart": {
+      "text": "Indeed Smart Screening scores applicants against the employer's job criteria and screening questions.",
+      "sources": [
+        "https://www.indeed.com/hire/resources/howtohub/what-is-indeed-smart-screening",
+        "https://www.aptituderesearch.com/indeed-launches-smart-screening/"
+      ],
+      "asOf": "2026-10-21",
       "verify": false
     }
   },
@@ -521,42 +710,48 @@
       "effective": "2025-10-01",
       "facts": [
         "crc-ads-effective"
-      ]
+      ],
+      "short": "Tools that make or help make hiring and other job decisions are covered by California's anti-discrimination rules, with four years of records."
     },
     "cppa-admt": {
       "name": "CPPA rules on automated decisionmaking technology (CCPA)",
       "effective": "2027-01-01",
       "facts": [
         "cppa-admt-compliance"
-      ]
+      ],
+      "short": "If the CCPA covers you: a notice before automated tools make hiring, pay, promotion or firing decisions, an opt-out or a human appeal, and answers about how the tool was used."
     },
     "ab1883": {
       "name": "AB 1883: AI workplace surveillance",
       "effective": "2027-01-01",
       "facts": [
         "ab1883-rules"
-      ]
+      ],
+      "short": "No AI in workplace monitoring tools that reads employees' emotions or collects neural data, even for wellness programs."
     },
     "ab1331": {
       "name": "AB 1331: bathroom surveillance",
       "effective": "2027-01-01",
       "facts": [
         "ab1331-rules"
-      ]
+      ],
+      "short": "No monitoring of bathrooms with cameras, audio, location tracking or other surveillance tools."
     },
     "sb951": {
       "name": "SB 951: Cal-WARN technology displacement notices",
       "effective": "2027-01-01",
       "facts": [
         "sb951-rules"
-      ]
+      ],
+      "short": "When AI or automation causes a mass layoff, the Cal-WARN notice must say so at the top and list the jobs being automated."
     },
     "sb947": {
       "name": "SB 947: No Robo Bosses Act",
       "effective": "2027-07-01",
       "facts": [
         "sb947-effective"
-      ]
+      ],
+      "short": "A person must check an automated tool's output before it drives discipline or firing, and the employee gets a written notice."
     }
   },
   "obligations": [
@@ -1434,6 +1629,274 @@
         "",
         "Draft for review by your counsel."
       ]
+    }
+  },
+  "vendors": {
+    "intro": [
+      {
+        "line": {
+          "text": "Hiring software often includes features that score, rank, filter or match applicants. When one of them is on and you use it, treat it as an automated decision system under the Civil Rights Council rules.",
+          "facts": [
+            "vendor-features-ads",
+            "crc-ads-definition"
+          ]
+        }
+      },
+      {
+        "line": {
+          "text": "Using a vendor's feature does not take you outside the rules. Liability can extend to a vendor acting for you.",
+          "facts": [
+            "crc-agents"
+          ]
+        }
+      },
+      {
+        "line": {
+          "text": "If the CCPA applies to you, check these features against the CPPA's rules on automated decisionmaking technology too. Hiring is one of the decisions they cover.",
+          "facts": [
+            "cppa-admt-scope"
+          ]
+        },
+        "when": {
+          "ccpa": [
+            "yes",
+            "not-sure"
+          ]
+        }
+      }
+    ],
+    "answeredNo": "You answered no to AI screening (question 3). If any feature below is on in your account, change that answer to yes and run the checker again.",
+    "systems": {
+      "workable": {
+        "name": "Workable",
+        "lines": [
+          {
+            "text": "The Screening Agent scores each applicant out of 100 against an ideal candidate profile.",
+            "facts": [
+              "vendor-workable-agent"
+            ]
+          },
+          {
+            "text": "If you set it to, it moves high scorers forward and disqualifies people who miss your criteria, with no person in between.",
+            "facts": [
+              "vendor-workable-agent"
+            ]
+          },
+          {
+            "text": "Knock-out questions on the application form can disqualify anyone who answers No.",
+            "facts": [
+              "vendor-workable-knockout"
+            ]
+          },
+          {
+            "text": "Check each job's AI Agent tab and application form. Settings > Workflow turns AI off for the whole account.",
+            "facts": [
+              "vendor-workable-agent"
+            ]
+          }
+        ]
+      },
+      "greenhouse": {
+        "name": "Greenhouse",
+        "lines": [
+          {
+            "text": "Talent Matching (part of Real Talent) scores resumes against each job and groups applicants as Strong, Good, Partial or Limited Match.",
+            "facts": [
+              "vendor-greenhouse-matching"
+            ]
+          },
+          {
+            "text": "Keyword suggestions can filter application review to resumes that match keywords from the job post.",
+            "facts": [
+              "vendor-greenhouse-keywords"
+            ]
+          },
+          {
+            "text": "Check Configure > AI Tools and each job's Talent Matching switch.",
+            "facts": [
+              "vendor-greenhouse-matching"
+            ]
+          }
+        ]
+      },
+      "lever": {
+        "name": "Lever",
+        "lines": [
+          {
+            "text": "Talent Fit scores applicants against requirements drawn from the job description.",
+            "facts": [
+              "vendor-lever-talentfit"
+            ]
+          },
+          {
+            "text": "AI Screening by VONQ, an add-on, screens applicants by chat or voice and returns a ranked shortlist.",
+            "facts": [
+              "vendor-lever-vonq"
+            ]
+          },
+          {
+            "text": "Check Settings > AI Capabilities > Screening Capabilities and each job posting's Talent Fit switch.",
+            "facts": [
+              "vendor-lever-talentfit"
+            ]
+          }
+        ]
+      },
+      "icims": {
+        "name": "iCIMS",
+        "lines": [
+          {
+            "text": "AI Talent Explorer can rank a job's applicants by role fit.",
+            "facts": [
+              "vendor-icims-rolefit"
+            ]
+          },
+          {
+            "text": "If you use iCIMS CXM, its AI Sourcing Agent was turned on for you. It matches past candidates to jobs and can send invitations to apply automatically.",
+            "facts": [
+              "vendor-icims-sourcing"
+            ]
+          },
+          {
+            "text": "Frontline AI, an add-on for hourly hiring, screens applicants by chat.",
+            "facts": [
+              "vendor-icims-frontline"
+            ]
+          },
+          "Much of iCIMS's documentation needs a customer login, so ask your account manager which of these are on for you."
+        ]
+      },
+      "bamboohr": {
+        "name": "BambooHR",
+        "lines": [
+          {
+            "text": "BambooHR's published list of its AI features has none that score, rank or filter applicants.",
+            "facts": [
+              "vendor-bamboohr-ai"
+            ]
+          },
+          "If you connect an outside screening or assessment app, check that app instead."
+        ]
+      },
+      "workday": {
+        "name": "Workday",
+        "lines": [
+          {
+            "text": "HiredScore, a separately licensed add-on, grades applicants against the job requirements. Its Candidate Fast Lane can move top-graded applicants forward automatically.",
+            "facts": [
+              "vendor-workday-hiredscore"
+            ]
+          },
+          {
+            "text": "Candidate Skills Match in Workday Recruiting rates how well each application's skills match the requisition.",
+            "facts": [
+              "vendor-workday-skills"
+            ]
+          },
+          {
+            "text": "The Paradox chat assistant can ask knockout questions and disqualify candidates.",
+            "facts": [
+              "vendor-workday-paradox"
+            ]
+          },
+          "Check HiredScore's grading setting, whether Candidate Skills Match is set up, and any knockout questions in Paradox."
+        ]
+      },
+      "adp": {
+        "name": "ADP",
+        "lines": [
+          {
+            "text": "Profile Relevance, in ADP Workforce Now Recruitment and ADP Recruitment Management, rates how closely each applicant matches the job description. ADP says there are no cut-off ratings and every application stays visible.",
+            "facts": [
+              "vendor-adp-profile"
+            ]
+          },
+          {
+            "text": "RUN by ADP's HR Pro bundle uses applicant tracking from CareerPlug. Ask whether it screens or ranks applicants.",
+            "facts": [
+              "vendor-adp-run"
+            ]
+          },
+          "Ask your ADP rep whether these ratings show in your account and whether they can be turned off."
+        ]
+      },
+      "paycor": {
+        "name": "Paycor",
+        "lines": [
+          {
+            "text": "WISE Assistant for Recruiting reviews applicants with AI and matches them against the job's requirements.",
+            "facts": [
+              "vendor-paycor-wise"
+            ]
+          },
+          "Paycor's public pages do not say how it is turned on, so ask Paycor whether it is on in your account."
+        ]
+      },
+      "paylocity": {
+        "name": "Paylocity",
+        "lines": [
+          {
+            "text": "The Candidate Fit agent (Ignite AI) compares applicants with criteria from the job description and lists the closest matches first.",
+            "facts": [
+              "vendor-paylocity-fit"
+            ]
+          },
+          {
+            "text": "Paylocity says its recruiting product also uses AI to screen and route candidates.",
+            "facts": [
+              "vendor-paylocity-screening"
+            ]
+          },
+          {
+            "text": "Check the AI Hub, where admins turn each agent on or off and choose whether candidates are told about AI and can opt out.",
+            "facts": [
+              "vendor-paylocity-fit"
+            ]
+          }
+        ]
+      },
+      "gusto": {
+        "name": "Gusto",
+        "lines": [
+          {
+            "text": "Gusto Recruiting has no automatic scoring, ranking or knock-out questions. Scorecards are filled in by people.",
+            "facts": [
+              "vendor-gusto-recruiting"
+            ]
+          },
+          {
+            "text": "Sponsored job posts can let Jobcase's algorithm choose which job boards show your ad. Job ads aimed at chosen groups can count as automated decisions, so ask how it targets.",
+            "facts": [
+              "vendor-gusto-jobcase",
+              "crc-ads-definition"
+            ]
+          }
+        ]
+      },
+      "indeed": {
+        "name": "Indeed",
+        "lines": [
+          {
+            "text": "Screener questions marked as deal breakers send applicants who miss them to the Rejected tab automatically.",
+            "facts": [
+              "vendor-indeed-dealbreakers"
+            ]
+          },
+          {
+            "text": "Smart Screening, if you use it, scores applicants against your job criteria and screening questions.",
+            "facts": [
+              "vendor-indeed-smart"
+            ]
+          },
+          "Check each job's screener questions for deal breakers, and whether Smart Screening is on."
+        ]
+      },
+      "other": {
+        "name": "Another system",
+        "lines": [
+          "Ask your vendor whether it scores, ranks, filters or matches applicants, whether that is on for your account, and whether you can turn it off or have a person review its output."
+        ]
+      }
     }
   }
 }

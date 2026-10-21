@@ -103,6 +103,13 @@ export async function submitAiwork(deps: SendDeps, rules: AiworkRules, input: Ai
       standing: standingLine(result, input.preview),
       groups,
       notTriggered: result.notTriggered.map((l) => l.name),
+      vendors: result.vendors
+        ? {
+            intro: result.vendors.intro.map((l) => marked(l.text, l.notes)),
+            answeredNo: result.vendors.answeredNo,
+            systems: result.vendors.systems.map((v) => ({ name: v.name, lines: v.lines.map((l) => marked(l.text, l.notes)) })),
+          }
+        : null,
       assumptions: (result.assumptions ?? []).map((a, i) => `[${i + 1}] ${a.text}`),
       resultUrl: `${config.siteUrl}/aiwork/result/${responseId}`,
       updatesUrl: confirmUrl,

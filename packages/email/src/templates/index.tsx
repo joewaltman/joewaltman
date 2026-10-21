@@ -431,6 +431,8 @@ export interface AiworkResultInput {
     items: Array<{ title: string; summary: string | null; check: string | null; todo: string[] }>;
   }>;
   notTriggered: string[];
+  // Notes on the hiring systems picked: what built-in features to check.
+  vendors?: { intro: string[]; answeredNo: string | null; systems: Array<{ name: string; lines: string[] }> } | null;
   // Numbered judgment calls behind the result: "[1] ...".
   assumptions?: string[];
   resultUrl: string;
@@ -455,6 +457,15 @@ export function aiworkResult(input: AiworkResultInput): Template {
         ...item.todo.map((t) => `  To do: ${t}`),
       ]),
     ]),
+    ...(input.vendors
+      ? [
+          "",
+          "CHECK YOUR HIRING SOFTWARE",
+          input.vendors.answeredNo,
+          ...input.vendors.intro,
+          ...input.vendors.systems.flatMap((v) => [`- ${v.name}`, ...v.lines.map((l) => `  ${l}`)]),
+        ]
+      : []),
     "",
     `See your checklist, sources and templates: ${input.resultUrl}`,
     input.notTriggered.length > 0 ? `Also checked, and not triggered by your answers: ${input.notTriggered.join("; ")}.` : null,
@@ -511,6 +522,36 @@ export function aiworkResult(input: AiworkResultInput): Template {
             />
           </div>
         ))}
+        {input.vendors ? (
+          <div>
+            <Heading tone="blue">Check your hiring software</Heading>
+            {input.vendors.answeredNo ? <Callout tone="amber">{input.vendors.answeredNo}</Callout> : null}
+            {input.vendors.intro.map((line) => (
+              <Text key={line} style={{ ...muted, margin: "0 0 8px" }}>
+                {line}
+              </Text>
+            ))}
+            <ColorTable
+              columns={["System", "What to check"]}
+              widths={["30%", undefined]}
+              rows={input.vendors.systems.map((v) => ({
+                key: v.name,
+                tone: "blue" as const,
+                cells: [
+                  <Lines key="n" main={v.name} />,
+                  <span key="l">
+                    {v.lines.map((l, i) => (
+                      <span key={l}>
+                        {i > 0 ? <br /> : null}
+                        {"•"} {l}
+                      </span>
+                    ))}
+                  </span>,
+                ],
+              }))}
+            />
+          </div>
+        ) : null}
         <CtaButton href={input.resultUrl}>See your checklist, sources and templates</CtaButton>
         {input.notTriggered.length > 0 ? <Text style={{ ...muted, margin: "0 0 10px" }}>Also checked, and not triggered by your answers: {input.notTriggered.join("; ")}.</Text> : null}
         {input.updatesUrl ? (

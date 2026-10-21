@@ -32,6 +32,17 @@ export const templateSchema = z.object({
   body: z.array(z.string()),
 });
 
+// Notes on the hiring systems a visitor picks in the "ats" question: which built-in features score,
+// rank or filter applicants, so the employer knows what to check is turned on.
+export const vendorNotesSchema = z.object({
+  // Why the features matter, shown once above the systems; a line with "when" only if the answers match.
+  intro: z.array(z.object({ line: textItemSchema, when: conditionSchema.optional() })).min(1),
+  // Shown when the visitor answered no to AI screening but picked a system with such features.
+  answeredNo: z.string().min(1),
+  // Keyed by the "ats" answer value.
+  systems: z.record(z.string(), z.object({ name: z.string().min(1), lines: z.array(textItemSchema).min(1) })),
+});
+
 export const aiworkRulesSchema = z.object({
   version: z.string().min(1),
   asOf: isoDate,
@@ -44,9 +55,19 @@ export const aiworkRulesSchema = z.object({
   }),
   facts: z.record(z.string(), factSchema),
   questions: z.array(questionSchema).min(1),
-  laws: z.record(z.string(), z.object({ name: z.string().min(1), effective: isoDate, facts: z.array(z.string()).min(1) })),
+  laws: z.record(
+    z.string(),
+    z.object({
+      name: z.string().min(1),
+      effective: isoDate,
+      facts: z.array(z.string()).min(1),
+      // One plain line on what the law asks, for the landing page. It must say no more than the law's facts.
+      short: z.string().min(1).optional(),
+    }),
+  ),
   obligations: z.array(obligationSchema).min(1),
   templates: z.record(z.string(), templateSchema),
+  vendors: vendorNotesSchema,
 });
 
 export type AiworkRules = z.infer<typeof aiworkRulesSchema>;
@@ -77,5 +98,19 @@ export function checkAiworkReferences(rules: AiworkRules): string[] {
     for (const t of o.templates) if (!rules.templates[t]) problems.push(`obligation ${o.id} offers unknown template "${t}"`);
   }
   for (const [id, t] of Object.entries(rules.templates)) checkFacts(`template ${id}`, t.facts);
+  const systems = questions.get("ats");
+  if (!systems) problems.push('vendor notes need the "ats" question');
+  for (const { line, when } of rules.vendors.intro) {
+    if (typeof line !== "string") checkFacts("vendor intro", line.facts);
+    for (const [q, values] of Object.entries(when ?? {})) {
+      const allowed = questions.get(q);
+      if (!allowed) problems.push(`vendor intro checks unknown question "${q}"`);
+      else for (const v of values) if (!allowed.has(v)) problems.push(`vendor intro checks "${q}" for unknown answer "${v}"`);
+    }
+  }
+  for (const [id, v] of Object.entries(rules.vendors.systems)) {
+    if (systems && !systems.has(id)) problems.push(`vendor notes name unknown system "${id}"`);
+    for (const item of v.lines) if (typeof item !== "string") checkFacts(`vendor ${id}`, item.facts);
+  }
   return problems;
 }

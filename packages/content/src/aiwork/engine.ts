@@ -35,6 +35,15 @@ export interface AiworkResult {
   sources: Array<{ id: string } & Fact>;
   // Obligations held back from visitors because they rest on unconfirmed facts.
   hidden: string[];
+  // Notes on the hiring systems the visitor picked. Missing on results saved before October 21, 2026.
+  vendors?: VendorNotes | null;
+}
+
+export interface VendorNotes {
+  intro: ResolvedText[];
+  // Set when the visitor answered no to AI screening.
+  answeredNo: string | null;
+  systems: Array<{ id: string; name: string; lines: ResolvedText[] }>;
 }
 
 const NOT_SURE = "not-sure";
@@ -92,6 +101,9 @@ export function evaluateAiwork(answers: Answers, rules: AiworkRules, audience: A
   }
   obligations.sort((a, b) => KIND_ORDER[a.kind] - KIND_ORDER[b.kind] || (a.law?.effective ?? "9999").localeCompare(b.law?.effective ?? "9999"));
 
+  // After the obligations, so footnote numbers keep reading order.
+  const vendors = vendorNotes(answers, rules, audience, resolve);
+
   const triggered = new Set(obligations.map((o) => o.law?.id).filter(Boolean));
   const hiddenLaws = new Set(rules.obligations.filter((o) => hidden.includes(o.id)).map((o) => o.law));
   return {
@@ -107,7 +119,44 @@ export function evaluateAiwork(answers: Answers, rules: AiworkRules, audience: A
       .map(([id, l]) => ({ id, name: l.name })),
     sources: [...cited].map((id) => ({ id, ...rules.facts[id]! })).filter((f) => audience === "admin" || !f.verify),
     hidden,
+    vendors,
   };
+}
+
+function vendorNotes(answers: Answers, rules: AiworkRules, audience: AiworkAudience, resolve: (item: TextItem) => ResolvedText): VendorNotes | null {
+  const raw = answers.ats;
+  const picked = (Array.isArray(raw) ? raw : typeof raw === "string" ? [raw] : []).filter((id) => rules.vendors.systems[id]);
+  // Lines resting on a fact still marked verify stay out of what visitors see.
+  const shown = (item: TextItem) => audience === "admin" || typeof item === "string" || item.facts.every((f) => !rules.facts[f]?.verify);
+  const systems = picked
+    .map((id) => {
+      const v = rules.vendors.systems[id]!;
+      return { id, name: v.name, items: v.lines.filter(shown) };
+    })
+    .filter((v) => v.items.length > 0);
+  if (systems.length === 0) return null;
+  return {
+    intro: rules.vendors.intro
+      .filter(({ line, when }) => (!when || matches(when, answers)) && shown(line))
+      .map(({ line }) => resolve(line)),
+    answeredNo: answers.aiScreening === "no" ? rules.vendors.answeredNo : null,
+    systems: systems.map((v) => ({ id: v.id, name: v.name, lines: v.items.map(resolve) })),
+  };
+}
+
+const NUMBER_WORDS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
+
+// The next date on which one or more of the laws take effect, for the landing page headline:
+// "Four California rules on AI at work start January 1, 2027". Null once every law is in effect.
+export function upcomingLaws(rules: AiworkRules, today: string): { date: string; headline: string; laws: Array<{ id: string; name: string; short: string | null }> } | null {
+  const future = Object.entries(rules.laws).filter(([, l]) => l.effective > today);
+  if (future.length === 0) return null;
+  const date = future.map(([, l]) => l.effective).sort()[0]!;
+  const laws = future.filter(([, l]) => l.effective === date).map(([id, l]) => ({ id, name: l.name, short: l.short ?? null }));
+  const n = laws.length;
+  const count = NUMBER_WORDS[n] ?? String(n);
+  const headline = `${count.charAt(0).toUpperCase()}${count.slice(1)} California ${n === 1 ? "rule" : "rules"} on AI at work ${n === 1 ? "starts" : "start"} ${formatLongDate(date)}`;
+  return { date, headline, laws };
 }
 
 // Groups for display and email: "In effect now", "By January 1, 2027", and so on.
