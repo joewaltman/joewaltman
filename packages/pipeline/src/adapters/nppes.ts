@@ -15,6 +15,11 @@ export const NPI_FILES_PAGE = "https://download.cms.gov/nppes/NPI_Files.html";
 const BASE = "https://download.cms.gov/nppes/";
 export const npiRecordUrl = (npi: string) => `https://npiregistry.cms.hhs.gov/provider-view/${npi}`;
 const NEW_DAYS = 45;
+// CMS sometimes takes the whole download site down ("This site will be down for maintenance until
+// further notice"). Weekly files stay listed for weeks, so a short outage loses nothing: the job waits
+// quietly and reads the missed weeks once the site is back. It fails, and emails Joe, only once the
+// outage has lasted longer than this.
+const MAX_OUTAGE_DAYS = 14;
 const WEEKLY = /NPPES_Data_Dissemination_(\d{6})_(\d{6})_Weekly(?:_V2)?\.zip/i;
 
 // Weekly file names on the downloads page, oldest first. "100526_101126" is October 5 to 11, 2026.
@@ -30,6 +35,9 @@ export function weeklyFiles(html: string): Array<{ name: string; url: string; en
   }
   return [...seen.values()].sort((a, b) => a.end.localeCompare(b.end));
 }
+
+// The maintenance notice CMS puts up in place of the file list.
+export const isMaintenancePage = (html: string) => /down for maintenance/i.test(html) && weeklyFiles(html).length === 0;
 
 const date = (s: string | undefined) => {
   const m = (s ?? "").trim().match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
@@ -127,7 +135,17 @@ export function nppesJob(): Job {
       const done = new Set((last?.meta?.processed as string[] | undefined) ?? []);
       const page = new TextDecoder().decode((await download(ctx, NPI_FILES_PAGE, "NPI_Files.html")).body);
       const all = weeklyFiles(page);
-      if (all.length === 0) throw new Error("NPPES downloads page lists no weekly files; the page changed");
+      if (all.length === 0) {
+        if (!isMaintenancePage(page)) throw new Error("NPPES downloads page lists no weekly files; the page changed");
+        const since = (last?.meta?.downSince as string | undefined) ?? today;
+        const days = Math.round((Date.parse(today) - Date.parse(since)) / 86_400_000);
+        if (days > MAX_OUTAGE_DAYS) {
+          throw new Error(`The CMS NPI download site has been down for maintenance since ${since} (${days} days); weekly files may be lost if it stays down`);
+        }
+        ctx.log(`nppes: the CMS download site is down for maintenance (since ${since}); trying again tomorrow`);
+        // Carry the weeks already read forward, so the missed weeks are read when the site returns.
+        return { rowsIn: 0, rowsUpserted: 0, events: 0, meta: { processed: [...done], downSince: since, skipped: "CMS download site down for maintenance" } };
+      }
       // The first run reads only the latest week and counts the older ones as done; after that,
       // every week not yet read.
       if (done.size === 0) for (const f of all.slice(0, -1)) done.add(f.name);
