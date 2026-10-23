@@ -5,7 +5,7 @@ import { publicTexts } from "@/lib/tariff-view";
 export function QuestionField({ q, rules, error }: { q: Question; rules?: TariffRules; error?: boolean }) {
   const legend = (
     <legend id={`q-${q.id}-label`} className="mb-2 font-semibold">
-      <span className="mr-1 text-muted tabular-nums">{q.number}.</span> {q.label}
+      {q.type !== "email" ? <span className="mr-1 text-muted tabular-nums">{q.number}.</span> : null} {q.label}
       {!q.required ? <span className="font-normal text-muted"> (optional)</span> : null}
     </legend>
   );
@@ -13,6 +13,8 @@ export function QuestionField({ q, rules, error }: { q: Question; rules?: Tariff
   const explainer = q.explainer && rules ? publicTexts(q.explainer.body, rules) : [];
 
   return (
+    <>
+      {q.showWhen && !error ? <style>{showWhenCss(q.id, q.showWhen)}</style> : null}
     <fieldset
       id={`q-${q.id}`}
       className={`mb-7 border-0 p-0 ${error ? "rounded border-l-4 border-l-red-700 pl-3" : ""}`}
@@ -29,7 +31,7 @@ export function QuestionField({ q, rules, error }: { q: Question; rules?: Tariff
                 type={q.type === "single" ? "radio" : "checkbox"}
                 name={q.id}
                 value={o.value}
-                required={q.type === "single" && q.required && i === 0}
+                required={q.type === "single" && q.required && i === 0 && !q.showWhen}
               />
               <span>{o.label}</span>
             </label>
@@ -41,7 +43,7 @@ export function QuestionField({ q, rules, error }: { q: Question; rules?: Tariff
           type={q.type === "email" ? "email" : "text"}
           name={q.id}
           aria-labelledby={`q-${q.id}-label`}
-          required={q.required}
+          required={q.required && !q.showWhen}
           autoComplete={q.type === "email" ? "email" : "off"}
           maxLength={q.type === "email" ? 254 : 500}
         />
@@ -57,7 +59,19 @@ export function QuestionField({ q, rules, error }: { q: Question; rules?: Tariff
         </details>
       ) : null}
     </fieldset>
+    </>
   );
+}
+
+// Hides a question until the answers it depends on are picked, with no script: the form shows it
+// once a matching option is checked. Browsers without :has() show it always, and the server ignores
+// the answer when it does not apply.
+function showWhenCss(id: string, when: Record<string, string[]>): string {
+  const safe = (v: string) => v.replace(/[^a-zA-Z0-9_-]/g, "");
+  const has = Object.entries(when)
+    .map(([key, values]) => `:has(input[name="${safe(key)}"]:is(${values.map((v) => `[value="${safe(v)}"]`).join(",")}):checked)`)
+    .join("");
+  return `@supports selector(:has(*)){#q-${safe(id)}{display:none}form${has} #q-${safe(id)}{display:block}}`;
 }
 
 export function TariffForm({

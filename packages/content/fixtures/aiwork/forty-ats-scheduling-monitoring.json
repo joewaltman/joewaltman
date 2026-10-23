@@ -1,0 +1,16 @@
+{
+  "name": "40 people with an applicant tracking system, auto-scheduling and productivity monitoring",
+  "answers": {
+    "employees": "25-74",
+    "ats": ["greenhouse"],
+    "aiScreening": "no",
+    "autoScheduling": "yes",
+    "monitoring": "yes",
+    "emotionNeural": "no",
+    "restroomSurveillance": "no",
+    "automatedDecisions": ["none"],
+    "ccpa": "no",
+    "aiCommunications": "no"
+  },
+  "laws": ["crc-ads", "sb947"]
+}

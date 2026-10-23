@@ -1,0 +1,17 @@
+{
+  "name": "300 people, covered by the CCPA, with AI resume screening",
+  "answers": {
+    "employees": "100-plus",
+    "ats": ["workday"],
+    "aiScreening": "yes",
+    "autoScheduling": "no",
+    "monitoring": "no",
+    "emotionNeural": "no",
+    "restroomSurveillance": "no",
+    "automatedDecisions": ["none"],
+    "ccpa": "yes",
+    "aiCommunications": "no",
+    "layoffAi": "no"
+  },
+  "laws": ["cppa-admt", "crc-ads"]
+}

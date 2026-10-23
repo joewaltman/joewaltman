@@ -1,6 +1,6 @@
 {
-  "version": "2026-10-21.1",
-  "asOf": "2026-10-17",
+  "version": "2026-10-23.1",
+  "asOf": "2026-10-23",
   "review": {
     "reviewedBy": null,
     "reviewedOn": null,
@@ -19,9 +19,10 @@
     "cppa-admt-compliance": {
       "text": "Businesses subject to the CCPA must comply with the California Privacy Protection Agency's automated decisionmaking technology (ADMT) rules by January 1, 2027.",
       "sources": [
-        "https://www.whitecase.com/insight-alert/cppa-finalizes-rules-admt-risk-assessments-and-cybersecurity-audits-requirements"
+        "https://www.whitecase.com/insight-alert/cppa-finalizes-rules-admt-risk-assessments-and-cybersecurity-audits-requirements",
+        "https://www.littler.com/news-analysis/asap/californias-long-awaited-final-regulations-automated-decisionmaking-create-new"
       ],
-      "asOf": "2026-10-16",
+      "asOf": "2026-10-23",
       "verify": false
     },
     "cppa-risk-assessments": {
@@ -45,27 +46,29 @@
       "text": "SB 947 takes effect July 1, 2027.",
       "sources": [
         "https://www.ebglaw.com/insights/publications/four-new-california-laws-reshape-the-rules-for-workplace-ai",
-        "https://www.coblentzlaw.com/news/californias-new-employment-laws-for-2027-what-employers-need-to-know-and-do/"
+        "https://www.coblentzlaw.com/news/californias-new-employment-laws-for-2027-what-employers-need-to-know-and-do/",
+        "https://www.morganlewis.com/pubs/2026/10/california-enacts-new-laws-governing-employer-use-of-ai"
       ],
-      "asOf": "2026-10-16",
+      "asOf": "2026-10-23",
       "verify": false
     },
     "ccpa-thresholds": {
       "text": "The CCPA applies to a business with more than $26,625,000 in annual gross revenue, or one that buys, sells or shares the personal information of 100,000 or more consumers or households. The revenue figure is next adjusted in January 2027.",
       "sources": [
-        "https://cppa.ca.gov/announcements/2024/20241217.html"
+        "https://cppa.ca.gov/announcements/2024/20241217.html",
+        "https://www.littler.com/news-analysis/asap/californias-long-awaited-final-regulations-automated-decisionmaking-create-new"
       ],
-      "asOf": "2026-10-16",
+      "asOf": "2026-10-23",
       "verify": false
     },
     "feha-five": {
-      "text": "FEHA's employment discrimination rules apply to employers with five or more employees. Its harassment rules apply to every employer.",
+      "text": "FEHA's employment discrimination rules apply to employers with five or more employees, and the Civil Rights Council's automated decision system regulations apply to employers with at least five employees, at least one of them in California. FEHA's harassment rules apply to every employer.",
       "sources": [
-        "https://calcivilrights.ca.gov/employment/"
+        "https://calcivilrights.ca.gov/employment/",
+        "https://www.duanemorris.com/alerts/ai_catches_up_california_employers_regulations_automated_decision_systems_now_in_effect_1025.html"
       ],
-      "asOf": "2026-10-17",
-      "verify": false,
-      "assumption": "We assume the automated decision system regulations reach the same employers as FEHA's discrimination rules, those with five or more employees. The sources on the regulations do not state a separate threshold."
+      "asOf": "2026-10-23",
+      "verify": false
     },
     "crc-ads-definition": {
       "text": "An automated decision system is a computational process that makes or helps make an employment decision. Examples include resume screening for terms or patterns, job ads aimed at chosen groups, assessments built on questions, puzzles or games, and analysis of facial expressions, speech or voice in online interviews. Word processors, spreadsheets and similar tools are not covered unless they make employment decisions.",
@@ -119,53 +122,58 @@
     "cppa-admt-scope": {
       "text": "Under the CPPA rules, a significant decision includes employment decisions: hiring, allocation or assignment of work and compensation, promotion, and demotion, suspension and termination.",
       "sources": [
-        "https://cppa.ca.gov/regulations/pdf/ccpa_updates_cyber_risk_admt_appr_text.pdf"
+        "https://cppa.ca.gov/regulations/pdf/ccpa_updates_cyber_risk_admt_appr_text.pdf",
+        "https://www.littler.com/news-analysis/asap/californias-long-awaited-final-regulations-automated-decisionmaking-create-new"
       ],
-      "asOf": "2026-10-17",
+      "asOf": "2026-10-23",
       "verify": false,
       "assumption": "The regulations' own examples include notices from an employer to an employee, so we treat employees and applicants as consumers the rules protect."
     },
     "cppa-admt-rights": {
       "text": "A business using ADMT for a significant decision must give a pre-use notice that explains the specific purpose, let people opt out unless an exception applies, and answer requests for information about how the ADMT was used. One exception is offering an appeal to a human reviewer who understands the tool's output and has authority to change the decision. For hiring, and for work assignment and pay, another applies when the tool only assesses ability to do the work, works for that purpose, and does not unlawfully discriminate.",
       "sources": [
-        "https://cppa.ca.gov/regulations/pdf/ccpa_updates_cyber_risk_admt_appr_text.pdf"
+        "https://cppa.ca.gov/regulations/pdf/ccpa_updates_cyber_risk_admt_appr_text.pdf",
+        "https://www.littler.com/news-analysis/asap/californias-long-awaited-final-regulations-automated-decisionmaking-create-new"
       ],
-      "asOf": "2026-10-17",
+      "asOf": "2026-10-23",
       "verify": false
     },
     "sb947-rules": {
       "text": "Under SB 947 an employer may not rely solely on an automated decision system for a discipline or termination decision. When an ADS is the primary basis, a person must corroborate its output, the employer must give the employee a written notice after the fact, and on request the employer must give a meaningful, objective description of the employee's data the system used.",
       "sources": [
         "https://www.ebglaw.com/insights/publications/four-new-california-laws-reshape-the-rules-for-workplace-ai",
-        "https://www.coblentzlaw.com/news/californias-new-employment-laws-for-2027-what-employers-need-to-know-and-do/"
+        "https://www.coblentzlaw.com/news/californias-new-employment-laws-for-2027-what-employers-need-to-know-and-do/",
+        "https://www.morganlewis.com/pubs/2026/10/california-enacts-new-laws-governing-employer-use-of-ai"
       ],
-      "asOf": "2026-10-17",
+      "asOf": "2026-10-23",
       "verify": false,
       "assumption": "SB 947 does not define \"primarily.\" We treat a decision as covered when the tool's output was the main thing it rested on."
     },
     "sb947-notice": {
-      "text": "The SB 947 written notice says the decision relied primarily on an ADS, confirms a person reviewed it, names a contact, and describes the employee's rights, including access to their data and protection from retaliation.",
+      "text": "The SB 947 written notice is given in plain language, as a separate communication, at the time the employer tells the employee of the decision. It says the decision relied primarily on an ADS, confirms a person reviewed it, names a contact, and describes the employee's rights, including access to their data and protection from retaliation.",
       "sources": [
-        "https://www.ebglaw.com/insights/publications/four-new-california-laws-reshape-the-rules-for-workplace-ai"
+        "https://www.ebglaw.com/insights/publications/four-new-california-laws-reshape-the-rules-for-workplace-ai",
+        "https://www.morganlewis.com/pubs/2026/10/california-enacts-new-laws-governing-employer-use-of-ai"
       ],
-      "asOf": "2026-10-17",
-      "verify": false,
-      "assumption": "The sources do not say when the notice must be given. We suggest giving it with the decision."
+      "asOf": "2026-10-23",
+      "verify": false
     },
     "sb947-prohibitions": {
       "text": "SB 947 also bars using an ADS to infer a characteristic protected under FEHA, or to anticipate and act against employees exercising legal rights.",
       "sources": [
-        "https://www.ebglaw.com/insights/publications/four-new-california-laws-reshape-the-rules-for-workplace-ai"
+        "https://www.ebglaw.com/insights/publications/four-new-california-laws-reshape-the-rules-for-workplace-ai",
+        "https://www.morganlewis.com/pubs/2026/10/california-enacts-new-laws-governing-employer-use-of-ai"
       ],
-      "asOf": "2026-10-17",
+      "asOf": "2026-10-23",
       "verify": false
     },
     "sb947-penalty": {
       "text": "SB 947 carries civil penalties of $500 per violation, enforced by the Labor Commissioner or public prosecutors.",
       "sources": [
-        "https://www.ebglaw.com/insights/publications/four-new-california-laws-reshape-the-rules-for-workplace-ai"
+        "https://www.ebglaw.com/insights/publications/four-new-california-laws-reshape-the-rules-for-workplace-ai",
+        "https://www.morganlewis.com/pubs/2026/10/california-enacts-new-laws-governing-employer-use-of-ai"
       ],
-      "asOf": "2026-10-17",
+      "asOf": "2026-10-23",
       "verify": false
     },
     "sb947-size": {
@@ -173,17 +181,18 @@
       "sources": [
         "https://www.ebglaw.com/insights/publications/four-new-california-laws-reshape-the-rules-for-workplace-ai"
       ],
-      "asOf": "2026-10-17",
+      "asOf": "2026-10-23",
       "verify": false,
-      "assumption": "Neither source states a size threshold for SB 947, and both describe it as covering private and public employers generally, so we assume it applies at every size."
+      "assumption": "None of the three sources states a size threshold for SB 947. Two describe it as covering private and public employers generally, so we assume it applies at every size."
     },
     "ab1883-rules": {
       "text": "AB 1883 bars employers from using AI with workplace surveillance tools to recognize, infer or predict an employee's emotional state, or to collect neural data, starting January 1, 2027. It applies even to wellness or stress monitoring.",
       "sources": [
         "https://www.ebglaw.com/insights/publications/four-new-california-laws-reshape-the-rules-for-workplace-ai",
-        "https://www.coblentzlaw.com/news/californias-new-employment-laws-for-2027-what-employers-need-to-know-and-do/"
+        "https://www.coblentzlaw.com/news/californias-new-employment-laws-for-2027-what-employers-need-to-know-and-do/",
+        "https://www.morganlewis.com/pubs/2026/10/california-enacts-new-laws-governing-employer-use-of-ai"
       ],
-      "asOf": "2026-10-17",
+      "asOf": "2026-10-23",
       "verify": false
     },
     "ab1883-penalty": {
@@ -216,17 +225,19 @@
       "text": "Starting January 1, 2027, when AI or other automated technology causes a mass layoff, relocation or termination in whole or in substantial part, the Cal-WARN notice must say at the top that it is for a technology displacement, and list the number, classification, occupation and work location of affected employees, the job functions being automated and the category of technology.",
       "sources": [
         "https://www.ebglaw.com/insights/publications/four-new-california-laws-reshape-the-rules-for-workplace-ai",
-        "https://www.coblentzlaw.com/news/californias-new-employment-laws-for-2027-what-employers-need-to-know-and-do/"
+        "https://www.coblentzlaw.com/news/californias-new-employment-laws-for-2027-what-employers-need-to-know-and-do/",
+        "https://www.morganlewis.com/pubs/2026/10/california-enacts-new-laws-governing-employer-use-of-ai"
       ],
-      "asOf": "2026-10-17",
+      "asOf": "2026-10-23",
       "verify": false
     },
     "calwarn-coverage": {
-      "text": "Cal-WARN covers employers with an industrial or commercial facility that had 75 or more employees at any time in the prior 12 months, and requires 60 days' written notice.",
+      "text": "Cal-WARN covers a site that employs, or has employed in the preceding 12 months, 75 or more full- and part-time employees, and requires 60 days' written notice.",
       "sources": [
-        "https://www.ebglaw.com/insights/publications/four-new-california-laws-reshape-the-rules-for-workplace-ai"
+        "https://www.ebglaw.com/insights/publications/four-new-california-laws-reshape-the-rules-for-workplace-ai",
+        "https://edd.ca.gov/en/jobs_and_training/Layoff_Services_WARN/"
       ],
-      "asOf": "2026-10-17",
+      "asOf": "2026-10-23",
       "verify": false
     },
     "vendor-features-ads": {
@@ -416,6 +427,14 @@
         "https://www.aptituderesearch.com/indeed-launches-smart-screening/"
       ],
       "asOf": "2026-10-21",
+      "verify": false
+    },
+    "calwarn-events": {
+      "text": "Under Cal-WARN, a mass layoff is a layoff of 50 or more employees within a 30-day period. A relocation of 100 miles or more, or a closure, counts whatever the number of employees affected.",
+      "sources": [
+        "https://edd.ca.gov/en/jobs_and_training/Layoff_Services_WARN/"
+      ],
+      "asOf": "2026-10-23",
       "verify": false
     }
   },
@@ -696,8 +715,37 @@
       ]
     },
     {
-      "id": "email",
+      "id": "layoffAi",
       "number": 11,
+      "label": "Do you expect a layoff of 50 or more people at one site within 30 days, or a site closure or move of 100 miles or more, in the next 12 months, caused in part by AI or automation?",
+      "help": "Cal-WARN applies to a site with 75 or more employees at any time in the past 12 months. Only employers with 75 or more people see this question.",
+      "type": "single",
+      "required": true,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        },
+        {
+          "value": "not-sure",
+          "label": "Not sure"
+        }
+      ],
+      "showWhen": {
+        "employees": [
+          "75-99",
+          "100-plus"
+        ]
+      },
+      "showWhenNote": "if you have 75 or more employees"
+    },
+    {
+      "id": "email",
+      "number": 12,
       "label": "Email for a copy of your result",
       "help": "Optional. The result shows on screen either way.",
       "type": "email",
@@ -709,17 +757,32 @@
       "name": "Civil Rights Council rules on automated decision systems (FEHA)",
       "effective": "2025-10-01",
       "facts": [
-        "crc-ads-effective"
+        "crc-ads-effective",
+        "crc-ads-definition"
       ],
-      "short": "Tools that make or help make hiring and other job decisions are covered by California's anti-discrimination rules, with four years of records."
+      "short": "Tools that make or help make hiring and other job decisions are covered by California's anti-discrimination rules, with four years of records.",
+      "appliesTo": {
+        "text": "Employers with 5 or more employees, at least one of them in California.",
+        "facts": [
+          "feha-five"
+        ]
+      }
     },
     "cppa-admt": {
       "name": "CPPA rules on automated decisionmaking technology (CCPA)",
       "effective": "2027-01-01",
       "facts": [
-        "cppa-admt-compliance"
+        "cppa-admt-compliance",
+        "cppa-admt-scope",
+        "cppa-admt-rights"
       ],
-      "short": "If the CCPA covers you: a notice before automated tools make hiring, pay, promotion or firing decisions, an opt-out or a human appeal, and answers about how the tool was used."
+      "short": "If the CCPA covers you: a notice before automated tools make hiring, pay, promotion or firing decisions, an opt-out or a human appeal, and answers about how the tool was used.",
+      "appliesTo": {
+        "text": "Businesses the CCPA covers: more than $26,625,000 in annual gross revenue, or buying, selling or sharing the personal information of 100,000 or more consumers or households.",
+        "facts": [
+          "ccpa-thresholds"
+        ]
+      }
     },
     "ab1883": {
       "name": "AB 1883: AI workplace surveillance",
@@ -743,15 +806,29 @@
       "facts": [
         "sb951-rules"
       ],
-      "short": "When AI or automation causes a mass layoff, the Cal-WARN notice must say so at the top and list the jobs being automated."
+      "short": "When AI or automation causes a mass layoff, the Cal-WARN notice must say so at the top and list the jobs being automated.",
+      "appliesTo": {
+        "text": "Employers covered by Cal-WARN: a site with 75 or more employees at any time in the past 12 months.",
+        "facts": [
+          "calwarn-coverage"
+        ]
+      }
     },
     "sb947": {
       "name": "SB 947: No Robo Bosses Act",
       "effective": "2027-07-01",
       "facts": [
-        "sb947-effective"
+        "sb947-effective",
+        "sb947-rules",
+        "sb947-notice"
       ],
-      "short": "A person must check an automated tool's output before it drives discipline or firing, and the employee gets a written notice."
+      "short": "No relying only on an automated tool for discipline or firing. When a tool is the main basis, a person must corroborate it, the employee gets a plain-language written notice, and on request a description of their data the tool used.",
+      "appliesTo": {
+        "text": "Employers of every size.",
+        "facts": [
+          "sb947-size"
+        ]
+      }
     }
   },
   "obligations": [
@@ -1250,7 +1327,8 @@
       "title": "If AI or automation leads to a layoff, use the new Cal-WARN notice",
       "facts": [
         "sb951-rules",
-        "calwarn-coverage"
+        "calwarn-coverage",
+        "calwarn-events"
       ],
       "whenAny": [
         {
@@ -1258,50 +1336,7 @@
             "75-99",
             "100-plus"
           ],
-          "aiScreening": [
-            "yes",
-            "not-sure"
-          ]
-        },
-        {
-          "employees": [
-            "75-99",
-            "100-plus"
-          ],
-          "autoScheduling": [
-            "yes",
-            "not-sure"
-          ]
-        },
-        {
-          "employees": [
-            "75-99",
-            "100-plus"
-          ],
-          "monitoring": [
-            "yes",
-            "not-sure"
-          ]
-        },
-        {
-          "employees": [
-            "75-99",
-            "100-plus"
-          ],
-          "automatedDecisions": [
-            "discipline",
-            "termination",
-            "promotion",
-            "pay",
-            "not-sure"
-          ]
-        },
-        {
-          "employees": [
-            "75-99",
-            "100-plus"
-          ],
-          "aiCommunications": [
+          "layoffAi": [
             "yes",
             "not-sure"
           ]
@@ -1310,9 +1345,10 @@
       "unless": [],
       "summary": [
         {
-          "text": "Cal-WARN covers facilities with 75 or more employees and requires 60 days' notice.",
+          "text": "Cal-WARN covers sites with 75 or more employees. It requires 60 days' notice of a layoff of 50 or more within 30 days, or of a closure or a move of 100 miles or more.",
           "facts": [
-            "calwarn-coverage"
+            "calwarn-coverage",
+            "calwarn-events"
           ]
         },
         {
@@ -1344,7 +1380,8 @@
       ],
       "templates": [
         "warn-technology-displacement"
-      ]
+      ],
+      "checkFirst": "You answered \"not sure.\" If a reduction, closure or move is being planned, check whether AI or automation is part of the reason."
     },
     {
       "id": "sb947-human",
@@ -1397,7 +1434,7 @@
         {
           "kind": "notice",
           "text": {
-            "text": "Prepare the written notice for decisions that relied mainly on the tool, and give it with the decision.",
+            "text": "Prepare the written notice for decisions that relied mainly on the tool. Give it in plain language, as its own message, when you tell the employee of the decision.",
             "facts": [
               "sb947-notice"
             ]

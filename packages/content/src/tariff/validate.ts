@@ -1,4 +1,4 @@
-import type { Answers } from "./engine";
+import { type Answers, matches } from "./engine";
 import type { Question } from "./schema";
 
 export interface ValidationResult {
@@ -17,6 +17,8 @@ export function readAnswers(
   const errors: Record<string, string> = {};
 
   for (const q of rules.questions) {
+    // A question shown only for some earlier answers is skipped, and not required, for everyone else.
+    if (q.showWhen && !matches(q.showWhen, answers)) continue;
     const raw = form
       .getAll(q.id)
       .filter((v): v is string => typeof v === "string")

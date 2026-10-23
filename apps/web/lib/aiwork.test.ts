@@ -79,7 +79,8 @@ describe("review packet", () => {
   it("lists every statement with its status and every obligation with its triggers", () => {
     const text = reviewPacket(aiworkRules);
     expect(text).toContain("[sb947-size] IN USE: SB 947 applies to employers of every size.");
-    expect(text).toContain("Assumption: Neither source states a size threshold for SB 947");
+    expect(text).toContain("Assumption: None of the three sources states a size threshold for SB 947");
+    expect(text).toContain("Asked only when Q1 is 75 to 99 or 100 or more.");
     expect(text).toContain("[crc-ads-effective] IN USE:");
     expect(text).toContain("Shown when: Q8 (Does any automated tool feed into decisions about discipline, termination, promotion, or pay?) is Discipline or Termination or Not sure");
     expect(text).toContain("This notice is for a technology displacement.");

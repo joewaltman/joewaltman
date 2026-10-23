@@ -1,0 +1,17 @@
+{
+  "name": "An employer of any size with an emotion-inference tool",
+  "answers": {
+    "ats": ["none"],
+    "aiScreening": "no",
+    "autoScheduling": "no",
+    "monitoring": "no",
+    "emotionNeural": "yes",
+    "restroomSurveillance": "no",
+    "automatedDecisions": ["none"],
+    "ccpa": "no",
+    "aiCommunications": "no",
+    "layoffAi": "no"
+  },
+  "everyEmployeeBand": true,
+  "laws": ["ab1883"]
+}

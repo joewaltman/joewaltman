@@ -27,6 +27,9 @@ export const textItemSchema = z.union([
 
 const optionSchema = z.object({ value: z.string().min(1), label: z.string().min(1) });
 
+// Every key must match: the answer (or one of the answers, for multi questions) is in the list.
+export const conditionSchema = z.record(z.string(), z.array(z.string()).min(1));
+
 export const questionSchema = z.object({
   id: z.string().min(1),
   number: z.number().int().positive(),
@@ -35,14 +38,16 @@ export const questionSchema = z.object({
   type: z.enum(["single", "multi", "text", "email"]),
   required: z.boolean(),
   options: z.array(optionSchema).optional(),
+  // Asked only when earlier answers match, for example a question for larger employers. The form
+  // hides it otherwise, and the answer is ignored.
+  showWhen: conditionSchema.optional(),
+  // Who sees it, for the question count on the landing page: "if you have 75 or more employees".
+  showWhenNote: z.string().min(1).optional(),
   // Shown under the question in a collapsed "How do I tell?" box.
   explainer: z
     .object({ summary: z.string().min(1), body: z.array(textItemSchema).min(1) })
     .optional(),
 });
-
-// Every key must match: the answer (or one of the answers, for multi questions) is in the list.
-export const conditionSchema = z.record(z.string(), z.array(z.string()).min(1));
 
 export const pathSchema = z.object({
   title: z.string().min(1),

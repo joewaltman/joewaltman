@@ -63,6 +63,8 @@ export const aiworkRulesSchema = z.object({
       facts: z.array(z.string()).min(1),
       // One plain line on what the law asks, for the landing page. It must say no more than the law's facts.
       short: z.string().min(1).optional(),
+      // Who it applies to, with the facts that say so. Left out when no source states it.
+      appliesTo: textItemSchema.optional(),
     }),
   ),
   obligations: z.array(obligationSchema).min(1),
@@ -82,7 +84,19 @@ export function checkAiworkReferences(rules: AiworkRules): string[] {
   const checkFacts = (where: string, ids: string[]) => {
     for (const id of ids) if (!facts.has(id)) problems.push(`${where} cites unknown fact "${id}"`);
   };
-  for (const [id, law] of Object.entries(rules.laws)) checkFacts(`law ${id}`, law.facts);
+  for (const [id, law] of Object.entries(rules.laws)) {
+    checkFacts(`law ${id}`, law.facts);
+    if (law.appliesTo && typeof law.appliesTo !== "string") checkFacts(`law ${id}`, law.appliesTo.facts);
+  }
+  for (const q of rules.questions) {
+    for (const [other, values] of Object.entries(q.showWhen ?? {})) {
+      const allowed = questions.get(other);
+      if (!allowed) problems.push(`question ${q.id} is shown for unknown question "${other}"`);
+      else for (const v of values) if (!allowed.has(v)) problems.push(`question ${q.id} is shown for unknown answer "${v}"`);
+      const at = rules.questions.findIndex((x) => x.id === other);
+      if (at > rules.questions.indexOf(q)) problems.push(`question ${q.id} depends on a later question "${other}"`);
+    }
+  }
   for (const o of rules.obligations) {
     if (o.law !== null && !rules.laws[o.law]) problems.push(`obligation ${o.id} names unknown law "${o.law}"`);
     if (o.kind !== "practice" && o.facts.length === 0) problems.push(`obligation ${o.id} rests on no facts`);

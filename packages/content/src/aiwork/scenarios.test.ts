@@ -31,7 +31,9 @@ const SCENARIOS: Array<[string, Answers, string[]]> = [
   ["not sure about the CCPA, with automated pay decisions", { ccpa: "not-sure", automatedDecisions: ["pay"] }, ["ccpa-check", "cppa-admt", "crc-bias", "crc-records", "sb947-limits"]],
   ["automated termination input", { automatedDecisions: ["termination"] }, ["crc-bias", "crc-records", "sb947-human", "sb947-limits"]],
   ["emotion-reading tools and bathroom coverage", { emotionNeural: "yes", restroomSurveillance: "yes", monitoring: "yes" }, ["ab1331-bathrooms", "ab1883-stop", "sb947-limits"]],
-  ["150 employees with productivity monitoring", { employees: "100-plus", monitoring: "yes" }, ["sb947-limits", "sb951-warn"]],
+  ["150 employees with productivity monitoring", { employees: "100-plus", monitoring: "yes", layoffAi: "no" }, ["sb947-limits"]],
+  ["150 employees expecting an AI-driven layoff", { employees: "100-plus", layoffAi: "yes" }, ["sb951-warn"]],
+  ["the layoff answer does not count below 75 employees", { employees: "25-74", layoffAi: "yes" }, []],
   ["unsure on everything", { aiScreening: "not-sure", autoScheduling: "not-sure", monitoring: "not-sure", emotionNeural: "not-sure", restroomSurveillance: "not-sure", automatedDecisions: ["not-sure"], ccpa: "not-sure", aiCommunications: "not-sure" }, ["ab1331-bathrooms", "ab1883-stop", "ccpa-check", "cppa-admt", "crc-accommodation", "crc-bias", "crc-records", "sb947-human", "sb947-limits"]],
 ];
 
@@ -77,8 +79,6 @@ describe("the rules file", () => {
       "ab1883-biometrics",
       "ads-scheduling",
       "cppa-admt-scope",
-      "feha-five",
-      "sb947-notice",
       "sb947-rules",
       "sb947-size",
       "vendor-features-ads",
@@ -90,8 +90,8 @@ describe("the rules file", () => {
     const r = evaluateAiwork({ ...base, aiScreening: "yes", automatedDecisions: ["termination"] }, rules, "public");
     const records = r.obligations.find((o) => o.id === "crc-records")!;
     expect(records.summary[0]!.notes).toEqual([1]);
-    expect(r.assumptions.map((a) => a.id)).toEqual(["ads-scheduling", "feha-five", "sb947-rules", "sb947-size", "sb947-notice"]);
-    expect(r.obligations.find((o) => o.id === "sb947-human")!.summary[0]!.notes).toEqual([3, 4]);
+    expect(r.assumptions.map((a) => a.id)).toEqual(["ads-scheduling", "sb947-rules", "sb947-size"]);
+    expect(r.obligations.find((o) => o.id === "sb947-human")!.summary[0]!.notes).toEqual([2, 3]);
   });
 
   it("holds back from visitors any obligation resting on a statement marked verify", () => {
@@ -135,9 +135,9 @@ describe("hiring system notes", () => {
     const r = evaluateAiwork({ ...base, ats: ["other"], automatedDecisions: ["termination"] }, rules, "public");
     expect(r.vendors!.systems.map((v) => v.id)).toEqual(["other"]);
     expect(r.vendors!.answeredNo).toContain("question 3");
-    // The vendor intro's assumption comes last, after the five the obligations cite.
+    // The vendor intro's assumption comes last, after the three the obligations cite.
     expect(r.assumptions.map((a) => a.id).at(-1)).toBe("vendor-features-ads");
-    expect(r.vendors!.intro[0]!.notes).toEqual([6]);
+    expect(r.vendors!.intro[0]!.notes).toEqual([4]);
     expect(r.sources.map((s) => s.id)).toContain("crc-agents");
   });
 

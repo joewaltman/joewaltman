@@ -1,4 +1,4 @@
-import { aiworkRules, upcomingLaws } from "@jw/content";
+import { aiworkRules, questionCountText, upcomingLaws } from "@jw/content";
 import type { Metadata } from "next";
 import { AiworkLanding } from "@/components/aiwork-landing";
 import { currentAdmin } from "@/lib/server";
@@ -9,7 +9,7 @@ export function generateMetadata(): Metadata {
   const next = upcomingLaws(aiworkRules, new Intl.DateTimeFormat("en-CA", { timeZone: "America/Los_Angeles" }).format(new Date()));
   return {
     title: "California AI-at-Work Checker",
-    description: `${next ? `${next.headline}. ` : ""}Ten questions about your hiring, scheduling and monitoring tools, and a dated list of what California's workplace AI rules ask of you, with notice templates.`,
+    description: `${next ? `${next.headline}. ` : ""}${questionCountText(aiworkRules)} about your hiring, scheduling and monitoring tools, and a dated list of what California's workplace AI rules ask of you, with notice templates.`,
   };
 }
 

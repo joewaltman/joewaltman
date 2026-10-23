@@ -1,0 +1,16 @@
+{
+  "name": "A 6-person employer with no automated tools",
+  "answers": {
+    "employees": "5-24",
+    "ats": ["none"],
+    "aiScreening": "no",
+    "autoScheduling": "no",
+    "monitoring": "no",
+    "emotionNeural": "no",
+    "restroomSurveillance": "no",
+    "automatedDecisions": ["none"],
+    "ccpa": "no",
+    "aiCommunications": "no"
+  },
+  "laws": []
+}

@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { AssumptionList, Notes } from "@/components/assumptions";
 import { HandRaise } from "@/components/hand-raise";
 import { AIWORK_HAND_RAISE, loadAiworkResponse, standingLine } from "@/lib/aiwork";
+import { sourceLinks } from "@/lib/sources";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Your AI-at-Work checklist", robots: { index: false } };
@@ -55,6 +56,19 @@ function ObligationCard({ o, preview }: { o: AiworkObligation; preview: boolean 
             <span key={t.id}>
               {i > 0 ? ", " : ""}
               <a href={`/aiwork/templates/${t.id}`}>{t.title}</a>
+            </span>
+          ))}
+        </p>
+      ) : null}
+      {o.sources && o.sources.length > 0 ? (
+        <p className="mt-2 mb-0 text-[0.85rem] text-muted">
+          Sources:{" "}
+          {sourceLinks(o.sources).map((s, i) => (
+            <span key={s.url}>
+              {i > 0 ? ", " : ""}
+              <a href={s.url} rel="noopener noreferrer" target="_blank">
+                {s.label}
+              </a>
             </span>
           ))}
         </p>

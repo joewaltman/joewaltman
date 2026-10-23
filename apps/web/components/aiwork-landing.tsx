@@ -1,4 +1,6 @@
-import { aiworkRules, formatLongDate, upcomingLaws } from "@jw/content";
+import { aiworkRules, formatLongDate, lawTimeline, questionCountText } from "@jw/content";
+import { AssumptionList, Notes } from "@/components/assumptions";
+import { sourceLinks } from "@/lib/sources";
 import { HandRaise } from "@/components/hand-raise";
 import { SignupForm } from "@/components/signup-form";
 import { QuestionField } from "@/components/tariff-form";
@@ -19,8 +21,8 @@ export function AiworkLanding({
 }) {
   const open = aiworkOpen(aiworkRules);
   const base = partner ? `/aiwork/p/${partner.slug}` : "/aiwork";
-  // "Four California rules on AI at work start January 1, 2027", from the rules file; gone once every law is in effect.
-  const next = upcomingLaws(aiworkRules, new Intl.DateTimeFormat("en-CA", { timeZone: "America/Los_Angeles" }).format(new Date()));
+  // Every law by its start date, from the rules file. A law moves to "In force now" on its date.
+  const timeline = lawTimeline(aiworkRules, new Intl.DateTimeFormat("en-CA", { timeZone: "America/Los_Angeles" }).format(new Date()));
   return (
     <div className="prose-plain">
       {partner ? (
@@ -29,34 +31,52 @@ export function AiworkLanding({
           <span>Shared with you by {partner.name}.</span>
         </p>
       ) : null}
-      {next ? (
-        <>
-          <p className="mb-2 text-[0.82rem] font-semibold tracking-[0.09em] text-accent uppercase">California AI-at-Work Checker</p>
-          <h1 className="mt-0 mb-4 text-[2rem] leading-tight font-semibold">{next.headline}</h1>
-          <ul className="m-0 mb-5 grid list-none gap-2 p-0">
-            {next.laws.map((l) => (
-              <li key={l.id} className="rounded-md border border-rule bg-white px-4 py-3" style={{ borderLeft: "3px solid #f79009" }}>
-                <span className="block leading-snug font-semibold">{l.name}</span>
-                {l.short ? <span className="mt-0.5 block text-[0.95rem] leading-snug text-muted">{l.short}</span> : null}
-              </li>
-            ))}
-          </ul>
-          <p className="text-[1.1rem] text-muted">
-            Ten questions about the hiring, scheduling and monitoring tools you use show which of these, and of the
-            rules already in effect, apply to you. The result is a dated list of what to do about each, with notice
-            templates.
-          </p>
-        </>
-      ) : (
-        <>
-          <h1 className="mb-3 text-[2rem] leading-tight font-semibold">California AI-at-Work Checker</h1>
-          <p className="text-[1.1rem] text-muted">
-            Ten questions about the hiring, scheduling and monitoring tools you use. The result is a dated list of what
-            California's rules on AI in the workplace ask of you, what to do about each, and notice templates.
-          </p>
-        </>
-      )}
-      <p>For owners and managers of California employers with five or more employees.</p>
+      <h1 className="mb-3 text-[2rem] leading-tight font-semibold">California AI-at-Work Checker</h1>
+      <p className="text-[1.1rem] text-muted">
+        {questionCountText(aiworkRules)} about the hiring, scheduling and monitoring tools you use show which of
+        California's rules on AI at work apply to you. The result is a dated list of what to do about each, with
+        notice templates.
+      </p>
+      <p>For owners and managers of California employers of any size.</p>
+
+      <h2>When each rule applies</h2>
+      <ol className="m-0 grid list-none gap-6 p-0">
+        {timeline.groups.map((g) => (
+          <li key={g.heading}>
+            <p className="mt-0 mb-2 flex items-center gap-2 font-semibold">
+              <span className="inline-block size-2.5 shrink-0 rounded-full" style={{ background: g.inForce ? "#d92d20" : "#f79009" }} aria-hidden="true" />
+              {g.heading}
+            </p>
+            <ul className="m-0 grid list-none gap-2 p-0">
+              {g.laws.map((l) => (
+                <li key={l.id} className="rounded-md border border-rule bg-white px-4 py-3" style={{ borderLeft: `3px solid ${g.inForce ? "#d92d20" : "#f79009"}` }}>
+                  <span className="block leading-snug font-semibold">{l.name}</span>
+                  {l.since ? <span className="block text-[0.85rem] text-muted">Since {formatLongDate(l.since)}</span> : null}
+                  {l.short ? <span className="mt-0.5 block text-[0.95rem] leading-snug text-muted">{l.short}</span> : null}
+                  {l.appliesTo ? (
+                    <span className="mt-1.5 block text-[0.9rem] leading-snug">
+                      <span className="font-semibold">Applies to:</span> {l.appliesTo.text}
+                      <Notes notes={l.appliesTo.notes} />
+                    </span>
+                  ) : null}
+                  <span className="mt-1.5 block text-[0.82rem] text-muted">
+                    Sources:{" "}
+                    {sourceLinks(l.sources).map((s, i) => (
+                      <span key={s.url}>
+                        {i > 0 ? ", " : ""}
+                        <a href={s.url} rel="noopener noreferrer" target="_blank">
+                          {s.label}
+                        </a>
+                      </span>
+                    ))}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))}
+      </ol>
+      <AssumptionList assumptions={timeline.assumptions} />
       {open && aiworkRules.review.reviewedBy ? (
         <p className="text-[0.95rem] text-muted">
           An information tool, not legal advice. Reviewed by {aiworkRules.review.reviewedBy} as of{" "}

@@ -23,6 +23,14 @@ export function reviewPacket(rules: AiworkRules): string {
   line("1. Questions visitors answer");
   for (const q of rules.questions) {
     line(`  ${q.number}. ${q.label}${q.options ? ` [${q.options.map((o) => o.label).join(" / ")}]` : ""}`);
+    if (q.showWhen) {
+      const when = Object.entries(q.showWhen).map(([id, values]) => {
+        const other = rules.questions.find((x) => x.id === id);
+        const labels = values.map((v) => other?.options?.find((o) => o.value === v)?.label ?? v);
+        return `Q${other?.number ?? id} is ${labels.join(" or ")}`;
+      });
+      line(`      Asked only when ${when.join(" and ")}.`);
+    }
   }
   line();
   line("2. Statements the tool relies on");

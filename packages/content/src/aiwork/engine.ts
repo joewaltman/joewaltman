@@ -19,6 +19,8 @@ export interface AiworkObligation {
   templates: Array<{ id: string; title: string }>;
   // Facts behind it still awaiting attorney confirmation (admin view only).
   unverified: string[];
+  // Links to the sources of every fact it rests on. Missing on results saved before October 23, 2026.
+  sources?: string[];
 }
 
 export interface AiworkResult {
@@ -81,6 +83,7 @@ export function evaluateAiwork(answers: Answers, rules: AiworkRules, audience: A
     }
     for (const f of o.facts) cited.add(f);
     const law = o.law ? rules.laws[o.law]! : null;
+    const allFacts = [...new Set([...o.facts, ...itemFacts(o)])];
     const uncertain = !o.whenAny.some((c) => matches(c, sure));
     // Cited first so footnote numbers follow reading order: the title, then the lines under it.
     const inLines = itemFacts(o);
@@ -97,6 +100,7 @@ export function evaluateAiwork(answers: Answers, rules: AiworkRules, audience: A
       actions: o.actions.map((a) => ({ kind: a.kind, text: resolve(a.text) })),
       templates: o.templates.map((id) => ({ id, title: rules.templates[id]!.title })),
       unverified: audience === "admin" ? unverified : [],
+      sources: sourcesOf(rules, allFacts, audience),
     });
   }
   obligations.sort((a, b) => KIND_ORDER[a.kind] - KIND_ORDER[b.kind] || (a.law?.effective ?? "9999").localeCompare(b.law?.effective ?? "9999"));
@@ -144,7 +148,77 @@ function vendorNotes(answers: Answers, rules: AiworkRules, audience: AiworkAudie
   };
 }
 
-const NUMBER_WORDS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
+// The source links behind a set of facts, once each, leaving out facts still marked verify for visitors.
+function sourcesOf(rules: AiworkRules, factIds: string[], audience: AiworkAudience): string[] {
+  const out: string[] = [];
+  for (const id of factIds) {
+    const f = rules.facts[id];
+    if (!f || (f.verify && audience !== "admin")) continue;
+    for (const u of f.sources) if (!out.includes(u)) out.push(u);
+  }
+  return out;
+}
+
+const NUMBER_WORDS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen"];
+const word = (n: number) => NUMBER_WORDS[n] ?? String(n);
+const capital = (s: string) => `${s.charAt(0).toUpperCase()}${s.slice(1)}`;
+
+export interface TimelineLaw {
+  id: string;
+  name: string;
+  short: string | null;
+  // The law's start date, shown when the "in force now" group spans more than one date.
+  since: string | null;
+  appliesTo: ResolvedText | null;
+  sources: string[];
+}
+
+// Every law by the date it starts: one "In force now" group, then one group per future date. Built
+// from the rules file, so a law moves into "In force now" on its date without any change here.
+export function lawTimeline(rules: AiworkRules, today: string, audience: AiworkAudience = "public"): { groups: Array<{ heading: string; date: string; inForce: boolean; laws: TimelineLaw[] }>; assumptions: Assumption[] } {
+  const notes = new AssumptionNotes(rules);
+  const entries = Object.entries(rules.laws).sort(([, a], [, b]) => a.effective.localeCompare(b.effective));
+  const inForce = entries.filter(([, l]) => l.effective <= today);
+  const oneDate = new Set(inForce.map(([, l]) => l.effective)).size === 1;
+  const item = ([id, l]: (typeof entries)[number], showSince: boolean): TimelineLaw => {
+    const scope = l.appliesTo ?? null;
+    const scopeFacts = scope && typeof scope !== "string" ? scope.facts : [];
+    const hidden = scopeFacts.some((f) => rules.facts[f]?.verify) && audience !== "admin";
+    return {
+      id,
+      name: l.name,
+      short: l.short ?? null,
+      since: showSince ? l.effective : null,
+      appliesTo: scope && !hidden ? { text: typeof scope === "string" ? scope : scope.text, facts: scopeFacts, notes: notes.cite(scopeFacts) } : null,
+      sources: sourcesOf(rules, [...l.facts, ...(hidden ? [] : scopeFacts)], audience),
+    };
+  };
+  const groups: Array<{ heading: string; date: string; inForce: boolean; laws: TimelineLaw[] }> = [];
+  if (inForce.length > 0) {
+    const first = inForce[0]![1].effective;
+    groups.push({
+      heading: oneDate ? `In force now (since ${formatLongDate(first)})` : "In force now",
+      date: first,
+      inForce: true,
+      laws: inForce.map((e) => item(e, !oneDate)),
+    });
+  }
+  for (const date of [...new Set(entries.filter(([, l]) => l.effective > today).map(([, l]) => l.effective))]) {
+    groups.push({ heading: formatLongDate(date), date, inForce: false, laws: entries.filter(([, l]) => l.effective === date).map((e) => item(e, false)) });
+  }
+  return { groups, assumptions: notes.list };
+}
+
+// "Ten questions (eleven if you have 75 or more employees)", counted from the form. The email box
+// is not counted.
+export function questionCountText(rules: AiworkRules): string {
+  const asked = rules.questions.filter((q) => q.type !== "email");
+  const always = asked.filter((q) => !q.showWhen).length;
+  const extras = new Map<string, number>();
+  for (const q of asked) if (q.showWhen) extras.set(q.showWhenNote ?? "for some answers", (extras.get(q.showWhenNote ?? "for some answers") ?? 0) + 1);
+  const more = [...extras].map(([note, n]) => `${word(always + n)} ${note}`);
+  return `${capital(word(always))} questions${more.length > 0 ? ` (${more.join("; ")})` : ""}`;
+}
 
 // The next date on which one or more of the laws take effect, for the landing page headline:
 // "Four California rules on AI at work start January 1, 2027". Null once every law is in effect.
@@ -154,8 +228,7 @@ export function upcomingLaws(rules: AiworkRules, today: string): { date: string;
   const date = future.map(([, l]) => l.effective).sort()[0]!;
   const laws = future.filter(([, l]) => l.effective === date).map(([id, l]) => ({ id, name: l.name, short: l.short ?? null }));
   const n = laws.length;
-  const count = NUMBER_WORDS[n] ?? String(n);
-  const headline = `${count.charAt(0).toUpperCase()}${count.slice(1)} California ${n === 1 ? "rule" : "rules"} on AI at work ${n === 1 ? "starts" : "start"} ${formatLongDate(date)}`;
+  const headline = `${capital(word(n))} California ${n === 1 ? "rule" : "rules"} on AI at work ${n === 1 ? "starts" : "start"} ${formatLongDate(date)}`;
   return { date, headline, laws };
 }
 
